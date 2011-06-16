@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			
+			private function changeLocale(locale:String):void{
+				resourceManager.localeChain=[locale];
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Button icon="@Embed(source='../../../../../assets/lang/us.png')" label="eng" click="changeLocale('en_US')" id="idiomaIng" width="70" height="20"/>
+	<mx:Button icon="@Embed(source='../../../../../assets/lang/es.png')" label="esp" click="changeLocale('es_ES')" id="idiomaEsp" x="78" width="70" height="20"/>
+	
+</mx:Canvas>
