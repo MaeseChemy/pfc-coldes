@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -104,9 +106,9 @@ public class UserDAO extends BBDD{
 				st.close();
 				st = conn.prepareStatement(sqlSelectUsuario);
 				st.setString(1, user.getUsername());
-				ResultSet resultados = st.executeQuery();
-				while (resultados.next()) {
-					username = resultados.getString("username");
+				ResultSet results = st.executeQuery();
+				while (results.next()) {
+					username = results.getString("username");
 				}
 				
 			} catch (SQLException e) {
@@ -163,6 +165,102 @@ public class UserDAO extends BBDD{
 				}
 			}
 		}
+	}
+
+	public List<User> getAllUsers() {
+		logger.info("[UserDAO-getAllUsers]: Searching all users...");
+
+		List<User> usersResult = new ArrayList<User>();
+		String sqlSelectUsuario = "select name, surname1, surname2, email, username, password, admin, designer, active "
+			+ "from user";
+		try {
+			conn = getConnection();	
+			PreparedStatement st = conn.prepareStatement(sqlSelectUsuario);
+
+			// Ejecutamos las query
+			ResultSet results = st.executeQuery();
+			while (results.next()) {
+				User user = new User();
+				user.setName(results.getString("name"));
+				user.setSurname1(results.getString("surname1"));
+				user.setSurname2(results.getString("surname2"));
+				user.setEmail(results.getString("email"));
+				user.setUsername(results.getString("username"));
+				user.setPassword(results.getString("password"));
+				user.setAdmin(results.getBoolean("admin"));
+				user.setDesigner(results.getBoolean("designer"));
+				user.setActive(results.getBoolean("active"));
+				usersResult.add(user);
+			}
+			return usersResult;
+		} catch (SQLException e) {
+			logger.error("[UserDAO-getAllUsers]: Error in SQL sentence: " + e.getLocalizedMessage());
+			return null;
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[UserDAO-getAllUsers]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[UserDAO-getAllUsers]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+	}
+
+	public boolean updateUser(User user, boolean passChange) {
+		boolean update = false;
+
+		logger.info("[UserDAO-addUser]: Updating user [" + user.getUsername() + "]...");
+		
+		String sqlUpdateUsuario = "update user set name=?, surname1=?, surname2=?, email=?, password=?, admin=?, designer=?, active=? "
+			+ "where username=?";
+
+		SHA1 sha = new SHA1();
+		
+		try {
+			String passSHA1 = sha.getHash(user.getPassword());
+			
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlUpdateUsuario);
+			st.setString(1, user.getName());
+			st.setString(2, user.getSurname1());
+			st.setString(3, user.getSurname2());
+			st.setString(4, user.getEmail());
+			if(passChange){
+				st.setString(5, passSHA1);
+			}else{
+				st.setString(5, user.getPassword());
+			}
+			st.setBoolean(6, user.isAdmin());
+			st.setBoolean(7, user.isDesigner());
+			st.setBoolean(8, user.isActive());
+			st.setString(9, user.getUsername());
+			
+			int result = st.executeUpdate();
+
+			if(result == 1){
+				update = true;
+			}
+			
+		} catch (SQLException e) {
+			logger.error("[UserDAO-addUser]: Error in SQL sentence: " + e.getLocalizedMessage());
+		} catch (NoSuchAlgorithmException e) {
+			logger.error("[UserDAO-addUser]: Error generating password hash: " + e.getLocalizedMessage());
+		} catch (Exception e) {
+			logger.error("[UserDAO-addUser]: Error" + e.getLocalizedMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[UserDAO-addUser]: Closing DB connection...");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[UserDAO-addUser]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return update;
 	}
 
 }

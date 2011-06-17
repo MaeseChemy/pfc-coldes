@@ -6,8 +6,11 @@
 
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.module.ModuleInfo;
+			import mx.modules.ModuleLoader;
+			import es.uc3m.coldes.view.user.UserDataFormUpdate;
 			import mx.managers.PopUpManager;
-			import es.uc3m.coldes.view.user.UserDataForm;
+			import es.uc3m.coldes.view.user.UserDataFormRegister;
 			import flexlib.events.SuperTabEvent;
 			import flexlib.controls.tabBarClasses.SuperTab;
 			import es.uc3m.coldes.utils.popup.UtilPopUp;
@@ -22,22 +25,18 @@
 			/*************************************/
 			[Bindable]
 			private var _lang:String;
-			
 			public function set lang(lang:String):void{
 				_lang = lang;
 			}
-			
 			public function get lang():String{
 				return _lang;
 			}
 			
 			[Bindable]
 			private var _userLoged:User;
-			
 			public function set userLoged(user:User):void{
 				_userLoged = user;
 			}
-			
 			public function get userLoged():User{
 				return _userLoged;
 			}
@@ -60,7 +59,7 @@
 			}
 			
 			/*************************************/
-			/**   FUNCIONES DE ACCESO A COLDES  **/
+			/**     COLDES ACCESS FUNCTIONS     **/
 			/*************************************/
 			private function doLogin():void {
 				var errors:Array=Validator.validateAll(validators);
@@ -91,24 +90,25 @@
 			}
 			
 			private function doLogout():void {
-				var errors:Array=Validator.validateAll(validators);
-				if (errors.length==0) {
-					Alert.show("Saliendo de ColDes...");
-				}
+
 			}
 			
+			/*************************************/
+			/**       REGISTER FUNCTIONS        **/
+			/*************************************/
 			private function doRegister():void {
-				var userReg:UserDataForm = new UserDataForm();
+				var userReg:UserDataFormRegister = new UserDataFormRegister();
 				
 				PopUpManager.addPopUp(userReg, this, true);
 				PopUpManager.centerPopUp(userReg);
+				userReg.callBackFunction = submitUserRegister;
 			}
 			
-			public function submitRegister(user:User):void{
-				(new UserService()).addUser(user, registerCallback);
+			public function submitUserRegister(user:User):void{
+				(new UserService()).addUser(user, userRegisterCallback);
 			}
 			
-			private function registerCallback(newUser:String):void{
+			private function userRegisterCallback(newUser:String):void{
 				if(newUser == ""){
 					//User exist
 					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTER'),
@@ -121,6 +121,54 @@
 					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.REGISTER'),
 										       resourceManager.getString('myResources','MESSAGE.REGISTER'));
 				}
+			}
+			
+			/*************************************/
+			/**        UPDATE FUNCTIONS         **/
+			/*************************************/
+			private function showPersonalData():void{
+				var userUpd:UserDataFormUpdate = new UserDataFormUpdate();
+			
+				PopUpManager.addPopUp(userUpd, this, true);
+				PopUpManager.centerPopUp(userUpd);
+				userUpd.management = userLoged.admin;
+				userUpd.user = userLoged;
+				userUpd.callBackFunction = submitUpdate;
+			}
+			
+			private var userTmp:User;
+			public function submitUpdate(user:User, passChange:Boolean):void{
+				userTmp = user;
+				(new UserService()).updateUser(user, passChange, updateUserCallback);
+				
+			}
+			
+			private function updateUserCallback(updateResult:Boolean):void{
+				if(updateResult){
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.UPDATE'),
+										       resourceManager.getString('myResources','MESSAGE.UPDATE'));
+					userLoged = userTmp;
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}
+			}
+			
+			/*************************************/
+			/**           LOAD MODULES          **/
+			/*************************************/
+			public function loadModule(moduleName:String):void {
+				var module:ModuleLoader=tabs.getChildByName(moduleName) as ModuleLoader;
+				if (module == null) {
+					module=new ModuleLoader();
+					module.name=moduleName;
+					module.url='es/uc3m/coldes/module/' + moduleName + '.swf';
+					module.label=ModuleInfo.getModuleLabel(moduleName,lang);
+					module.icon=ModuleInfo.getModuleIcon(moduleName);;
+					module.setStyle("closable", true);
+					tabs.addChild(module);
+				}
+				tabs.selectedChild=module;
 			}
 			
 			/*************************************/
@@ -146,9 +194,11 @@
 					buttonClicked.selected=false;
 				}
 			}
+			
 		]]>
 	</mx:Script>
 	<mx:Style source="ColDes.css"/>
+	
 	<mx:ViewStack height="100%" id="primaryVS" width="100%" creationPolicy="all">
 		<mx:Canvas height="100%" width="100%"/>	
 		<mx:Canvas id="loginFacade" width="100%" height="100%">
@@ -190,7 +240,7 @@
 									   backgroundColor="#FFFFFF" dropEnabled="false" dragEnabled="false">
 			
 					<mx:VBox id="tabInit" height="100%" width="100%" label="{resourceManager.getString('myResources','MAINWINDOW.TITLE')}" horizontalAlign="center" verticalGap="30"
-						 icon="@Embed('/assets/images/icos/home.gif')">
+						 icon="@Embed('/assets/images/icos/home.png')">
 						<mx:Grid paddingTop="120" paddingBottom="20" horizontalGap="100" verticalGap="30" id="menu">
 							<mx:GridRow width="100%">
 								<mx:GridItem width="100%" horizontalAlign="center">
@@ -223,7 +273,7 @@
 							</mx:HBox>
 							<mx:HBox width="100%" horizontalGap="20" horizontalAlign="center">
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
-										   icon="@Embed(source='assets/images/mydata.png')"
+										   icon="@Embed(source='assets/images/mydata.png')" click="showPersonalData()"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.MYDATA')}"/>
 							</mx:HBox>
 							
@@ -240,7 +290,7 @@
 							</mx:HBox>
 							<mx:HBox width="100%" horizontalGap="20" horizontalAlign="center">
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
-										   icon="@Embed(source='assets/images/usersconfig.png')"
+										   icon="@Embed(source='assets/images/usersconfig.png')" click="loadModule('UserManagement')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.USERMANAGEMENT')}"/>
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
 										   icon="@Embed(source='assets/images/roomconfig.png')"
