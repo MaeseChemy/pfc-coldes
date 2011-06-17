@@ -1,6 +1,7 @@
 package es.uc3m.coldes.control.server;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -29,5 +30,13 @@ public class ColDesService implements Serializable{
 	
 	public String addUser(User user){
 		return this.userService.addUser(user);
+	}
+	
+	public Boolean updateUser(User user, boolean passChange){
+		return this.userService.updateUser(user, passChange);
+	}
+	
+	public List<User> getAllUsers(){
+		return this.userService.getAllUsers();
 	}
 }

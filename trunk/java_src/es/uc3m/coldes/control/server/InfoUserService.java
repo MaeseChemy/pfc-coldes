@@ -10,10 +10,12 @@ public interface InfoUserService {
 	public User doLogin(String user, String password);
 	public Boolean doLogout();
 	
-	/* ADD */
+	/* MANAGEMENT USER */
 	public String addUser(User user);
+	public Boolean updateUser(User user, boolean passChange);
 	
 	/* SEARCH */
 	public List<User> getAllUsers();
+	
 
 }

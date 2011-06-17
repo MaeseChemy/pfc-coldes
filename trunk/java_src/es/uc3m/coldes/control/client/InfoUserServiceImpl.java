@@ -28,15 +28,19 @@ public class InfoUserServiceImpl implements InfoUserService{
 		return null;
 	}
 	
-	/* ADD */
+	/* MANAGEMENT USER */
 	public String addUser(User user){
 		String username = this.userDAO.addUser(user);
 		return username;
 	}
+	public Boolean updateUser(User user, boolean passChange){
+		boolean updateResult = this.userDAO.updateUser(user, passChange);
+		return updateResult;
+	}
 	
 	/* SEARCH */
 	public List<User> getAllUsers() {
-		//TODO: Implementar
-		return null;
+		List<User> users = this.userDAO.getAllUsers();
+		return users;
 	}
 }

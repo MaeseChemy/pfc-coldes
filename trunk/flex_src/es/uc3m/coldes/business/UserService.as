@@ -4,6 +4,7 @@ package es.uc3m.coldes.business{
 	import es.uc3m.coldes.utils.popup.LoadingPopUp;
 	import es.uc3m.coldes.utils.popup.UtilPopUp;
 	
+	import mx.collections.ArrayCollection;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.mxml.RemoteObject;
@@ -44,6 +45,31 @@ package es.uc3m.coldes.business{
 			callback(newUser);	
 		}
 		
+		public function updateUser(user:User, passChange:Boolean, callback:Function):void {
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultUpdateUser);
+			this.callback = callback;
+			service.updateUser(user, passChange);
+		}
+		
+		private function resultUpdateUser(event:ResultEvent):void {
+			var result:Boolean = event.result as Boolean;
+			callback(result);	
+		}
+		
+		public function getAllUsers(callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultGetAllUsers);
+			this.callback = callback;
+			service.getAllUsers();
+		}
+		
+		private function resultGetAllUsers(event:ResultEvent):void {
+			var users:ArrayCollection = event.result as ArrayCollection;
+			callback(users);	
+		}
 		
 		private function error(event:FaultEvent):void {
 			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
