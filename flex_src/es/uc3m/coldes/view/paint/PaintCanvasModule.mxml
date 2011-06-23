@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
-	creationComplete="init()" xmlns:resize="coldesign.utils.ui.resize.*" 
-	borderStyle="none" borderColor="#000000">
+	creationComplete="init()" 
+	borderStyle="none" borderColor="#000000" xmlns:resize="es.uc3m.coldes.utils.ui.resize.*">
 	
 	<!-- Remoted Methods -->
 	<mx:RemoteObject id="colDesignService" destination="colDesignDest">
@@ -296,8 +296,10 @@
 		}
 		
 		private function obtenerLienzoTemporal():BitmapData{
+			lienzo.resizable = false;
 			var contAct:BitmapData = new BitmapData(lienzo.width,lienzo.height);
         	contAct.draw(lienzo);
+        	lienzo.resizable = true;
         	return contAct;
 		}
 		
@@ -390,14 +392,15 @@
 		/*FUNCIONES PARA SALVAR Y CARGAR DE FICHERO*/
 		public function saveCanvas():void {
 			//Abrimos un popup para que seleccione la ruta
+			lienzo.resizable=false;
 			var bd:BitmapData = new BitmapData(lienzo.width,lienzo.height);
 	        bd.draw(lienzo);
 	 		
 	        var ba:ByteArray = (new PNGEncoder()).encode(bd);
 			var fr:FileReference=new FileReference();
 			fr.save(ba, "ContenidoLienzo.png");
+			lienzo.resizable=true;
 		}
-		
 		
 		public function uploadToCanvas():void{
 			//load with fillters
@@ -512,14 +515,17 @@
 	<mx:Consumer id="consumer" destination="lienzoCompartido" message="messageCanvasHandler(event.message)"/>
 	<mx:Producer id="producer" destination="lienzoCompartido"/>
 	-->
-	<mx:Canvas
+	<resize:ResizableCanvas borderStyle="none"
 		id="lienzo" 
 		mouseOut="fueraLienzo()" 
 		mouseOver="encimaLienzo()" 
 		mouseDown="empezarDibujo()"
 		mouseUp="finalizarDibujo()" 
-		mouseMove="pintar()" >
-	</mx:Canvas>
+		mouseMove="pintar()" 
+		x="7.1054274E-15" y="-0.05" 
+		borderColor="#000000" 
+		minHeight="100" minWidth="100">
+	</resize:ResizableCanvas>
 	
 
 </mx:Module>

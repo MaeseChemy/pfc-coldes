@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:chat="es.uc3m.coldes.view.chat.*"
-	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*">
+	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:module="es.uc3m.coldes.module.*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -29,6 +29,7 @@
 			private function init():void{
 				//Inicializamos el chat
 				generateChatDestination(user,room);
+				generateLienzoDestination(user,room);
 			}
 			
 			public function generateChatDestination(user:User, room:Room):void{
@@ -40,6 +41,16 @@
 			public function callbackcreateChatDestination(chatDestination:String):void {
 				roomChat.init(chatDestination);
 			}
+			
+			public function generateLienzoDestination(user:User, room:Room):void{
+				var lienzoDestination:String;
+				lienzoDestination = "lienzo"+room.id;
+				(new RoomService).createChatDestination(lienzoDestination,callbackcreateLienzoDestination);
+			}
+			
+			public function callbackcreateLienzoDestination(lienzoDestination:String):void {
+				roomLienzo.init(lienzoDestination);
+			}
 
 		]]>
 	</mx:Script>
@@ -48,7 +59,7 @@
 			<chat:ChatForm id="roomChat" />
 			<mx:ApplicationControlBar width="100%" height="100%" />
 		</mx:VBox>
-		<paint:PaintView width="100%" height="100%"/>
+		<module:PaintCanvas id="roomLienzo" width="100%" height="100%"/>
 	</mx:HBox>
 	
 </mx:Canvas>

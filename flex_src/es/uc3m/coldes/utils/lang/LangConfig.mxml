@@ -14,7 +14,7 @@
 
 			private function changeLocale(locale:String):void{
 				resourceManager.localeChain=[locale];
-				lang = locale;
+				parentApplication.lang = locale;
 			}
 			
 		]]>
