@@ -13,13 +13,7 @@
 			
 			[Bindable]
 			private var users:ArrayCollection = new ArrayCollection();
-
-			private var loadingText:String = "AVISO. La petición realizada al servidor"+ 
-		"no puede ser cancelada de ninguna"+ 
-		" manera, ni siquiera cerrando el informe o reiniciando la sesión."+ "\n" +" Cerrar" + 
-		" y relanzar el informe puede provocar bloqueos y bajada"+
-		 " de rendimiento en el funcionamiento del visor.";
-		 
+					 
 			private function init():void {
 				new UserService().getAllUsers(callbackUsers);
 			}
@@ -29,7 +23,7 @@
 			}
 
 			/* Funcion de filtrado */
-			private function filtrarUsuario(obj:Object):Boolean {
+			private function userFilter(obj:Object):Boolean {
 				var result:Boolean = false;
 				var user:User = obj as User;
 				if (searchText.text.length > 0 ) {
@@ -46,12 +40,12 @@
 				return result;
 			}
 
-			private function filtrar(event:Event=null):void {
-				users.filterFunction=filtrarUsuario;
+			private function filter(event:Event=null):void {
+				users.filterFunction = userFilter;
 				users.refresh();
 			}
 
-			public function restaurar():void {
+			public function restart():void {
 				init();
 				searchText.text="";
 			}
@@ -86,24 +80,24 @@
 			}
 		]]>
 	</mx:Script>
-	
+	<mx:Style source="ColDes.css"/>
 	<mx:Canvas width="100%" height="100%">
 	<mx:VBox id="vbox" width="100%" height="100%" >
 		<mx:HBox width="100%">
-			<mx:FormItem label="Búsqueda:">
-				<mx:TextInput id="searchText" enter="filtrar()"/>
+			<mx:FormItem label="{resourceManager.getString('myResources','USERMANAGEMENT.SEARCH')}:">
+				<mx:TextInput id="searchText" enter="filter()"/>
 			</mx:FormItem>
-			<mx:Button label="Restaurar" click="restaurar()"/>
-			<mx:Button label="Buscar" click="filtrar()"/>
+			<mx:Button label="{resourceManager.getString('myResources','USERMANAGEMENT.RESTART')}" click="restart()"/>
+			<mx:Button label="{resourceManager.getString('myResources','USERMANAGEMENT.SEARCHBTN')}" click="filter()"/>
 		</mx:HBox>
 
 		<mx:DataGrid id="grid" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto"
 			doubleClick="edit(grid.selectedItem as User)" doubleClickEnabled="true">
 			<mx:columns>
-				<mx:DataGridColumn headerText="Usuario" dataField="username"/>
-				<mx:DataGridColumn headerText="Nombre" dataField="name"/>
-				<mx:DataGridColumn headerText="Apellido 1" dataField="surname1"/>
-				<mx:DataGridColumn headerText="Apellido 2" dataField="surname2"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.USER')}" dataField="username"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.NAME')}" dataField="name"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME1')}" dataField="surname1"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME2')}" dataField="surname2"/>
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:VBox>

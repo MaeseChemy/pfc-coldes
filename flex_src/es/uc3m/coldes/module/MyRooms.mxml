@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" height="100%"
+		   paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"
+		   creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.view.room.RoomView;
+			import mx.controls.Alert;
+			import es.uc3m.coldes.entities.UserRoom;
+			import es.uc3m.coldes.view.room.RoomDataFormRegister;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.entities.Room;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import mx.managers.PopUpManager;
+			import es.uc3m.coldes.view.user.UserDataFormUpdate;
+			import es.uc3m.coldes.business.UserService;
+			import es.uc3m.coldes.entities.User;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var usersRooms:ArrayCollection = new ArrayCollection();
+			
+			private var userLoged:User;
+			private function init():void {
+				userLoged = parentApplication.userLoged;
+				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
+			}
+
+			private function callbackUsersRooms(usersRooms:ArrayCollection):void {
+				this.usersRooms=usersRooms;
+			}
+
+			/* Funcion de filtrado */
+			private function roomFilter(obj:Object):Boolean {
+				var result:Boolean = false;
+				var userRoom:UserRoom = obj as UserRoom;
+				if (searchText.text.length > 0 ) {
+					if ((userRoom.roomName != null && userRoom.roomName.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) ||
+						(userRoom.ownerUserName != null && userRoom.ownerUserName.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) 
+						)
+					{
+						result = true;
+					}
+				}
+				return result;
+			}
+
+			private function filter(event:Event=null):void {
+				usersRooms.filterFunction=roomFilter;
+				usersRooms.refresh();
+			}
+
+			public function restart():void {
+				init();
+				searchText.text="";
+			}
+			
+			private function refresh():void{
+				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
+			}
+			
+			/*************************************/
+			/**       REGISTER FUNCTIONS        **/
+			/*************************************/
+			private function doRoomRegister():void {
+				var roomReg:RoomDataFormRegister = new RoomDataFormRegister();
+				
+				PopUpManager.addPopUp(roomReg, this, true);
+				PopUpManager.centerPopUp(roomReg);
+				roomReg.userLoged = userLoged;
+				roomReg.callBackFunction = submitRoomRegister;
+			}
+			
+			public function submitRoomRegister(room:Room):void{
+				(new RoomService()).addRoom(room, userRegisterCallback);
+			}
+			
+			private function userRegisterCallback(addRoomResult:Number):void{
+				if(addRoomResult == -2){
+					//Room exist
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTERROOM'),
+										       resourceManager.getString('myResources','ERROR.REGISTERROOM'));
+				}else if (addRoomResult == -1){
+					//Internal error
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.REGISTERROOM'),
+										       resourceManager.getString('myResources','MESSAGE.REGISTERROOM'));
+					refresh();
+				}
+			}
+			
+			/*************************************/
+			/**           ENTER ROOM            **/
+			/*************************************/
+			private function enter(userRoom:UserRoom):void{
+				var roomNew:RoomView = parentApplication.tabs.getChildByName(userRoom.roomName) as RoomView;
+				if (roomNew == null) {
+					roomNew = new RoomView();
+					roomNew.room = userRoom.room;
+					roomNew.user = userLoged;
+					roomNew.label = userRoom.roomName;
+					
+					parentApplication.tabs.addChild(roomNew);
+				}
+				parentApplication.tabs.selectedChild=roomNew;
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Canvas width="100%" height="100%">
+	<mx:VBox id="vbox" width="100%" height="100%" >
+		<mx:HBox width="100%">
+			<mx:FormItem label="{resourceManager.getString('myResources','MYROOMS.SEARCH')}:">
+				<mx:TextInput id="searchText" enter="filter()"/>
+			</mx:FormItem>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.SEARCHBTN')}" click="filter()"/>
+		</mx:HBox>
+
+		<mx:DataGrid id="grid" width="100%" height="100%" dataProvider="{usersRooms}" verticalScrollPolicy="auto"
+			doubleClick="enter(grid.selectedItem as UserRoom)" doubleClickEnabled="true">
+			<mx:columns>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="ownerUserName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="userName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROL')}" dataField="rolDescription"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:HBox width="100%" horizontalAlign="center">
+			<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
+					   icon="@Embed(source='assets/images/addroom.png')" click="doRoomRegister()"
+					   label="{resourceManager.getString('myResources','MYROOMS.CREATEROOM')}"/>							
+		</mx:HBox>
+	</mx:VBox>
+	</mx:Canvas>
+</mx:Module>

@@ -3,8 +3,18 @@
 	<mx:Script>
 		<![CDATA[
 			
+			[Bindable]
+			private var _lang:String;
+			public function set lang(lang:String):void{
+				_lang = lang;
+			}
+			public function get lang():String{
+				return _lang;
+			}
+
 			private function changeLocale(locale:String):void{
 				resourceManager.localeChain=[locale];
+				lang = locale;
 			}
 			
 		]]>

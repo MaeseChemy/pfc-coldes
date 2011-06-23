@@ -59,12 +59,33 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MAINWINDOW.USERMANAGEMENT']="Administrar Usuarios";
 			myResources.content['MAINWINDOW.ROOMMANAGEMENT']="Administrar Salas";
 			
+			//MY ROOMS
+			myResources.content['MYROOMS.CREATEROOM']="Crear Sala";
+			myResources.content['MYROOMS.SEARCH']="Búsqueda";
+			myResources.content['MYROOMS.RESTART']="Restaurar";
+			myResources.content['MYROOMS.SEARCHBTN']="Buscar";
+			myResources.content['MYROOMS.ROOMNAME']="Nombre de la Sala";
+			myResources.content['MYROOMS.OWNERUSERNAME']="Propietario";
+			myResources.content['MYROOMS.USER']="Usuario";
+			myResources.content['MYROOMS.ROL']="Rol";
+			
+			//USER MANAGEMENT
+			myResources.content['USERMANAGEMENT.SEARCH']="Búsqueda";
+			myResources.content['USERMANAGEMENT.RESTART']="Restaurar";
+			myResources.content['USERMANAGEMENT.SEARCHBTN']="Buscar";
+			myResources.content['USERMANAGEMENT.USER']="Usuario";
+			myResources.content['USERMANAGEMENT.NAME']="Nombre";
+			myResources.content['USERMANAGEMENT.SURNAME1']="Apellido 1";
+			myResources.content['USERMANAGEMENT.SURNAME2']="Apellido 2";
+			
 			
 			//MESSAGE's
 			myResources.content['MESSAGETITLE.REGISTER']="REGISTRO COMPLETO";
 			myResources.content['MESSAGE.REGISTER']="El registro del nuevo usuario se realizo satisfactoriamente.";
 			myResources.content['MESSAGETITLE.UPDATE']="ACTUALIZACIÓN COMPLETO";
 			myResources.content['MESSAGE.UPDATE']="Actualización del usuario realizada con éxito.";
+			myResources.content['MESSAGETITLE.REGISTERROOM']="REGISTRO DE SALA COMPLETO";
+			myResources.content['MESSAGE.REGISTERROOM']="La creación de la nueva sala se realizo correctamente.";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -73,6 +94,9 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ERROR.REGISTER']="El usuario ya existe.";
 			myResources.content['ERRORTITLE.REGISTERFORM']="ERRORES EN EL FORMULARIO DE REGISTRO";
 			myResources.content['ERROR.REGISTERFORM']="Existen errores en el formulario de registro, verifique los campos.";
+			myResources.content['ERRORTITLE.REGISTERROOM']="SALA EXISTENTE";
+			myResources.content['ERROR.REGISTERROOM']="La sala que desea crear ya existe.";
+			
 			//ERROR VALIDATORS's
 			myResources.content['VALIDATORTYPE.PASSWORD']="Password Incorrecta";
 			myResources.content['VALIDATOR.PASSWORD']="Las contraseñas deben coincidir.";
@@ -129,12 +153,33 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MAINWINDOW.USERMANAGEMENT']="User Management";
 			myResources.content['MAINWINDOW.ROOMMANAGEMENT']="Room Management";
 			
+			//MY ROOMS
+			myResources.content['MYROOMS.CREATEROOM']="Create Room";
+			myResources.content['MYROOMS.SEARCH']="Search";
+			myResources.content['MYROOMS.RESTART']="Restart";
+			myResources.content['MYROOMS.SEARCHBTN']="Search";
+			myResources.content['MYROOMS.ROOMNAME']="Room Name";
+			myResources.content['MYROOMS.OWNERUSERNAME']="Owner";
+			myResources.content['MYROOMS.USER']="Username";
+			myResources.content['MYROOMS.ROL']="Rol";
+			
+			//USER MANAGEMENT
+			myResources.content['USERMANAGEMENT.SEARCH']="Search";
+			myResources.content['USERMANAGEMENT.RESTART']="Restart";
+			myResources.content['USERMANAGEMENT.SEARCHBTN']="Search";
+			myResources.content['USERMANAGEMENT.USER']="Username";
+			myResources.content['USERMANAGEMENT.NAME']="Name";
+			myResources.content['USERMANAGEMENT.SURNAME1']="Surname 1";
+			myResources.content['USERMANAGEMENT.SURNAME2']="Surname 2";
+			
 			
 			//MESSAGE's
 			myResources.content['MESSAGETITLE.REGISTER']="REGISTER COMPLETE";
 			myResources.content['MESSAGE.REGISTER']="User register successful.";
 			myResources.content['MESSAGETITLE.UPDATE']="UPDATE COMPLETE";
 			myResources.content['MESSAGE.UPDATE']="User update completed successfully.";
+			myResources.content['MESSAGETITLE.REGISTERROOM']="ROOM REGISTER COMPLETE";
+			myResources.content['MESSAGE.REGISTERROOM']="Room register successful.";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";
@@ -143,7 +188,9 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ERROR.REGISTER']="The user already exist.";
 			myResources.content['ERRORTITLE.REGISTERFORM']="REGISTER FORM ERROR's";
 			myResources.content['ERROR.REGISTERFORM']="There are errors in the registration form, check the form fields.";
-
+			myResources.content['ERRORTITLE.REGISTERROOM']="REGISTER ROOM";
+			myResources.content['ERROR.REGISTERROOM']="The room already exist in your rooms.";
+			
 			//ERROR VALIDATORS's
 			myResources.content['VALIDATORTYPE.PASSWORD']="Incorrect Password";
 			myResources.content['VALIDATOR.PASSWORD']="Passwords must match.";

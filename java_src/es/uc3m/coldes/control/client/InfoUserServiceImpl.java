@@ -25,7 +25,7 @@ public class InfoUserServiceImpl implements InfoUserService{
 	}
 	public Boolean doLogout() {
 		//TODO: Implementar
-		return null;
+		return true;
 	}
 	
 	/* MANAGEMENT USER */
