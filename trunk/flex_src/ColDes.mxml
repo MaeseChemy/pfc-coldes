@@ -184,7 +184,7 @@
 					module=new ModuleLoader();
 					module.name=moduleName;
 					module.url='es/uc3m/coldes/module/' + moduleName + '.swf';
-					module.label=ModuleInfo.getModuleLabel(moduleName,btnsLangConfigMain.lang);
+					module.label=ModuleInfo.getModuleLabel(moduleName,lang);
 					module.icon=ModuleInfo.getModuleIcon(moduleName);;
 					module.setStyle("closable", true);
 					tabs.addChild(module);

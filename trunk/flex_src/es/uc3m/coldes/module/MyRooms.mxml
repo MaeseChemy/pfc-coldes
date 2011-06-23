@@ -94,6 +94,8 @@
 			/*************************************/
 			/**           ENTER ROOM            **/
 			/*************************************/
+			[Embed('/assets/images/icos/room.png')]
+			public static const room:Class;
 			private function enter(userRoom:UserRoom):void{
 				var roomNew:RoomView = parentApplication.tabs.getChildByName(userRoom.roomName) as RoomView;
 				if (roomNew == null) {
@@ -101,7 +103,7 @@
 					roomNew.room = userRoom.room;
 					roomNew.user = userLoged;
 					roomNew.label = userRoom.roomName;
-					
+					roomNew.icon = room;
 					parentApplication.tabs.addChild(roomNew);
 				}
 				parentApplication.tabs.selectedChild=roomNew;

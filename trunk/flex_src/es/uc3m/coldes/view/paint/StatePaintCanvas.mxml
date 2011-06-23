@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="initComponent()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:resize="es.uc3m.coldes.utils.ui.resize.*">
+	
+	<paint:PaintCanvasComponent id="canvas" y="333" x="440">
+	</paint:PaintCanvasComponent>
+	<resize:ResizableWindow resizable="false" movable="true" title="Figuras" z="10">
+		<mx:Canvas width="380" height="100" backgroundColor="#E5E5E5" borderStyle="outset" cornerRadius="0" x="0" y="0" id="contenedorBotonesFiguras">
+			<mx:Button x="20" y="10" width="30" height="30" id="botonCuadrado" toolTip="Pintar Cuadrado" click="selectCuadrado()">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/draw-rectangle.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="20" y="56" width="30" height="30" id="botonCirculo" toolTip="Pintar Circulo" click="selectCirculo()">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/draw-ellipse.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="68" y="10" width="30" height="30" id="botonRecta" toolTip="Pintar Recta" click="selectRecta()">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/draw-path.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="68" y="56" width="30" height="30" id="botonLapiz" toolTip="Pintar Trazo" click="selectLinea()">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/draw-freehand.png')</mx:icon>
+			</mx:Button>
+			<mx:ColorPicker x="245" y="64" id="pickerRelleno" change="cambiarColorRelleno()"/>
+			<mx:ColorPicker x="245" y="10" id="pickerLinea" change="cambiarColorLinea()"/>
+			<mx:Label x="150" y="16" text="Color del trazo"/>
+			<mx:Label x="140" y="68" text="Color del relleno"/>
+			<mx:HSlider x="245" y="38" width="120" height="18" id="grosorTrazo" minimum="1" maximum="100" change="cambiarGrosor()"/>
+			<mx:CheckBox x="275" y="68" click="modificarRellenoAv()" id="rellenoAv"/>
+			<mx:Label x="196" y="42" text="Grosor"/>
+		</mx:Canvas>
+	</resize:ResizableWindow>
+	<resize:ResizableWindow resizable="false" movable="true" x="416" y="0" title="Acciones" z="10">
+		<mx:Canvas width="398" height="100" backgroundColor="#E5E5E5" borderStyle="outset" cornerRadius="6" x="388" y="0" id="contenedorBotonesAcciones">
+			<mx:Button x="10" y="10" click="salvarContenido()" id="botonSalvar" width="35" height="35" toolTip="Guardar Imagen al PC">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/green_down.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="96" y="10" id="botonLimpiar" width="35" height="35" click="borrarContenido()" toolTip="Limpiar lienzo">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/window-new.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="53" y="10" width="35" height="35" id="botonCargar" click="uploadFile()" toolTip="Cargar Imagen del PC">
+				<mx:icon>@Embed(source='../../../../../assets/canvas//blue_up.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="182" y="10" click="deshacer()" id="botonUndo" toolTip="Deshacer">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/edit-undo.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="248" y="10" id="botonRedo" click="rehacer()" toolTip="Rehacer">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/edit-redo.png')</mx:icon>
+			</mx:Button>
+			<mx:Button x="308" y="50" id="botonPlay" width="76" height="36" click="reproducirAcciones()">
+				<mx:icon>@Embed(source='../../../../../assets/canvas/media-playback-start.png')</mx:icon>
+			</mx:Button>
+			<mx:Label x="309" y="14" text="Intervalo (s)"/>
+			<mx:HSlider x="308" y="24" width="76" id="velocidadReproduccion" minimum="0.1" maximum="5" snapInterval="0.1" change="modificarVelocidadReproduccion()"/>
+		</mx:Canvas>
+	</resize:ResizableWindow>
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.entities.User;
+			import mx.managers.CursorManager;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.controls.Alert;
+		
+			private var user:User;
+			private var listaUserDesigns:ArrayCollection = new ArrayCollection();
+
+			public function initComponent():void{
+				user = parentApplication.userLoged;
+				CursorManager.setBusyCursor();
+			}
+		
+			public function selectLinea():void{
+				//Definimos correctamente los booleanos
+				canvas.contLienzo.pintandoCirculo=false;
+				canvas.contLienzo.pintandoCuadrado=false;
+				canvas.contLienzo.pintandoRecta=false;
+				botonCirculo.emphasized = false;
+				botonCuadrado.emphasized = false;
+				botonRecta.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonLapiz.emphasized == true){
+					botonLapiz.emphasized = false;
+					canvas.contLienzo.pintandoLinea = false;
+				}else{
+					botonLapiz.emphasized = true;
+					canvas.contLienzo.pintandoLinea = true;
+				}
+			}
+			public function selectCirculo():void{
+				//Definimos correctamente los booleanos
+				canvas.contLienzo.pintandoLinea=false;
+				canvas.contLienzo.pintandoCuadrado=false;
+				canvas.contLienzo.pintandoRecta=false;
+				botonLapiz.emphasized = false;
+				botonCuadrado.emphasized = false;
+				botonRecta.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonCirculo.emphasized == true){
+					botonCirculo.emphasized = false;
+					canvas.contLienzo.pintandoCirculo = false;
+				}else{
+					botonCirculo.emphasized = true;
+					canvas.contLienzo.pintandoCirculo = true;
+				}
+			}
+			public function selectCuadrado():void{
+				//Definimos correctamente los booleanos
+				canvas.contLienzo.pintandoCirculo=false;
+				canvas.contLienzo.pintandoLinea=false;
+				canvas.contLienzo.pintandoRecta=false;
+				botonLapiz.emphasized = false;
+				botonCirculo.emphasized = false;
+				botonRecta.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonCuadrado.emphasized == true){
+					botonCuadrado.emphasized = false;
+					canvas.contLienzo.pintandoCuadrado = false;
+				}else{
+					botonCuadrado.emphasized = true;
+					canvas.contLienzo.pintandoCuadrado = true;
+				}
+			}
+			public function selectRecta():void{
+				//Definimos correctamente los booleanos
+				canvas.contLienzo.pintandoCirculo=false;
+				canvas.contLienzo.pintandoLinea=false;
+				canvas.contLienzo.pintandoCuadrado=false;
+				botonLapiz.emphasized = false;
+				botonCirculo.emphasized = false;
+				botonCuadrado.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonRecta.emphasized == true){
+					botonRecta.emphasized = false;
+					canvas.contLienzo.pintandoRecta = false;
+				}else{
+					botonRecta.emphasized = true;
+					canvas.contLienzo.pintandoRecta = true;
+				}
+			}
+			
+			/*Cambios de propiedades del lienzo*/
+			
+			public function cambiarColorLinea():void{
+				canvas.contLienzo.colorLinea = pickerLinea.selectedColor;
+			}
+			
+			public function cambiarColorRelleno():void{
+				canvas.contLienzo.colorRelleno = pickerRelleno.selectedColor;
+			}
+			
+			public function cambiarGrosor():void{
+				canvas.contLienzo.tamanoLinea = grosorTrazo.value;
+			}
+			
+			public function modificarRellenoAv():void{
+				if(rellenoAv.selected){
+					canvas.contLienzo.tieneRelleno=true;
+				}else{
+					canvas.contLienzo.tieneRelleno=false;
+				}
+			}
+			
+			public function modificarVelocidadReproduccion():void{
+				canvas.contLienzo.velocidad = velocidadReproduccion.value*1000;
+			}
+			/*Funciones de activacion y desactivacion de los botones*/
+			public function desactivarAcciones():void {
+				botonCargar.enabled = false;
+				botonCirculo.enabled = false;
+				botonCuadrado.enabled = false;
+				botonLapiz.enabled = false;
+				botonLimpiar.enabled = false;
+				botonPlay.enabled = false;
+				botonRecta.enabled = false;
+				botonRedo.enabled = false;
+				botonSalvar.enabled = false;
+				botonUndo.enabled = false;
+			}	
+			
+			public function activarAcciones():void {
+				botonCargar.enabled = true;
+				botonCirculo.enabled = true;
+				botonCuadrado.enabled = true;
+				botonLapiz.enabled = true;
+				botonLimpiar.enabled = true;
+				botonPlay.enabled = true;
+				botonRecta.enabled = true;
+				botonRedo.enabled = true;
+				botonSalvar.enabled = true;
+				botonUndo.enabled = true;
+			}
+			
+			
+			/*Guardado/Borrado del contenido del lienzo*/
+			public function salvarContenido():void{
+				canvas.contLienzo.saveCanvas();
+			}
+			
+			public function borrarContenido():void{
+				this.vaciarListasDeAcciones();
+				canvas.contLienzo.limpiarLienzo();
+				Alert.show("Contenido borrado correctamente");
+			}
+			
+			private function vaciarListasDeAcciones():void{
+				canvas.contLienzo.borrarListasDeAcciones();
+			}
+			
+			public function uploadFile():void{
+				canvas.contLienzo.uploadToCanvas();
+			}
+			
+			public function deshacer():void{
+				canvas.contLienzo.deshacer();
+			}
+			
+			public function rehacer():void{
+				canvas.contLienzo.rehacer();
+			}
+			
+			public function reproducirAcciones():void{
+				canvas.contLienzo.reproducirAcciones();
+			}
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>
