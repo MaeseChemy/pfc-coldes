@@ -31,6 +31,18 @@ package es.uc3m.coldes.business{
 			callback(userLogedUser);
 		}
 		
+		public function doLogout(user:User, callback:Function):void {
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultLogout);
+			this.callback = callback;
+			service.doLogout(user);
+		}
+		
+		private function resultLogout(event:ResultEvent):void {
+			var result:Boolean = event.result as Boolean;
+			callback(result);
+		}
 		
 		public function addUser(user:User, callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");

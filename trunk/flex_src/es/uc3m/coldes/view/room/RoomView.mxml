@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:chat="es.uc3m.coldes.view.chat.*"
+	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.entities.User;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.entities.Room;
+			
+			[Bindable]
+			private var _room:Room;
+			public function get room():Room{
+				return _room;
+			}
+			public function set room(value:Room):void{
+				this._room = value;
+			}
+			
+			[Bindable]
+			private var _user:User;
+			public function get user():User{
+				return _user;
+			}
+			public function set user(value:User):void{
+				this._user = value;
+			}
+			
+			private function init():void{
+				//Inicializamos el chat
+				generateChatDestination(user,room);
+			}
+			
+			public function generateChatDestination(user:User, room:Room):void{
+				var chatDestination:String;
+				chatDestination = "chat"+room.id;
+				(new RoomService).createChatDestination(chatDestination,callbackcreateChatDestination);
+			}
+			
+			public function callbackcreateChatDestination(chatDestination:String):void {
+				roomChat.init(chatDestination);
+			}
+
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%" height="100%" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5" backgroundColor="#00CFE8" backgroundAlpha="0.9">
+		<mx:VBox height="100%">
+			<chat:ChatForm id="roomChat" />
+			<mx:ApplicationControlBar width="100%" height="100%" />
+		</mx:VBox>
+		<paint:PaintView width="100%" height="100%"/>
+	</mx:HBox>
+	
+</mx:Canvas>

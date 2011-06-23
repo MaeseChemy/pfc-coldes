@@ -6,6 +6,9 @@
 
 	<mx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.core.IFlexDisplayObject;
+			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
 			import es.uc3m.coldes.module.ModuleInfo;
 			import mx.modules.ModuleLoader;
 			import es.uc3m.coldes.view.user.UserDataFormUpdate;
@@ -46,7 +49,6 @@
 			/*************************************/
 			private function init():void{
 				ResourceLanguage.setResources(resourceManager);
-				this.changeLocale("en_US");
 				this.changeLocale("es_ES");
 				
 				primaryVS.selectedChild=loginFacade;
@@ -89,8 +91,27 @@
 				primaryVS.selectedChild=mainWindow;
 			}
 			
-			private function doLogout():void {
-
+			private var popUpSalirConditional:ConditionalPopUp;
+			private function initDoLogout():void {
+				popUpSalirConditional = UtilPopUp.showConditionalPopUP("SALIR","¿Desea cerrar la sesión?");
+				popUpSalirConditional.addEventListener(FlexEvent.REMOVE, doLogout);
+			}
+			
+			private function doLogout(event:Event):void{
+				if(popUpSalirConditional.answer){
+					(new UserService()).doLogout(userLoged,logoutCallback);
+				}
+			}
+			
+			private function logoutCallback(result:Boolean):void{
+				txtUser.text="";
+				txtPassword.text="";
+				//Set user
+				userLoged = null;
+				primaryVS.selectedChild=loginFacade;
+				if(!result){
+					
+				}
 			}
 			
 			/*************************************/
@@ -163,7 +184,7 @@
 					module=new ModuleLoader();
 					module.name=moduleName;
 					module.url='es/uc3m/coldes/module/' + moduleName + '.swf';
-					module.label=ModuleInfo.getModuleLabel(moduleName,lang);
+					module.label=ModuleInfo.getModuleLabel(moduleName,btnsLangConfigMain.lang);
 					module.icon=ModuleInfo.getModuleIcon(moduleName);;
 					module.setStyle("closable", true);
 					tabs.addChild(module);
@@ -227,7 +248,8 @@
 			<mx:VBox horizontalAlign="center" width="100%" height="100%">
 				<mx:Canvas width="100%">	
 					<mx:HBox horizontalAlign="left" width="100%" paddingRight="5" paddingTop="5">
-						<mx:Button id="btnLogOut" height="20" icon="@Embed(source='assets/images/btnlogout.png')" label="{resourceManager.getString('myResources','MAINWINDOW.LOGOUT')}"/>
+						<mx:Button id="btnLogOut" height="20" icon="@Embed(source='assets/images/btnlogout.png')" label="{resourceManager.getString('myResources','MAINWINDOW.LOGOUT')}"
+							click="initDoLogout()"/>
 						<mx:Label text="{resourceManager.getString('myResources','LOGIN.USERNAME')}:" fontWeight="bold" textDecoration="underline"/>
 						<mx:Label id="labelUsername" fontStyle="italic"/>
 					</mx:HBox>
@@ -279,14 +301,16 @@
 							
 							<mx:HBox width="100%" horizontalGap="20" horizontalAlign="center">
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
-										   icon="@Embed(source='assets/images/myrooms.png')"
+										   icon="@Embed(source='assets/images/myrooms.png')" click="loadModule('MyRooms')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.MYROOMS')}"/>
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
 										   icon="@Embed(source='assets/images/searchrooms.png')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.SEARCHROOMS')}"/>
+								<!--
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
 										   icon="@Embed(source='assets/images/addroom.png')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.CREATEROOM')}"/>
+								-->
 							</mx:HBox>
 							<mx:HBox width="100%" horizontalGap="20" horizontalAlign="center">
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"

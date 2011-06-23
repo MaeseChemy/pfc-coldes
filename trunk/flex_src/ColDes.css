@@ -6,6 +6,11 @@ Application {
 	backgroundGradientAlphas: 0.2, 0.8;
 	backgroundGradientColors: #05AAFF, #0592FF;
 }
+ApplicationControlBar
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #05A9F6, #05A9F6;
+}
 
 Button.HomeButton {
 	color: #000000;
