@@ -35,7 +35,7 @@
 			public function generateChatDestination(user:User, room:Room):void{
 				var chatDestination:String;
 				chatDestination = "chat"+room.id;
-				(new RoomService).createChatDestination(chatDestination,callbackcreateChatDestination);
+				(new RoomService).createDestination(chatDestination,callbackcreateChatDestination);
 			}
 			
 			public function callbackcreateChatDestination(chatDestination:String):void {
@@ -45,7 +45,7 @@
 			public function generateLienzoDestination(user:User, room:Room):void{
 				var lienzoDestination:String;
 				lienzoDestination = "lienzo"+room.id;
-				(new RoomService).createChatDestination(lienzoDestination,callbackcreateLienzoDestination);
+				(new RoomService).createDestination(lienzoDestination,callbackcreateLienzoDestination);
 			}
 			
 			public function callbackcreateLienzoDestination(lienzoDestination:String):void {

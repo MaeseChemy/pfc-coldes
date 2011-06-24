@@ -15,6 +15,7 @@
     <module application="flex_src/ColDes.mxml" destPath="es/uc3m/coldes/module/UserManagement.swf" optimize="true" sourcePath="flex_src/es/uc3m/coldes/module/UserManagement.mxml"/>
     <module application="flex_src/ColDes.mxml" destPath="es/uc3m/coldes/module/MyRooms.swf" optimize="true" sourcePath="flex_src/es/uc3m/coldes/module/MyRooms.mxml"/>
     <module application="flex_src/ColDes.mxml" destPath="es/uc3m/coldes/module/PaintCanvas.swf" optimize="true" sourcePath="flex_src/es/uc3m/coldes/module/PaintCanvas.mxml"/>
+    <module application="flex_src/ColDes.mxml" destPath="es/uc3m/coldes/module/SearchRooms.swf" optimize="true" sourcePath="flex_src/es/uc3m/coldes/module/SearchRooms.mxml"/>
   </modules>
   <buildCSSFiles/>
 </actionScriptProperties>

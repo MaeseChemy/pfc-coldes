@@ -24,6 +24,13 @@ package es.uc3m.coldes.module
 						result = "My Rooms"
 					}
 					break;
+				case 'SearchRooms': 
+					if(lang == "es_ES"){
+						result = "Buscar Salas";
+					}else{
+						result = "Search Rooms"
+					}
+					break;
 			}
 			return result;
 		}
@@ -32,12 +39,15 @@ package es.uc3m.coldes.module
 		public static const userManagement:Class;
 		[Embed('/assets/images/icos/myrooms.png')]
 		public static const myRooms:Class;
+		[Embed('/assets/images/icos/searchrooms.png')]
+		public static const searchRooms:Class;
 		
 		public static function getModuleIcon(moduleName:String):Class {
 			var result:Class;
 			switch(moduleName){
 				case 'UserManagement': result = userManagement;break;
 				case 'MyRooms': result = myRooms;break;
+				case 'SearchRooms': result = searchRooms;break;
 			}
 			return result;
 		}

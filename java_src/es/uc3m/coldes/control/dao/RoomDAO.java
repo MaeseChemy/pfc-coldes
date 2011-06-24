@@ -123,6 +123,42 @@ public class RoomDAO extends BBDD{
 		}
 	}
 	
+	public int registerUserRoom(User user, Room room) {
+		int idRoom = -1;
+		logger.info("[RoomDAO-addRoom]: Adding new user-room relation ...");
+		String sqlInserUserRoom = "insert into roomuser (id_room, username, rol) " +
+		"values (?,?,?)";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlInserUserRoom);
+			st.setInt(1, room.getId());
+			st.setString(2, user.getUsername());
+			st.setInt(3, Constants.COLABORATOR_ROL);
+
+			int i = st.executeUpdate();
+			if (i != 1){
+				logger.info("[RoomDAO-addRoom]: The relation can't be create");
+				idRoom = -2;
+			}else{
+				idRoom = 0;
+			}
+			
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-addRoom]: Error in SQL sentence: " + e.getLocalizedMessage());	
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-addRoom]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-addRoom]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return idRoom;
+	}
+	
 	public List<UserRoom> getUserRooms(User user){
 		List<UserRoom> results = new ArrayList<UserRoom>();
 		logger.info("[RoomDAO-getUserRooms]: Searching rooms of user ["+user.getUsername()+"]..");
@@ -213,5 +249,44 @@ public class RoomDAO extends BBDD{
 		}
 		return room;
 	}
+
+	public List<Room> getColDesRooms() {
+		List<Room> results = new ArrayList<Room>();
+		logger.info("[RoomDAO-getColDesRooms]: Searching rooms of ColDes...");
+		String sqlSelectUserSala = "select id, roomname, roomdescription, owner " +
+		"from room";
+		try {
+			conn = getConnection();
+
+			PreparedStatement stUserSala = conn.prepareStatement(sqlSelectUserSala);
+			// Ejecutamos las query
+			ResultSet resultados = stUserSala.executeQuery();
+			while (resultados != null && resultados.next()) {
+				Room room = new Room();
+
+				room.setId(resultados.getInt("id"));
+				room.setName(resultados.getString("roomname"));
+				room.setDescription(resultados.getString("roomdescription"));
+				room.setOwner(resultados.getString("owner"));	
+				
+				results.add(room);	
+			}
+
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-getColDesRooms]: Error in SQL sentence: " + e.getLocalizedMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-getColDesRooms]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-getColDesRooms]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+		return results;
+	}
+
+
 
 }

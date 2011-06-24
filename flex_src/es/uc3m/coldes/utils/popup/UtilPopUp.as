@@ -35,5 +35,14 @@ package es.uc3m.coldes.utils.popup {
 			return popUp;
 		}
 		
+		public static function showUserRoomRegisterPopUP(title:String, message:String):UserRoomRegisterPopUp {
+			var popUp:UserRoomRegisterPopUp=PopUpManager.createPopUp(DisplayObject(Application.application), UserRoomRegisterPopUp,
+				true) as UserRoomRegisterPopUp;
+			popUp.data=message;
+			popUp.title=title;
+			PopUpManager.centerPopUp(popUp);
+			return popUp;
+		}
+		
 	}
 }

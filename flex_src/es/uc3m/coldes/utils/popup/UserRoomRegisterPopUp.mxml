@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="390" minHeight="160"
+				xmlns:util="com.gmv.adsl.view.util.*" verticalGap="0" horizontalAlign="center"
+				showCloseButton="false" close="close()" paddingBottom="0" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Label;
+			import mx.messaging.AbstractConsumer;
+			import mx.managers.PopUpManager;
+			
+			public var answer:Number = -1;			
+
+			private function close():void {
+				answer = -1;
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function addUserRoom():void {
+				answer = 0;
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function addUserRoomAndEnter():void {
+				answer = 1;
+				PopUpManager.removePopUp(this);
+			}
+
+			private function init():void {
+				stage.focus=null;
+				defaultButton=closeBtn;
+				closeBtn.setFocus();
+			}
+		]]>
+	</mx:Script>
+	<mx:Canvas width="100%" height="100%">
+		<mx:Text text="{data}" width="100%" textAlign="center" verticalCenter="0" styleName="message"/>
+	</mx:Canvas>
+
+	<mx:HBox horizontalAlign="center" paddingTop="10" paddingRight="10" paddingBottom="10" 
+			width="100%" horizontalGap="10" >
+		<mx:Button id="adDUReBtn" label="Entrar y Agregar" click="addUserRoomAndEnter()"/>
+		<mx:Button id="addURBtn" label="Agregar a mis salas" click="addUserRoom()"/>
+		<mx:Button id="closeBtn" label="Cancelar" click="close()"/>
+	</mx:HBox>
+</mx:TitleWindow>

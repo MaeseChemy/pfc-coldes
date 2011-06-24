@@ -3,6 +3,7 @@
 	
 	<mx:Script>
 	<![CDATA[
+		import es.uc3m.coldes.entities.User;
 		import mx.graphics.codec.PNGEncoder;
 		import mx.messaging.messages.AsyncMessageExt;
 		import mx.messaging.channels.AMFChannel;
@@ -11,9 +12,11 @@
 		import mx.messaging.messages.AsyncMessage;
 		import mx.messaging.messages.IMessage;
 
+		private var userLoged:User;
 		public function init(destination:String):void{
 			this.configConsumer(destination);
 			this.configProducer(destination);
+			userLoged = parentApplication.userLoged;
 			drawingArea.functionSend = sendImage;
 		}
 
@@ -21,7 +24,7 @@
 			consumer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
 			
 			consumer.channelSet = channelSet;
 			consumer.subscribe();
@@ -31,7 +34,7 @@
 			producer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
 			
 			producer.channelSet = channelSet;
 		}
@@ -43,14 +46,18 @@
 		public function sendImage():void{
 			var message:IMessage = new AsyncMessageExt();
 			var ba:ByteArray = (new PNGEncoder()).encode(drawingArea.getBitmapData());
+			message.body.username = userLoged.username;
 			message.body.imagenCanvas = ba;
 			producer.send(message);
 		}
 		private function messageCanvasHandler(message:IMessage):void{
 			var ba:ByteArray = message.body.imagenCanvas as ByteArray;
-			loaderMessage = new Loader();
-			loaderMessage.loadBytes(ba);
-			loaderMessage.contentLoaderInfo.addEventListener(Event.COMPLETE,_onLoaderMessageComplete);
+			var username:String = message.body.username as String;
+			if(userLoged.username != username){
+				loaderMessage = new Loader();
+				loaderMessage.loadBytes(ba);
+				loaderMessage.contentLoaderInfo.addEventListener(Event.COMPLETE,_onLoaderMessageComplete);
+			}
 		}
 		
 		private function _onLoaderMessageComplete(e:Event):void {

@@ -304,7 +304,7 @@
 										   icon="@Embed(source='assets/images/myrooms.png')" click="loadModule('MyRooms')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.MYROOMS')}"/>
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
-										   icon="@Embed(source='assets/images/searchrooms.png')"
+										   icon="@Embed(source='assets/images/searchrooms.png')" click="loadModule('SearchRooms')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.SEARCHROOMS')}"/>
 								<!--
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
