@@ -63,8 +63,19 @@ public class ColDesService implements Serializable{
 		return this.roomService.getUserRooms(user);
 	}
 	
-	public String createChatDestination(String destinationStringValue){
-		logger.info("[ColDesManager-createChatDestination]: Creando nuevo canal de comunicacion");
+	public List<Room> getColDesRooms(){
+		return this.roomService.getColDesRooms();
+	}
+	
+	public int registerUserRoom(User user, Room room){
+		return this.roomService.registerUserRoom(user, room);
+	}
+	
+	/**************/
+	/** CHANNELS **/
+	/**************/
+	public String createDestination(String destinationStringValue){
+		logger.info("[ColDesManager-createChatDestination]: Creando nuevo canal de comunicacion ["+destinationStringValue+"]");
 		// Create a new Message desination dynamically 
 		
 		MessageBroker broker = MessageBroker.getMessageBroker(null);

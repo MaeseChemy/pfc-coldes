@@ -95,18 +95,31 @@
 			/**           ENTER ROOM            **/
 			/*************************************/
 			[Embed('/assets/images/icos/room.png')]
-			public static const room:Class;
+			public static const roomIcon:Class;
 			private function enter(userRoom:UserRoom):void{
-				var roomNew:RoomView = parentApplication.tabs.getChildByName(userRoom.roomName) as RoomView;
+				//var roomNew:RoomView = parentApplication.tabs.getChildByName(userRoom.roomName) as RoomView;
+				var roomNew:RoomView = searchTabsRoom(userRoom);
 				if (roomNew == null) {
 					roomNew = new RoomView();
 					roomNew.room = userRoom.room;
 					roomNew.user = userLoged;
 					roomNew.label = userRoom.roomName;
-					roomNew.icon = room;
+					roomNew.icon = roomIcon;
 					parentApplication.tabs.addChild(roomNew);
 				}
 				parentApplication.tabs.selectedChild=roomNew;
+			}
+			
+			private function searchTabsRoom(userRoom:UserRoom):RoomView{
+				for each (var obj:Object in  parentApplication.tabs.getChildren()){
+					if(obj is RoomView){
+						var roomViewAux:RoomView = obj as RoomView;
+						if(roomViewAux.room.name == userRoom.roomName && roomViewAux.room.owner == userRoom.ownerUserName){
+							return roomViewAux;
+						}
+					}
+				}
+				return null;
 			}
 		]]>
 	</mx:Script>

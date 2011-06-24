@@ -26,10 +26,22 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 		return result;
 	}
 
+	public int registerUserRoom(User user, Room room) {
+		int result = this.roomDAO.registerUserRoom(user, room);
+		return result;
+	}
+	
 	/* SEARCH ROOMS */
 	public List<UserRoom> getUserRooms(User user) {
 		List<UserRoom> resultRooms = this.roomDAO.getUserRooms(user);
 		return resultRooms;
 	}
+
+	public List<Room> getColDesRooms() {
+		List<Room> resultRooms = this.roomDAO.getColDesRooms();
+		return resultRooms;
+	}
+
+
 
 }

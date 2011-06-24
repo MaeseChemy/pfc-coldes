@@ -69,6 +69,9 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.USER']="Usuario";
 			myResources.content['MYROOMS.ROL']="Rol";
 			
+			//SEARCH ROOMS
+			myResources.content['SEARCHROOM.DESCRIPTION']="Descripción";
+			
 			//USER MANAGEMENT
 			myResources.content['USERMANAGEMENT.SEARCH']="Búsqueda";
 			myResources.content['USERMANAGEMENT.RESTART']="Restaurar";
@@ -162,6 +165,9 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.OWNERUSERNAME']="Owner";
 			myResources.content['MYROOMS.USER']="Username";
 			myResources.content['MYROOMS.ROL']="Rol";
+			
+			//SEARCH ROOMS
+			myResources.content['SEARCHROOM.DESCRIPTION']="Description";
 			
 			//USER MANAGEMENT
 			myResources.content['USERMANAGEMENT.SEARCH']="Search";

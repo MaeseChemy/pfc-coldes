@@ -33,7 +33,20 @@ package es.uc3m.coldes.business
 			var addResult:Number = event.result as Number;
 			callback(addResult);	
 		}
-
+		
+		public function registerUserRoom(user:User, room:Room, callback:Function):void {
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultRegisterUserRoom);
+			this.callback = callback;
+			service.registerUserRoom(user, room);
+		}
+		
+		private function resultRegisterUserRoom(event:ResultEvent):void {
+			var addResult:Number = event.result as Number;
+			callback(addResult);	
+		}
+		
 		public function getUserRooms(user:User, callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
@@ -47,15 +60,28 @@ package es.uc3m.coldes.business
 			callback(usersRooms);	
 		}
 		
-		public function createChatDestination(destination:String, callback:Function):void{
+		public function getColDesRooms(callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
-			service.addEventListener(ResultEvent.RESULT, resultCreateChatDestination);
+			service.addEventListener(ResultEvent.RESULT, resultGetColDesRooms);
 			this.callback = callback;
-			service.createChatDestination(destination);
+			service.getColDesRooms();
 		}
 		
-		private function resultCreateChatDestination(event:ResultEvent):void {
+		private function resultGetColDesRooms(event:ResultEvent):void {
+			var colDesRooms:ArrayCollection = event.result as ArrayCollection;
+			callback(colDesRooms);	
+		}
+		
+		public function createDestination(destination:String, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultCreateDestination);
+			this.callback = callback;
+			service.createDestination(destination);
+		}
+		
+		private function resultCreateDestination(event:ResultEvent):void {
 			var chatId:String = event.result as String;
 			callback(chatId);	
 		}
