@@ -12,7 +12,8 @@
 	
 	<destination id="ColDesService">
 		<properties>
-			<source>es.uc3m.coldes.control.server.ColDesService</source>	
+			<source>es.uc3m.coldes.control.server.ColDesService</source>
+			<scope>session</scope>
 		</properties>
 	</destination>
 </service>

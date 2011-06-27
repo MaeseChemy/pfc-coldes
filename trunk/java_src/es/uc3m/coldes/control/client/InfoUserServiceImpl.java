@@ -17,14 +17,17 @@ public class InfoUserServiceImpl implements InfoUserService{
 	public InfoUserServiceImpl(){
 		this.userDAO = new UserDAO();
 	}
-
+	
+	public UserDAO getUserDAO() {
+		return this.userDAO;
+	}
+	
 	/* ACCESS */
 	public User doLogin(String user, String password) {
 		User userLoged = this.userDAO.doLogin(user, password);
 		return userLoged;
 	}
 	public Boolean doLogout() {
-		//TODO: Implementar
 		return true;
 	}
 	
@@ -43,4 +46,6 @@ public class InfoUserServiceImpl implements InfoUserService{
 		List<User> users = this.userDAO.getAllUsers();
 		return users;
 	}
+
+
 }

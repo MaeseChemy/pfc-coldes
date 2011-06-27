@@ -9,6 +9,8 @@
 	</mx:RemoteObject>
 	<mx:Script>
 	<![CDATA[
+		import mx.messaging.channels.AMFChannel;
+		import mx.messaging.ChannelSet;
 		import es.uc3m.coldes.entities.User;
 		import mx.managers.PopUpManager;
 		import mx.controls.Alert;
@@ -103,7 +105,6 @@
 			//COMPLETE event fires up when data is loaded and available
 			myFileReference.addEventListener(Event.COMPLETE,_onCompleteEvent);
 			user = parentApplication.userLoged;
-			//consumer.subscribe();
 		}
 		
 		/*
@@ -172,7 +173,7 @@
 					pintando = false;
 					lienzo.removeChild(uiComponentTemporal);
 					//mandamos el canvas al resto :D
-					//this.sendImage(obtenerLienzoTemporal());
+					this.sendImage(obtenerLienzoTemporal());
 				}
 			}
 		}
@@ -438,7 +439,7 @@
 
 		public function reproducirAcciones():void{
 			CursorManager.setBusyCursor();
-			parentApplication.desactivarAcciones();
+			//parentApplication.desactivarAcciones();
 			playProcessCanvas(1);
 		}
 		
@@ -451,10 +452,13 @@
 				limpiarLienzo();
 			}
 			if(numFrame < this.listaUndo.length){
-				colDesignService.playProcess(velocidad, numFrame);
+				var service:RemoteObject=new RemoteObject("ColDesService");
+				service.addEventListener(FaultEvent.FAULT, playProcessFaultHandler);
+				service.addEventListener(ResultEvent.RESULT, playProcessResultHandler);
+				service.playProcess(velocidad, numFrame);
 			}else{
 				this.listaUndo.removeItemAt(this.listaUndo.length-1);
-				parentApplication.activarAcciones();	
+				//parentApplication.activarAcciones();	
 				CursorManager.removeBusyCursor();
 			}
 			
@@ -474,6 +478,25 @@
 		
 		/*--*/
 		/*VARIABLES PARA CARGA DE IMAGENES*/
+		public function configConsumer(destination:String):void{
+			consumer.destination = destination;
+			
+			var channelSet:ChannelSet = new ChannelSet();
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			
+			consumer.channelSet = channelSet;
+			consumer.subscribe();
+		}
+		
+		public function configProducer(destination:String):void{
+			producer.destination = destination;
+			
+			var channelSet:ChannelSet = new ChannelSet();
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			
+			producer.channelSet = channelSet;
+		}
+		
 		public var myMessageBitmap:Bitmap;
 		public var loaderMessage:Loader = new Loader();
 		
@@ -482,7 +505,7 @@
 			var ba:ByteArray = (new PNGEncoder()).encode(bitmapData);
 			message.body.imagenCanvas = ba;
 			message.body.username = user.username;
-			//producer.send(message);
+			producer.send(message);
 		}
 		private function messageCanvasHandler(message:IMessage):void{
 			var username:String = message.body.username as String;
@@ -511,10 +534,9 @@
 	]]>
 	</mx:Script>
 	
-	<!--
-	<mx:Consumer id="consumer" destination="lienzoCompartido" message="messageCanvasHandler(event.message)"/>
-	<mx:Producer id="producer" destination="lienzoCompartido"/>
-	-->
+	<mx:Consumer id="consumer" message="messageCanvasHandler(event.message)"/>
+	<mx:Producer id="producer"/>
+
 	<resize:ResizableCanvas borderStyle="none"
 		id="lienzo" 
 		mouseOut="fueraLienzo()" 
