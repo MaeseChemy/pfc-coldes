@@ -40,8 +40,8 @@
 			}
 			
 			public function callbackEnterInRoom(usersRoomCallBack:ArrayCollection):void{
-				for each (var userNew:String in usersRoomCallBack as String){
-					usersRooms.addItem(userNew);
+				for each (var userNew:Object in usersRoomCallBack){
+					usersRooms.addItem(userNew as String);
 					roomChat.listOfUsers.addItem(userNew);
 					roomChat.listOfUsers.refresh();
 				}
