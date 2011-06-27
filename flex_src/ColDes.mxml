@@ -102,16 +102,23 @@
 					(new UserService()).doLogout(userLoged,logoutCallback);
 				}
 			}
-			
-			private function logoutCallback(result:Boolean):void{
-				txtUser.text="";
-				txtPassword.text="";
-				//Set user
-				userLoged = null;
+
+			private function logoutCallback(result:Boolean):void {
+				cleanSite();
 				primaryVS.selectedChild=loginFacade;
-				if(!result){
-					
+			}
+
+			private function cleanSite():void {
+				for each (var child:DisplayObject in tabs.getChildren()) {
+					if (child!=tabInit) {
+						tabs.removeChild(child);
+					}
 				}
+				//Unselect main buttons
+				users.selected = false;
+				rooms.selected = false;
+				adminitration.selected = false;
+				secondaryVS.selectedIndex = 0;
 			}
 			
 			/*************************************/

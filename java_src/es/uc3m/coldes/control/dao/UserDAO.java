@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -13,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import es.uc3m.coldes.control.security.SHA1;
 import es.uc3m.coldes.model.User;
+import es.uc3m.coldes.util.Constants;
 
 public class UserDAO extends BBDD{
 
@@ -261,6 +263,167 @@ public class UserDAO extends BBDD{
 		}
 
 		return update;
+	}
+
+	/**************************/
+	/**   SESSION FUNCTIONS  **/
+	/**************************/
+	
+	public void validate(String username, String sessionID) {
+		logger.info("[UserDAO-validate]: Validating session of user " + username);
+		// Generamos la query
+		String sql = "update user set sessionId=?, lastLogin=?, lastOperation=? where username=?";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, sessionID);
+			st.setTimestamp(2, new Timestamp(new java.util.Date().getTime()));
+			st.setTimestamp(3, new Timestamp(new java.util.Date().getTime()));
+			st.setString(4, username);
+			int actualizados = st.executeUpdate();
+			if (actualizados < 1) {
+				logger.error("[UserDAO-validate]: Failed to validate the user " + username);
+			}
+		} catch (SQLException e) {
+			logger.error("[UserDAO-validate]: Error in SQL sentence: " + e.getLocalizedMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[UserDAO-validate]: Closing DB connection...");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[UserDAO-validate]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+	}
+	
+	public void invalidate(String username) {
+		logger.info("[UserDAO-invalidate]: Invalidating session of user " + username);
+
+		// Generamos evento de seguridad de salida
+		//this.generateLogoutEvent(username);
+
+		// Generamos la query
+		String sql = "update user set sessionId=null where username=?";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, username);
+			int actualizados = st.executeUpdate();
+			if (actualizados < 1) {
+				logger.error("[UserDAO-validate]: Failed to invalidate the user " + username);
+			}
+		} catch (SQLException e) {
+			logger.error("[UserDAO-validate]: Error in SQL sentence: " + e.getLocalizedMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[UserDAO-invalidate]: Closing DB connection...");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[UserDAO-invalidate]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+	}
+	
+	public boolean checkUser(String username, int sessionLength) {
+
+		return this.checkUser(username, null, sessionLength);
+	}
+
+	public boolean checkUser(String username, String sessionId, int sessionLength) {
+
+		logger.info("[UserDAO-checkUser]: Checking validity of the session of user "+ username);
+
+		String sql = "select sessionId, lastOperation from user where username=?";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, username);
+			ResultSet resultados = st.executeQuery();
+			if (resultados != null && resultados.next()) {
+				String dbSessionId = resultados.getString("sessionId");
+				java.util.Date lastOperation = resultados
+						.getTimestamp("lastOperation");
+
+				if (dbSessionId == null || dbSessionId.trim().equals("")) {
+					logger.info("[UserDAO-checkUser]: There is no user session for " + username);
+					resultados.close();
+					st.close();
+					return false;
+				}
+
+
+				if (!dbSessionId.trim().equals(sessionId.trim())) {
+					logger.info("[UserDAO-checkUser]: The session ID specified for the user "+username+" ID does not match the Login Register");
+					resultados.close();
+					st.close();
+					return false;
+				}
+
+				long antes = lastOperation.getTime();
+				long ahora = new java.util.Date().getTime();
+				long diferencia = ahora - antes;
+
+				if (sessionLength == Constants.UNDEFINED || diferencia < sessionLength * 60 * 1000) {
+					resultados.close();
+					st.close();
+					sql = "update user set lastOperation=? where username=?";
+					st = conn.prepareStatement(sql);
+					st.setTimestamp(1, new Timestamp(ahora));
+					st.setString(2, username);
+					st.executeUpdate();
+					st.close();
+					return true;
+				} else {
+					logger.info("[UserDAO-checkUser]: The session of user"+ username +" has expired due to inactivity");
+					resultados.close();
+					st.close();
+					sql = "update user set sessionId=null where username=?";
+					st = conn.prepareStatement(sql);
+					st.setString(1, username);
+					st.executeUpdate();
+					st.close();
+					return false;
+				}
+			} else {
+				logger.error("[UserDAO-checkUser]: The user don't exist [" + username +"]");
+				resultados.close();
+				st.close();
+				return false;
+			}
+		} catch (SQLException e) {
+			logger.error("[UserDAO-checkUser]: Error in SQL sentence: " + e.getLocalizedMessage());
+			return false;
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[UserDAO-checkUser]: Closing DB connection...");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[UserDAO-checkUser]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+	}
+
+	public void finalize() {
+
+		try {
+			if (conn != null) {
+				logger.info("[UserDAO-finalize]: Closing DB connection...");
+				conn.close();
+			}
+			super.finalize();
+		} catch (SQLException e) {
+			logger.error("[UserDAO-finalize]: Error closing DB connection: " + e.getLocalizedMessage());
+
+		} catch (Throwable e) {
+			logger.error("[UserDAO-finalize]: Error closing DB connection: " + e.getLocalizedMessage());
+
+		}
 	}
 
 }
