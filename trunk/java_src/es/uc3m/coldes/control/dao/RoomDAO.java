@@ -286,6 +286,82 @@ public class RoomDAO extends BBDD{
 		}
 		return results;
 	}
+	
+	public List<String> enterInRoomOl(User user, Room room) {
+		logger.info("[RoomDAO-addRoom]: Updating  user-room relation ...");
+		String sqlUpdateUserRoom = "update roomuser set online=1 where username=? and id_room=?";
+		List<String> resultsUsernames = new ArrayList<String>();
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlUpdateUserRoom);
+			st.setString(1, user.getUsername());
+			st.setInt(2, room.getId());
+			st.executeUpdate();
+
+			String sqlSelectUserRoom = "select username from rommuser where id_room=? and online=1";
+			st = conn.prepareStatement(sqlSelectUserRoom);
+			st.setInt(1, room.getId());
+
+			// Ejecutamos las query
+			ResultSet resultados = st.executeQuery();
+			if (resultados != null && resultados.next()) {
+				resultsUsernames.add(resultados.getString("username"));
+			}
+			
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-addRoom]: Error in SQL sentence: " + e.getLocalizedMessage());	
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-addRoom]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-addRoom]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return resultsUsernames;
+	}
+
+	public List<String> enterInRoom(User user, Room room) {
+		logger.info("[RoomDAO-enterInRoom]: Searching roomusers ...");
+		String sqlSelectUserRoom = "select username from roomuser where id_room=? and online=1";
+		List<String> resultsUsernames = new ArrayList<String>();
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlSelectUserRoom);
+			st = conn.prepareStatement(sqlSelectUserRoom);
+			st.setInt(1, room.getId());
+			ResultSet resultados = st.executeQuery();
+			while (resultados != null && resultados.next()) {
+				resultsUsernames.add(resultados.getString("username"));
+			}
+			
+			logger.info("[RoomDAO-enterInRoom]: Updating  user-room relation ...");
+			String sqlUpdateUserRoom = "update roomuser set online=1 where username=? and id_room=?";
+			st = conn.prepareStatement(sqlUpdateUserRoom);
+			st.setString(1, user.getUsername());
+			st.setInt(2, room.getId());
+			st.executeUpdate();
+			// Ejecutamos las query
+			
+			
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-enterInRoom]: Error in SQL sentence: " + e.getLocalizedMessage());	
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-enterInRoom]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-enterInRoom]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return resultsUsernames;
+	}
 
 
 

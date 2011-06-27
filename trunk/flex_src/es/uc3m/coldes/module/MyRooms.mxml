@@ -97,7 +97,6 @@
 			[Embed('/assets/images/icos/room.png')]
 			public static const roomIcon:Class;
 			private function enter(userRoom:UserRoom):void{
-				//var roomNew:RoomView = parentApplication.tabs.getChildByName(userRoom.roomName) as RoomView;
 				var roomNew:RoomView = searchTabsRoom(userRoom);
 				if (roomNew == null) {
 					roomNew = new RoomView();

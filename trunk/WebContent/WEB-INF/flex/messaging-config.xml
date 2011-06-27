@@ -10,5 +10,7 @@
     <default-channels>
         <channel ref="my-polling-amf"/>
     </default-channels>
-
+	
+	<destination id="updateUsersRooms">
+	</destination> 
 </service>
