@@ -31,6 +31,11 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 		return result;
 	}
 	
+	public List<String> enterInRoom(User user, Room room) {
+		List<String> usersRoom = this.roomDAO.enterInRoom(user,room);
+		return usersRoom;
+	}
+	
 	/* SEARCH ROOMS */
 	public List<UserRoom> getUserRooms(User user) {
 		List<UserRoom> resultRooms = this.roomDAO.getUserRooms(user);
@@ -41,7 +46,5 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 		List<Room> resultRooms = this.roomDAO.getColDesRooms();
 		return resultRooms;
 	}
-
-
 
 }

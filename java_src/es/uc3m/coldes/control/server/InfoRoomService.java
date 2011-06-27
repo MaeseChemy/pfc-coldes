@@ -11,6 +11,7 @@ public interface InfoRoomService {
 	/* MANAGEMENT USER */
 	public int addRoom(Room room);
 	public int registerUserRoom(User user, Room room);
+	public List<String> enterInRoom(User user, Room room);
 	
 	/* SEARCH ROOMS */
 	public List<UserRoom> getUserRooms(User user);

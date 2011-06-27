@@ -8,6 +8,7 @@ public class Constants {
 	public static final int MODERATOR_ROL = 1;
 	public static final int COLABORATOR_ROL = 2;
 	public static final int GUEST_ROL = 3;
+	
 
 
 }

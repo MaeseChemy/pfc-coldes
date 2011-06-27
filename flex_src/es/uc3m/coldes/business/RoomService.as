@@ -86,6 +86,19 @@ package es.uc3m.coldes.business
 			callback(chatId);	
 		}
 		
+		public function enterInRoom(user:User, room:Room, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultEnterInRoom);
+			this.callback = callback;
+			service.enterInRoom(user, room);
+		}
+		
+		private function resultEnterInRoom(event:ResultEvent):void {
+			var usersRoom:ArrayCollection = event.result as ArrayCollection;
+			callback(usersRoom);	
+		}
+
 		private function error(event:FaultEvent):void {
 			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
 									   "There was an error performing the operation, contact your application administrator.");
@@ -93,5 +106,7 @@ package es.uc3m.coldes.business
 				callbackError();
 			}
 		}
+		
+		
 	}
 }

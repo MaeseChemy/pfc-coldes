@@ -1,6 +1,7 @@
 package es.uc3m.coldes.control.server;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -13,7 +14,9 @@ import es.uc3m.coldes.model.User;
 import es.uc3m.coldes.model.UserRoom;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
+import flex.messaging.messages.AsyncMessage;
 import flex.messaging.services.MessageService;
+import flex.messaging.util.UUIDUtils;
 
 
 public class ColDesService implements Serializable{
@@ -111,6 +114,27 @@ public class ColDesService implements Serializable{
 		return this.roomService.registerUserRoom(user, room);
 	}
 	
+	public List<String> enterInRoom(User user, Room room) throws SessionTimeoutException{
+		logger.info("[ColDesManager-enterInRoom]: New user enter in room...");
+		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
+        String clientID = UUIDUtils.createUUID(false);
+        AsyncMessage msg = new AsyncMessage();
+        msg.setDestination("updateUsersRooms");
+        msg.setClientId(clientID);
+        msg.setMessageId(UUIDUtils.createUUID(false));
+        msg.setTimestamp(System.currentTimeMillis());
+        HashMap<String, Object> body = new HashMap<String, Object>();
+        body.put("user", user.getUsername());
+        body.put("room", room);
+        msg.setBody(body);
+        logger.info("[ColDesManager-enterInRoom]: Sending message" + body);
+        msgBroker.routeMessageToService(msg, null);
+		logger.info("[ColDesManager-enterInRoom]: Sended");
+		
+		//Consultamos los usuarios de la sala y actualizamos el estado
+		return this.roomService.enterInRoom(user,room);
+	}
+
 	/**************/
 	/** CHANNELS **/
 	/**************/
@@ -136,7 +160,12 @@ public class ColDesService implements Serializable{
 	/** PLAY PROGRESS **/
 	/*******************/
 	public int playProcess(int velocidad, int numFrame) throws InterruptedException{
-		//wait(velocidad);
+		try {
+			Thread.currentThread();
+			Thread.sleep(velocidad);
+		} catch (InterruptedException e) {
+			logger.error("Se produjo un error la intentar dormir el proceso");
+		}
 		return numFrame;
 	}
 }
