@@ -104,6 +104,7 @@
 					roomNew.user = userLoged;
 					roomNew.label = userRoom.roomName;
 					roomNew.icon = roomIcon;
+					roomNew.init();
 					parentApplication.tabs.addChild(roomNew);
 				}
 				parentApplication.tabs.selectedChild=roomNew;

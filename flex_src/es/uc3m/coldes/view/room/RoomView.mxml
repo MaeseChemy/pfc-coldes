@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:chat="es.uc3m.coldes.view.chat.*"
-	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:module="es.uc3m.coldes.module.*">
+	xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:module="es.uc3m.coldes.module.*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -30,7 +30,7 @@
 				this._user = value;
 			}
 			
-			private function init():void{
+			public function init():void{
 				//Inicializamos el chat
 				generateChatDestination(user,room);
 				generateLienzoDestination(user,room);
@@ -40,11 +40,12 @@
 			}
 			
 			public function callbackEnterInRoom(usersRoomCallBack:ArrayCollection):void{
-				for each (var user:String in usersRoomCallBack as String){
-					usersRooms.addItem(user);
-					roomChat.listOfUsers.addItem(user);
+				for each (var userNew:String in usersRoomCallBack as String){
+					usersRooms.addItem(userNew);
+					roomChat.listOfUsers.addItem(userNew);
 					roomChat.listOfUsers.refresh();
 				}
+				(new RoomService).notifyUserToRoom(user, room, new Function());
 			}
 			
 			public function generateChatDestination(user:User, room:Room):void{

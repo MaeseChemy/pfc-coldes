@@ -98,6 +98,13 @@ package es.uc3m.coldes.business
 			var usersRoom:ArrayCollection = event.result as ArrayCollection;
 			callback(usersRoom);	
 		}
+		
+		public function notifyUserToRoom(user:User, room:Room, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			this.callback = callback;
+			service.notifyUserToRoom(user, room);
+		}
 
 		private function error(event:FaultEvent):void {
 			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
