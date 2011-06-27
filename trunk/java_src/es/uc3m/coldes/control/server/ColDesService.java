@@ -115,6 +115,11 @@ public class ColDesService implements Serializable{
 	}
 	
 	public List<String> enterInRoom(User user, Room room) throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.roomService.enterInRoom(user,room);
+	}
+	
+	public void notifyUserToRoom(User user, Room room) throws SessionTimeoutException{
 		logger.info("[ColDesManager-enterInRoom]: New user enter in room...");
 		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
         String clientID = UUIDUtils.createUUID(false);
@@ -130,11 +135,9 @@ public class ColDesService implements Serializable{
         logger.info("[ColDesManager-enterInRoom]: Sending message" + body);
         msgBroker.routeMessageToService(msg, null);
 		logger.info("[ColDesManager-enterInRoom]: Sended");
-		
-		//Consultamos los usuarios de la sala y actualizamos el estado
-		return this.roomService.enterInRoom(user,room);
-	}
 
+	}
+	
 	/**************/
 	/** CHANNELS **/
 	/**************/
