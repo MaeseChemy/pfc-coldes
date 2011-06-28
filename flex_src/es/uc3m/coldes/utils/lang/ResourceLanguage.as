@@ -17,6 +17,10 @@ package es.uc3m.coldes.utils.lang
 			var myResources:ResourceBundle=new ResourceBundle("es_ES","myResources");
 			myResources.content['ICON']="assets/lang/es.png";
 			
+			//WELLCOME
+			myResources.content['APPTITLE.WELLCOME']="Bienvenido a ColDes";
+			myResources.content['APPTITLE.MAIN']="ColDes";
+			
 			//MODULES NAMES
 			myResources.content['MODULE.USERMANAGEMENT']="Gestión de usuarios";
 			myResources.content['MODULE.ROOMMANAGEMENT']="Gestión de salas";
@@ -68,6 +72,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.OWNERUSERNAME']="Propietario";
 			myResources.content['MYROOMS.USER']="Usuario";
 			myResources.content['MYROOMS.ROL']="Rol";
+			myResources.content['MYROOMS.EDITROOM']="Editar Sala";
+			myResources.content['MYROOMS.REMOVE']="Eliminar relación";
 			
 			//SEARCH ROOMS
 			myResources.content['SEARCHROOM.DESCRIPTION']="Descripción";
@@ -80,15 +86,54 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['USERMANAGEMENT.NAME']="Nombre";
 			myResources.content['USERMANAGEMENT.SURNAME1']="Apellido 1";
 			myResources.content['USERMANAGEMENT.SURNAME2']="Apellido 2";
+		
+			//CHAT
+			myResources.content['CHAT.USERS']="Usuarios";
+			myResources.content['CHAT.SEND']="Enviar";
+			
+			//ROOMVIEW
+			myResources.content['ROOMVIEW.USERENTER']="ha entrado en la sala";
+			myResources.content['ROOMVIEW.USEREXIT']="ha salido de la sala";
+			myResources.content['ROOMVIEW.SQUARE']="Cuadrado";
+			myResources.content['ROOMVIEW.CIRCLE']="Circulo";
+			myResources.content['ROOMVIEW.STRAIGHT']="Recta";
+			myResources.content['ROOMVIEW.FREEHAND']="Libre";
+			myResources.content['ROOMVIEW.COLOR']="Color trazo";
+			myResources.content['ROOMVIEW.FILLCOLOR']="Color relleno";
+			myResources.content['ROOMVIEW.ACTFILL']="Activar relleno";
+			myResources.content['ROOMVIEW.BULK']="Grosor";
+			myResources.content['ROOMVIEW.SAVETOPC']="Exportar a PC";
+			myResources.content['ROOMVIEW.UPLOADFROMPC']="Importar de PC";
+			myResources.content['ROOMVIEW.CLEAN']="Limpiar lienzo";
+			myResources.content['ROOMVIEW.UNDO']="Deshacer";
+			myResources.content['ROOMVIEW.REDO']="Rehacer";
+			myResources.content['ROOMVIEW.PLAY']="Reproducir";
+			
+			//POPUP ANSWERS
+			myResources.content['ANSWERS.YES']="Si";
+			myResources.content['ANSWERS.NO']="No";
+			myResources.content['ANSWERS.ACCEPT']="Aceptar";
+			myResources.content['ANSWERS.ENTERANDREGISTER']="Agregar y Entrar";
+			myResources.content['ANSWERS.ONLYREGISTER']="Agregar solo";
+			myResources.content['ANSWERS.CANCEL']="Cancelar";
 			
 			
 			//MESSAGE's
+			myResources.content['MESSAGETITLE.LOGOUT']="SALIR";
+			myResources.content['MESSAGE.LOGOUT']="¿Desea salir?";
 			myResources.content['MESSAGETITLE.REGISTER']="REGISTRO COMPLETO";
 			myResources.content['MESSAGE.REGISTER']="El registro del nuevo usuario se realizo satisfactoriamente.";
 			myResources.content['MESSAGETITLE.UPDATE']="ACTUALIZACIÓN COMPLETO";
 			myResources.content['MESSAGE.UPDATE']="Actualización del usuario realizada con éxito.";
 			myResources.content['MESSAGETITLE.REGISTERROOM']="REGISTRO DE SALA COMPLETO";
 			myResources.content['MESSAGE.REGISTERROOM']="La creación de la nueva sala se realizo correctamente.";
+			myResources.content['MESSAGETITLE.REMOVEUSERRELATIONOWNER']="ELIMINAR RELACION Y SALA";
+			myResources.content['MESSAGE.REMOVEUSERRELATIONOWNER']="Al ser el propietario de la sala, borrar la relación " + 
+					"implicará borrar la sala y con ello todas las relaciones asociadas. ¿Esta seguro?";
+			myResources.content['MESSAGETITLE.REMOVEUSERRELATION']="ELIMINAR RELACION";
+			myResources.content['MESSAGE.REMOVEUSERRELATION']="¿Esta seguro que quiere borrarse de esta sala?";
+			myResources.content['MESSAGETITLE.USERROOMREGISTER']="OPCIONES DE REGISTRO EN SALA";
+			myResources.content['MESSAGE.REMOVEUSERRELATION']="¿Qué acción desea realizar?";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -113,6 +158,10 @@ package es.uc3m.coldes.utils.lang
 			/**********/
 			myResources=new ResourceBundle("en_US","myResources");
 			myResources.content['ICON']="assets/lang/us.png";
+			
+			//WELLCOME
+			myResources.content['APPTITLE.WELLCOME']="Wellcome to ColDes";
+			myResources.content['APPTITLE.MAIN']="ColDes";
 			
 			//MODULES NAMES
 			myResources.content['MODULE.USERMANAGEMENT']="User Management";
@@ -165,6 +214,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.OWNERUSERNAME']="Owner";
 			myResources.content['MYROOMS.USER']="Username";
 			myResources.content['MYROOMS.ROL']="Rol";
+			myResources.content['MYROOMS.EDITROOM']="Edit room";
+			myResources.content['MYROOMS.REMOVE']="Delete room relation";
 			
 			//SEARCH ROOMS
 			myResources.content['SEARCHROOM.DESCRIPTION']="Description";
@@ -178,15 +229,54 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['USERMANAGEMENT.SURNAME1']="Surname 1";
 			myResources.content['USERMANAGEMENT.SURNAME2']="Surname 2";
 			
+			//CHAT
+			myResources.content['CHAT.USERS']="Users";
+			myResources.content['CHAT.SEND']="Send";
+			
+			//ROOMVIEW
+			myResources.content['ROOMVIEW.USERENTER']="has entered in the room";
+			myResources.content['ROOMVIEW.USEREXIT']="has left the room";
+			myResources.content['ROOMVIEW.SQUARE']="Square";
+			myResources.content['ROOMVIEW.CIRCLE']="Circle";
+			myResources.content['ROOMVIEW.STRAIGHT']="Line";
+			myResources.content['ROOMVIEW.FREEHAND']="Free";
+			myResources.content['ROOMVIEW.COLOR']="Line Color";
+			myResources.content['ROOMVIEW.FILLCOLOR']="Fill Color";
+			myResources.content['ROOMVIEW.ACTFILL']="Enable fill";
+			myResources.content['ROOMVIEW.BULK']="Bulk";
+			myResources.content['ROOMVIEW.SAVETOPC']="Export to PC ";
+			myResources.content['ROOMVIEW.UPLOADFROMPC']="Import from PC";
+			myResources.content['ROOMVIEW.CLEAN']="Clear Canvas";
+			myResources.content['ROOMVIEW.UNDO']="Undo";
+			myResources.content['ROOMVIEW.REDO']="Redo";
+			myResources.content['ROOMVIEW.PLAY']="Play";
+			
+			//POPUP ANSWERS
+			myResources.content['ANSWERS.YES']="Yes";
+			myResources.content['ANSWERS.NO']="No";
+			myResources.content['ANSWERS.ACCEPT']="OK";
+			myResources.content['ANSWERS.ENTERANDREGISTER']="Add and Enter";
+			myResources.content['ANSWERS.ONLYREGISTER']="Add only";
+			myResources.content['ANSWERS.CANCEL']="Cancel";
+			
 			
 			//MESSAGE's
+			myResources.content['MESSAGETITLE.LOGOUT']="LOGOUT";
+			myResources.content['MESSAGE.LOGOUT']="Want to logout?";
 			myResources.content['MESSAGETITLE.REGISTER']="REGISTER COMPLETE";
 			myResources.content['MESSAGE.REGISTER']="User register successful.";
 			myResources.content['MESSAGETITLE.UPDATE']="UPDATE COMPLETE";
 			myResources.content['MESSAGE.UPDATE']="User update completed successfully.";
 			myResources.content['MESSAGETITLE.REGISTERROOM']="ROOM REGISTER COMPLETE";
 			myResources.content['MESSAGE.REGISTERROOM']="Room register successful.";
-			
+			myResources.content['MESSAGETITLE.REMOVEUSERRELATIONOWNER']="DELETE RELATION AND ROOM";
+			myResources.content['MESSAGE.REMOVEUSERRELATIONOWNER']="As the owner of the room, clear the relationship involve" + 
+					" the room and remove all relationships associated with it. Are you sure?";
+			myResources.content['MESSAGETITLE.REMOVEUSERRELATION']="DELETE RELATION";
+			myResources.content['MESSAGE.REMOVEUSERRELATION']="Are you sure you want to remove the room relation?"
+			myResources.content['MESSAGETITLE.USERROOMREGISTER']="LOG IN ROOM OPTIONS";
+			myResources.content['MESSAGE.REMOVEUSERRELATION']="What do you want?"
+
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";
 			myResources.content['ERROR.LOGIN']="The user you are trying to access is wrong, please check the fields.";

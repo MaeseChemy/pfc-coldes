@@ -38,8 +38,8 @@
 
 	<mx:HBox horizontalAlign="center" paddingTop="10" paddingRight="10" paddingBottom="10" 
 			width="100%" horizontalGap="10" >
-		<mx:Button id="adDUReBtn" label="Entrar y Agregar" click="addUserRoomAndEnter()"/>
-		<mx:Button id="addURBtn" label="Agregar a mis salas" click="addUserRoom()"/>
-		<mx:Button id="closeBtn" label="Cancelar" click="close()"/>
+		<mx:Button id="adDUReBtn" label="{resourceManager.getString('myResources','ANSWERS.ENTERANDREGISTER')}" click="addUserRoomAndEnter()"/>
+		<mx:Button id="addURBtn" label="{resourceManager.getString('myResources','ANSWERS.ONLYREGISTER')}" click="addUserRoom()"/>
+		<mx:Button id="closeBtn" label="{resourceManager.getString('myResources','ANSWERS.CANCEL')}" click="close()"/>
 	</mx:HBox>
 </mx:TitleWindow>

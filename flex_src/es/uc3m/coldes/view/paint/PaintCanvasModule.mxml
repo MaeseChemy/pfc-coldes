@@ -3,12 +3,10 @@
 	creationComplete="init()" 
 	borderStyle="none" borderColor="#000000" xmlns:resize="es.uc3m.coldes.utils.ui.resize.*">
 	
-	<!-- Remoted Methods -->
-	<mx:RemoteObject id="colDesignService" destination="colDesignDest">
-		<mx:method name="playProcess" result="playProcessResultHandler(event)" fault="playProcessFaultHandler(event)"/>
-	</mx:RemoteObject>
 	<mx:Script>
 	<![CDATA[
+		import es.uc3m.coldes.utils.popup.UtilPopUp;
+		import mx.rpc.remoting.mxml.RemoteObject;
 		import mx.messaging.channels.AMFChannel;
 		import mx.messaging.ChannelSet;
 		import es.uc3m.coldes.entities.User;
@@ -417,7 +415,6 @@
 			myFileReference.load();
 		}
 		public function _onCompleteEvent(e:Event):void {
-			trace(myFileReference.type); //show our file extension
 			loader.loadBytes(myFileReference.data); //ByteArray magic
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE,_onLoaderComplete);
 		}
@@ -472,7 +469,8 @@
 		}
 			
 		public function playProcessFaultHandler(event:FaultEvent):void {
-			Alert.show("Error de comunicación con el servidor al intentar realizar el login del usuario");
+			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
+					   "There was an error performing the operation, contact your application administrator.");
 		}
 		
 		
@@ -482,7 +480,7 @@
 			consumer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			consumer.channelSet = channelSet;
 			consumer.subscribe();
@@ -492,7 +490,7 @@
 			producer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			producer.channelSet = channelSet;
 		}

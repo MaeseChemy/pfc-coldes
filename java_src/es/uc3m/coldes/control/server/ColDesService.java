@@ -124,8 +124,8 @@ public class ColDesService implements Serializable{
 		return this.roomService.enterInRoom(user,room);
 	}
 	
-	public void notifyUserToRoom(User user, Room room) throws SessionTimeoutException{
-		logger.info("[ColDesManager-enterInRoom]: New user enter in room...");
+	public void notifyUserToRoom(User user, Room room, String action) throws SessionTimeoutException{
+		logger.info("[ColDesManager-enterInRoom]: User " +action+ " the room...");
 		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
         String clientID = UUIDUtils.createUUID(false);
         AsyncMessage msg = new AsyncMessage();
@@ -136,11 +136,22 @@ public class ColDesService implements Serializable{
         HashMap<String, Object> body = new HashMap<String, Object>();
         body.put("user", user.getUsername());
         body.put("room", room);
+        body.put("action", action);
         msg.setBody(body);
         logger.info("[ColDesManager-enterInRoom]: Sending message" + body);
         msgBroker.routeMessageToService(msg, null);
 		logger.info("[ColDesManager-enterInRoom]: Sended");
 
+	}
+	
+	public int roomLogout(User user, Room room, boolean totalLogout) throws SessionTimeoutException{
+		if(!totalLogout)
+			checkIsLogIn();
+		int result = this.roomService.roomLogout(user,room);
+		if(result >= 0){
+			this.notifyUserToRoom(user, room, "exit");
+		}
+		return result;
 	}
 	
 	/**************/

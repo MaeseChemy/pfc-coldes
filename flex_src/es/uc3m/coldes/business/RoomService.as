@@ -113,11 +113,24 @@ package es.uc3m.coldes.business
 			callback(usersRoom);	
 		}
 		
-		public function notifyUserToRoom(user:User, room:Room, callback:Function):void{
+		public function notifyUserToRoom(user:User, room:Room, action:String, callback:Function):void{
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
 			this.callback = callback;
-			service.notifyUserToRoom(user, room);
+			service.notifyUserToRoom(user, room, action);
+		}
+
+		public function roomLogout(user:User, room:Room, totalLogout:Boolean, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultRoomLogout);
+			this.callback = callback;
+			service.roomLogout(user, room,totalLogout);
+		}
+		
+		private function resultRoomLogout(event:ResultEvent):void {
+			//var usersRoom:ArrayCollection = event.result as ArrayCollection;
+			//callback(usersRoom);	
 		}
 
 		private function error(event:FaultEvent):void {

@@ -13,10 +13,10 @@ public interface InfoRoomService {
 	public int registerUserRoom(User user, Room room);
 	public int deleteUserRoom(UserRoom userRoom);
 	public List<String> enterInRoom(User user, Room room);
+	public int roomLogout(User user, Room room);
 	
 	/* SEARCH ROOMS */
 	public List<UserRoom> getUserRooms(User user);
 	public List<Room> getColDesRooms();
 	
-
 }

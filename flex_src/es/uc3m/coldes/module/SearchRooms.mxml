@@ -72,7 +72,8 @@
 			private var roomAgregar:Room;
 			private function initEnter(obj:Object):void {
 				roomAgregar = obj as Room;
-				popUpAgregarSala = UtilPopUp.showUserRoomRegisterPopUP("OPCIONES DE SALA","¿Que acción desea realizar?");
+				popUpAgregarSala = UtilPopUp.showUserRoomRegisterPopUP(resourceManager.getString('myResources','MESSAGETITLE.USERROOMREGISTER'),
+				resourceManager.getString('myResources','MESSAGE.USERROOMREGISTER'));
 				popUpAgregarSala.addEventListener(FlexEvent.REMOVE, enter);
 			}
 			

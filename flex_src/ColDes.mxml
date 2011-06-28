@@ -2,10 +2,13 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	applicationComplete="init()" themeColor="#009DFF" 
 	xmlns:flexlib="http://code.google.com/p/flexlib/"
-	xmlns:lang="es.uc3m.coldes.utils.lang.*">
+	xmlns:lang="es.uc3m.coldes.utils.lang.*"
+	pageTitle="UC3M ColDes PFC">
 
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.view.room.RoomView;
 			import es.uc3m.coldes.entities.UserRoom;
 			import es.uc3m.coldes.entities.Room;
 			import mx.events.FlexEvent;
@@ -49,6 +52,7 @@
 			/*************************************/
 			/**         INIT FUNCTIONS          **/
 			/*************************************/
+			
 			private function init():void{
 				ResourceLanguage.setResources(resourceManager);
 				this.changeLocale("es_ES");
@@ -111,7 +115,8 @@
 			
 			private var popUpSalirConditional:ConditionalPopUp;
 			private function initDoLogout():void {
-				popUpSalirConditional = UtilPopUp.showConditionalPopUP("SALIR","¿Desea cerrar la sesión?");
+				popUpSalirConditional = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','MESSAGETITLE.LOGOUT'),
+				resourceManager.getString('myResources','MESSAGE.LOGOUT'));
 				popUpSalirConditional.addEventListener(FlexEvent.REMOVE, doLogout);
 			}
 			
@@ -133,11 +138,13 @@
 			private function cleanSite():void {
 				for each (var child:DisplayObject in tabs.getChildren()) {
 					if (child!=tabInit) {
+						if(child is RoomView){
+							var roomViewAux:RoomView = child as RoomView;
+							(new RoomService()).roomLogout(userLoged, roomViewAux.room, true, roomLogoutCallback);
+						}	
 						tabs.removeChild(child);
 					}
 				}
-				//Set null the user
-				userLoged = null;
 				//Unselect main buttons
 				users.selected = false;
 				rooms.selected = false;
@@ -247,6 +254,24 @@
 				}
 			}
 			
+			private function handleEventCloseTab(event:SuperTabEvent):void{
+				//Remove data from model in case of a Details tab close
+				var i:Number = 1;
+				var obj:Object = tabs.getChildAt(event.tabIndex);
+				if(obj is RoomView){
+					var roomViewAux:RoomView = obj as RoomView;
+					(new RoomService()).roomLogout(userLoged, roomViewAux.room, false, roomLogoutCallback);
+				}
+			}
+			
+			private function roomLogoutCallback(result:Number):void{
+				if(result < 0){
+					//Error
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTER'),
+										       resourceManager.getString('myResources','ERROR.REGISTER'));
+				}
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:Style source="ColDes.css"/>
@@ -290,7 +315,7 @@
 				</mx:Canvas>
 				
 				<flexlib:SuperTabNavigator width="100%" height="100%" id="tabs" closePolicy="{SuperTab.CLOSE_ROLLOVER}"
-									   backgroundColor="#FFFFFF" dropEnabled="false" dragEnabled="false">
+									   backgroundColor="#FFFFFF" dropEnabled="false" dragEnabled="false" tabClose="handleEventCloseTab(event)">
 			
 					<mx:VBox id="tabInit" height="100%" width="100%" label="{resourceManager.getString('myResources','MAINWINDOW.TITLE')}" horizontalAlign="center" verticalGap="30"
 						 icon="@Embed('/assets/images/icos/home.png')">

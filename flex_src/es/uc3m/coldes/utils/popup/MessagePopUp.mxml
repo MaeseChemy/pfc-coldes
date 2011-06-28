@@ -26,6 +26,6 @@
 
 	<mx:HBox horizontalAlign="right" paddingTop="10" paddingRight="10" paddingBottom="10" 
 		width="100%" horizontalGap="10" >
-		<mx:Button id="closeBtn" label="Aceptar" click="close()"/>
+		<mx:Button id="closeBtn" label="{resourceManager.getString('myResources','ANSWERS.ACCEPT')}" click="close()"/>
 	</mx:HBox>
 </mx:TitleWindow>
