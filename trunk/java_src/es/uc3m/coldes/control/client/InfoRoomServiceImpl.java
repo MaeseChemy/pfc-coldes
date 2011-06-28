@@ -9,6 +9,7 @@ import es.uc3m.coldes.control.server.InfoRoomService;
 import es.uc3m.coldes.model.Room;
 import es.uc3m.coldes.model.User;
 import es.uc3m.coldes.model.UserRoom;
+import es.uc3m.coldes.util.Constants;
 
 public class InfoRoomServiceImpl implements InfoRoomService {
 
@@ -28,6 +29,18 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 
 	public int registerUserRoom(User user, Room room) {
 		int result = this.roomDAO.registerUserRoom(user, room);
+		return result;
+	}
+	
+	public int deleteUserRoom(UserRoom userRoom) {
+		int result;
+		if(userRoom.getRol() == Constants.OWNER_ROL){
+			logger.info("[InfoRoom-deleteUserRoom]: The user ["+userRoom.getUserName()+"] is de owner of the room [" + userRoom.getRoom().getName() + "]...");
+			result = this.roomDAO.deleteRoom(userRoom.getRoom());
+		}else{
+			result = this.roomDAO.deleteUserRoom(userRoom);
+		}
+		
 		return result;
 	}
 	

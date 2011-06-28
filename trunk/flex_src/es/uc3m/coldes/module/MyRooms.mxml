@@ -4,6 +4,9 @@
 		   creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
+			import es.uc3m.coldes.business.Constants;
 			import es.uc3m.coldes.view.room.RoomView;
 			import mx.controls.Alert;
 			import es.uc3m.coldes.entities.UserRoom;
@@ -26,8 +29,9 @@
 				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
 			}
 
-			private function callbackUsersRooms(usersRooms:ArrayCollection):void {
-				this.usersRooms=usersRooms;
+			private function callbackUsersRooms(usersRoomsGet:ArrayCollection):void {
+				usersRooms=usersRoomsGet;
+				usersRooms.refresh();
 			}
 
 			/* Funcion de filtrado */
@@ -57,6 +61,7 @@
 			
 			private function refresh():void{
 				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
+				searchText.text = "";
 			}
 			
 			/*************************************/
@@ -89,6 +94,7 @@
 										       resourceManager.getString('myResources','MESSAGE.REGISTERROOM'));
 					refresh();
 				}
+				
 			}
 			
 			/*************************************/
@@ -96,7 +102,8 @@
 			/*************************************/
 			[Embed('/assets/images/icos/room.png')]
 			public static const roomIcon:Class;
-			private function enter(userRoom:UserRoom):void{
+			private function enter(obj:Object):void{
+				var userRoom:UserRoom = obj as UserRoom;
 				var roomNew:RoomView = searchTabsRoom(userRoom);
 				if (roomNew == null) {
 					roomNew = new RoomView();
@@ -106,7 +113,6 @@
 					roomNew.icon = roomIcon;
 					parentApplication.tabs.addChild(roomNew);
 				}
-				roomNew.init();
 				parentApplication.tabs.selectedChild=roomNew;
 			}
 			
@@ -121,6 +127,38 @@
 				}
 				return null;
 			}
+			
+			/***************************/
+			
+			public function editRoom(data:UserRoom):void{
+
+			}
+			
+			public var condDelete:ConditionalPopUp;
+			public var userRoomRelation:UserRoom;
+			public function deleteUserRoom(data:UserRoom):void{
+				userRoomRelation = data;
+				if(data.rol == Constants.OWNER_ROL){
+					//The user is de owner of the room, delete room
+					condDelete = UtilPopUp.showConditionalPopUP("ELIMINAR RELACION", 
+					"Al ser el propietario de la sala, borrar la relación implicará " + 
+					"borrar la sala y con ello todas las relaciones asociadas. ¿Esta seguro?");
+				}else{
+					condDelete = UtilPopUp.showConditionalPopUP("ELIMINAR RELACION", 
+					"¿Esta seguro que quiere borrarse de esta sala?");
+				}
+				condDelete.addEventListener(FlexEvent.REMOVE, removeRelation);
+					
+			}
+			
+			private function removeRelation(event:Event):void{
+				if(condDelete.answer){
+					(new RoomService()).deleteUserRoom(userRoomRelation, deleteUserRoomCallback);
+				}
+			}
+			public function deleteUserRoomCallback(result:Number):void{
+				refresh();
+			}
 		]]>
 	</mx:Script>
 	
@@ -130,13 +168,17 @@
 			<mx:FormItem label="{resourceManager.getString('myResources','MYROOMS.SEARCH')}:">
 				<mx:TextInput id="searchText" enter="filter()"/>
 			</mx:FormItem>
-			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
 			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.SEARCHBTN')}" click="filter()"/>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
+			<mx:Button click="refresh()">
+				<mx:icon>@Embed(source='../../../../assets/images/refresh.png')</mx:icon>
+			</mx:Button>
 		</mx:HBox>
 
-		<mx:DataGrid id="grid" width="100%" height="100%" dataProvider="{usersRooms}" verticalScrollPolicy="auto"
-			doubleClick="enter(grid.selectedItem as UserRoom)" doubleClickEnabled="true">
+		<mx:DataGrid id="gridUserRoom" width="100%" height="100%" dataProvider="{usersRooms}" verticalScrollPolicy="auto"
+			doubleClick="enter(gridUserRoom.selectedItem)" doubleClickEnabled="true">
 			<mx:columns>
+				<mx:DataGridColumn width="50" resizable="false" itemRenderer="es.uc3m.coldes.view.room.RoomUserAcctions"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="ownerUserName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="userName"/>

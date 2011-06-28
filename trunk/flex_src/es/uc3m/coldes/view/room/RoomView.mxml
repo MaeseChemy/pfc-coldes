@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:chat="es.uc3m.coldes.view.chat.*"
-	xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:module="es.uc3m.coldes.module.*">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
+	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:chat="es.uc3m.coldes.view.chat.*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -204,7 +204,7 @@
 			public function messageHandler(event:MessageEvent):void {
        			var body:Object = event.message.body;
        			if(room.id == body.room.id){
-       				roomChat.log.text += body.user + " ha entrado en la sala\n";
+       				roomChat.log += "<font color='#FF0000'><b>"+body.user + "</b> ha entrado en la sala </font>\n";
        				usersRooms.addItem(body.user);
        				roomChat.listOfUsers.addItem(body.user);
        				roomChat.listOfUsers.refresh();
@@ -286,7 +286,7 @@
 			</mx:ApplicationControlBar>
 		</mx:VBox>
 		<!--<module:PaintCanvas id="roomLienzo" width="100%" height="100%"/>-->
-		<paint:PaintCanvasComponent id="roomLienzo" width="100%" height="100%"/>
+		<paint:PaintCanvasComponent id="roomLienzo" width="100%" height="100%" movable="false"/>
 		<!--<paint:StatePaintCanvas id="roomLienzo" width="100%" height="100%" />-->
 	</mx:HBox>
 	

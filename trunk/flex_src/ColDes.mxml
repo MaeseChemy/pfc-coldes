@@ -6,6 +6,8 @@
 
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.entities.UserRoom;
+			import es.uc3m.coldes.entities.Room;
 			import mx.events.FlexEvent;
 			import mx.core.IFlexDisplayObject;
 			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
@@ -53,12 +55,28 @@
 				
 				primaryVS.selectedChild=loginFacade;
 				tabs.setClosePolicyForTab(0, SuperTab.CLOSE_NEVER);
+				ExternalInterface.addCallback("closingApp", closingApp);
+				
+				loadEntities();
+			}
+			
+			private function loadEntities():void{
+				var room:Room;
+				var user:User;
+				var userRoom:UserRoom;	
 			}
 			
 			private function changeLocale(locale:String):void{
 				resourceManager.localeChain=[locale];
 				lang = locale;
 			}
+			
+			public function closingApp():void{
+                if(userLoged != null){
+                	//doLogoutClosed();
+                }
+            }
+ 
 			
 			/*************************************/
 			/**     COLDES ACCESS FUNCTIONS     **/
@@ -97,6 +115,10 @@
 				popUpSalirConditional.addEventListener(FlexEvent.REMOVE, doLogout);
 			}
 			
+			private function doLogoutClosed():void{
+				(new UserService()).doLogout(userLoged,logoutCallback);
+			}
+			
 			private function doLogout(event:Event):void{
 				if(popUpSalirConditional.answer){
 					(new UserService()).doLogout(userLoged,logoutCallback);
@@ -114,6 +136,8 @@
 						tabs.removeChild(child);
 					}
 				}
+				//Set null the user
+				userLoged = null;
 				//Unselect main buttons
 				users.selected = false;
 				rooms.selected = false;

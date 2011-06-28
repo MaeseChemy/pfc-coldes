@@ -82,10 +82,15 @@ package es.uc3m.coldes.business{
 			var users:ArrayCollection = event.result as ArrayCollection;
 			callback(users);	
 		}
-		
+
 		private function error(event:FaultEvent):void {
-			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
+			if (event.fault.faultString.indexOf("Session timeout") >= 0) {
+				UtilPopUp.showMessagePopUP("SESSION OVER",
+									   "Your session is over.");
+			} else {
+				UtilPopUp.showMessagePopUP("INTERNAL ERROR",
 									   "There was an error performing the operation, contact your application administrator.");
+			}
 			if (callbackError != null) {
 				callbackError();
 			}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.business.Constants;
+			import es.uc3m.coldes.entities.UserRoom;
+			
+			public function edit():void {
+				parentDocument.editRoom(data as UserRoom);
+			}
+
+			public function checkDelete():void {
+				parentDocument.deleteUserRoom(data as UserRoom);
+			}		
+			
+		]]>
+	</mx:Script>
+
+	<mx:Image id="btnEdit" buttonMode="true" source="assets/images/icos/mydata.png"
+			  toolTip="Editar" click="edit()" includeInLayout="{data.rol == Constants.OWNER_ROL}"/>
+	<mx:Image buttonMode="true" source="assets/images/icos/btnlogout.png"
+			  toolTip="Deshabilitar" click="checkDelete()"/>
+</mx:HBox>
+

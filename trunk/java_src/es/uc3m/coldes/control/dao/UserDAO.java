@@ -390,11 +390,12 @@ public class UserDAO extends BBDD{
 					logger.info("[UserDAO-checkUser]: The session of user"+ username +" has expired due to inactivity");
 					resultados.close();
 					st.close();
-					sql = "update user set sessionId=null where username=?";
-					st = conn.prepareStatement(sql);
-					st.setString(1, username);
-					st.executeUpdate();
-					st.close();
+					//sql = "update user set sessionId=null where username=?";
+					//st = conn.prepareStatement(sql);
+					//st.setString(1, username);
+					//st.executeUpdate();
+					//st.close();
+					this.invalidate(username);
 					return false;
 				}
 			} else {
