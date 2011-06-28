@@ -2,6 +2,7 @@ package es.uc3m.coldes.business
 {
 	import es.uc3m.coldes.entities.Room;
 	import es.uc3m.coldes.entities.User;
+	import es.uc3m.coldes.entities.UserRoom;
 	import es.uc3m.coldes.utils.popup.LoadingPopUp;
 	import es.uc3m.coldes.utils.popup.UtilPopUp;
 	
@@ -45,6 +46,19 @@ package es.uc3m.coldes.business
 		private function resultRegisterUserRoom(event:ResultEvent):void {
 			var addResult:Number = event.result as Number;
 			callback(addResult);	
+		}
+		
+		public function deleteUserRoom(userRoom:UserRoom, callback:Function):void {
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultDeleteUserRoom);
+			this.callback = callback;
+			service.deleteUserRoom(userRoom);
+		}
+		
+		private function resultDeleteUserRoom(event:ResultEvent):void {
+			var deleteResult:Number = event.result as Number;
+			callback(deleteResult);
 		}
 		
 		public function getUserRooms(user:User, callback:Function):void {
@@ -107,9 +121,13 @@ package es.uc3m.coldes.business
 		}
 
 		private function error(event:FaultEvent):void {
-			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
+			if (event.fault.faultString.indexOf("Session timeout") >= 0) {
+				UtilPopUp.showMessagePopUP("SESSION OVER",
+									   "Your session is over.");
+			} else {
+				UtilPopUp.showMessagePopUP("INTERNAL ERROR",
 									   "There was an error performing the operation, contact your application administrator.");
-			if (callbackError != null) {
+			}if (callbackError != null) {
 				callbackError();
 			}
 		}

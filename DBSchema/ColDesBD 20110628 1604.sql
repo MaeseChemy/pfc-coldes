@@ -1,7 +1,7 @@
 -- MySQL Administrator dump 1.4
 --
 -- ------------------------------------------------------
--- Server version	5.1.52-community
+-- Server version	5.1.30-community
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -33,17 +33,13 @@ CREATE TABLE `room` (
   `owner` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ownerIndex` (`owner`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `room`
 --
 
 /*!40000 ALTER TABLE `room` DISABLE KEYS */;
-INSERT INTO `room` (`id`,`roomname`,`roomdescription`,`owner`) VALUES 
- (1,'Nueva Sala','Sala nueva de prueba\r','chemy'),
- (2,'Otra sala','Otra descripcion\r','chemy'),
- (3,'asdfadfa','asdasadfas\rdfasd\rfasdf\ras\rdf\rasdf\rasdfasddf','chemy');
 /*!40000 ALTER TABLE `room` ENABLE KEYS */;
 
 
@@ -56,10 +52,12 @@ CREATE TABLE `roomuser` (
   `id_room` int(10) unsigned NOT NULL,
   `username` varchar(45) NOT NULL,
   `rol` int(10) unsigned NOT NULL,
-  `online` tinyint(1) NOT NULL,
+  `online` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_room`,`username`),
   KEY `RoomId` (`id_room`),
-  KEY `UsernameId` (`username`)
+  KEY `UsernameId` (`username`),
+  CONSTRAINT `FK_id_room` FOREIGN KEY (`id_room`) REFERENCES `room` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_username` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -67,12 +65,6 @@ CREATE TABLE `roomuser` (
 --
 
 /*!40000 ALTER TABLE `roomuser` DISABLE KEYS */;
-INSERT INTO `roomuser` (`id_room`,`username`,`rol`,`online`) VALUES 
- (1,'chemy',0,1),
- (1,'lucy',2,1),
- (2,'chemy',0,0),
- (2,'lucy',2,0),
- (3,'chemy',0,0);
 /*!40000 ALTER TABLE `roomuser` ENABLE KEYS */;
 
 
@@ -88,27 +80,13 @@ CREATE TABLE `securitylog` (
   `accessType` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Index_Username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `securitylog`
 --
 
 /*!40000 ALTER TABLE `securitylog` DISABLE KEYS */;
-INSERT INTO `securitylog` (`id`,`date`,`username`,`accessType`) VALUES 
- (1,'2011-06-25 13:45:27','chemy','ENTRADA'),
- (2,'2011-06-25 13:47:09','chemy','ENTRADA'),
- (3,'2011-06-26 01:46:27','chemy','ENTRADA'),
- (4,'2011-06-26 01:53:23','chemy','ENTRADA'),
- (5,'2011-06-26 01:56:21','chemy','ENTRADA'),
- (6,'2011-06-26 01:56:26','chemy','SALIDA'),
- (7,'2011-06-26 01:56:35','chemy','ENTRADA'),
- (8,'2011-06-26 02:01:11','chemy','ENTRADA'),
- (9,'2011-06-26 02:01:42','chemy','SALIDA'),
- (10,'2011-06-26 02:01:50','chemy','ENTRADA'),
- (11,'2011-06-26 02:01:55','chemy','SALIDA'),
- (12,'2011-06-26 02:01:58','chemy','ENTRADA'),
- (13,'2011-06-26 02:02:19','chemy','SALIDA');
 /*!40000 ALTER TABLE `securitylog` ENABLE KEYS */;
 
 
@@ -139,8 +117,8 @@ CREATE TABLE `user` (
 
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`username`,`password`,`name`,`surname1`,`surname2`,`email`,`admin`,`designer`,`active`,`sessionid`,`lastlogin`,`lastoperation`) VALUES 
- ('chemy','36483a997c6c7dca97c7f941675256f646074c63','Jose Miguel','Blanco','Garcia','chemy@coldes.es',1,1,1,'ID-ChemySobremesa-58666-1309213307976-0-0','2011-06-28 00:21:48','2011-06-28 00:21:55'),
- ('lucy','474e97d07b83ea9b34d1ec399840354182f3b6c1','Luz Isabel','Pelaez','Baños','lucy@coldes.es',1,1,1,'ID-ChemySobremesa-58666-1309213307976-0-1','2011-06-28 00:22:48','2011-06-28 00:22:52');
+ ('chemy','36483a997c6c7dca97c7f941675256f646074c63','Jose Miguel','Blanco','Garcia','chemy@coldes.es',1,1,1,NULL,'2011-06-28 16:04:17','2011-06-28 16:04:21'),
+ ('lucy','474e97d07b83ea9b34d1ec399840354182f3b6c1','Luz Isabel','Pelaez','Baños','lucy@coldes.es',1,1,1,NULL,'2011-06-28 16:03:48','2011-06-28 16:04:02');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
 

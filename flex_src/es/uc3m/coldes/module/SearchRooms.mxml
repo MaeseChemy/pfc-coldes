@@ -29,6 +29,7 @@
 
 			private function callbackColDesRooms(rooms:ArrayCollection):void {
 				this.colDesRooms=rooms;
+				colDesRooms.refresh();
 			}
 
 			/* Funcion de filtrado */
@@ -58,6 +59,7 @@
 			
 			private function refresh():void{
 				new RoomService().getColDesRooms(callbackColDesRooms);
+				searchText.text = "";
 			}
 			
 			/*************************************/
@@ -68,8 +70,8 @@
 			
 			private var popUpAgregarSala:UserRoomRegisterPopUp;
 			private var roomAgregar:Room;
-			private function initEnter(room:Room):void {
-				roomAgregar = room;
+			private function initEnter(obj:Object):void {
+				roomAgregar = obj as Room;
 				popUpAgregarSala = UtilPopUp.showUserRoomRegisterPopUP("OPCIONES DE SALA","¿Que acción desea realizar?");
 				popUpAgregarSala.addEventListener(FlexEvent.REMOVE, enter);
 			}
@@ -106,12 +108,15 @@
 			<mx:FormItem label="{resourceManager.getString('myResources','MYROOMS.SEARCH')}:">
 				<mx:TextInput id="searchText" enter="filter()"/>
 			</mx:FormItem>
-			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
 			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.SEARCHBTN')}" click="filter()"/>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
+			<mx:Button click="refresh()">
+				<mx:icon>@Embed(source='../../../../assets/images/refresh.png')</mx:icon>
+			</mx:Button>
 		</mx:HBox>
 
-		<mx:DataGrid id="grid" width="100%" height="100%" dataProvider="{colDesRooms}" verticalScrollPolicy="auto"
-			doubleClick="initEnter(grid.selectedItem as Room)" doubleClickEnabled="true">
+		<mx:DataGrid id="gridSearchRoom" width="100%" height="100%" dataProvider="{colDesRooms}" verticalScrollPolicy="auto"
+			doubleClick="initEnter(gridSearchRoom.selectedItem)" doubleClickEnabled="true">
 			<mx:columns>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="name"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="owner"/>

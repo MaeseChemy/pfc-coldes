@@ -114,6 +114,11 @@ public class ColDesService implements Serializable{
 		return this.roomService.registerUserRoom(user, room);
 	}
 	
+	public int deleteUserRoom(UserRoom userRoom) throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.roomService.deleteUserRoom(userRoom);
+	}
+	
 	public List<String> enterInRoom(User user, Room room) throws SessionTimeoutException{
 		checkIsLogIn();
 		return this.roomService.enterInRoom(user,room);
