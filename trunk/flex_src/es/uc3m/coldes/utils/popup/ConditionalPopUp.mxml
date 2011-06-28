@@ -33,7 +33,7 @@
 
 	<mx:HBox horizontalAlign="right" paddingTop="10" paddingRight="10" paddingBottom="10" 
 			width="100%" horizontalGap="10" >
-		<mx:Button id="okBtn" label="Sí" click="accept()"/>
-		<mx:Button id="closeBtn" label="No" click="close()"/>
+		<mx:Button id="okBtn" label="{resourceManager.getString('myResources','ANSWERS.YES')}" click="accept()"/>
+		<mx:Button id="closeBtn" label="{resourceManager.getString('myResources','ANSWERS.NO')}" click="close()"/>
 	</mx:HBox>
 </mx:TitleWindow>

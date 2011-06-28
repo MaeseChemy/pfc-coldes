@@ -140,12 +140,11 @@
 				userRoomRelation = data;
 				if(data.rol == Constants.OWNER_ROL){
 					//The user is de owner of the room, delete room
-					condDelete = UtilPopUp.showConditionalPopUP("ELIMINAR RELACION", 
-					"Al ser el propietario de la sala, borrar la relación implicará " + 
-					"borrar la sala y con ello todas las relaciones asociadas. ¿Esta seguro?");
+					condDelete = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEUSERRELATIONOWNER'), 
+					resourceManager.getString('myResources','MESSAGE.REMOVEUSERRELATIONOWNER'));
 				}else{
-					condDelete = UtilPopUp.showConditionalPopUP("ELIMINAR RELACION", 
-					"¿Esta seguro que quiere borrarse de esta sala?");
+					condDelete = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEUSERRELATION'), 
+					resourceManager.getString('myResources','MESSAGE.REMOVEUSERRELATION'));
 				}
 				condDelete.addEventListener(FlexEvent.REMOVE, removeRelation);
 					

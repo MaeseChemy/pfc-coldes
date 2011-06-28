@@ -393,6 +393,38 @@ public class RoomDAO extends BBDD{
 		return result;
 	}
 
+	public int roomLogout(User user, Room room) {
+		int result = 0;
+		logger.info("[RoomDAO-roomLogout]: Logout from room ...");
+		String sqlDeleteUserRoom = "update roomuser set online=0 where id_room=? and username=?";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlDeleteUserRoom);
+			st.setInt(1, room.getId());
+			st.setString(2, user.getUsername());
+
+			int i = st.executeUpdate();
+			if (i != 1){
+				logger.info("[RoomDAO-roomLogout]: The relation can't be deleted");
+				result = -1;
+			}
+			
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-roomLogout]: Error in SQL sentence: " + e.getLocalizedMessage());	
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-roomLogout]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-roomLogout]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return result;
+	}
+
 
 
 }

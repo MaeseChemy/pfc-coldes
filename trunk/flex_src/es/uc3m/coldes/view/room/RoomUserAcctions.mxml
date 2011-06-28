@@ -17,8 +17,8 @@
 	</mx:Script>
 
 	<mx:Image id="btnEdit" buttonMode="true" source="assets/images/icos/mydata.png"
-			  toolTip="Editar" click="edit()" includeInLayout="{data.rol == Constants.OWNER_ROL}"/>
+			  toolTip="{resourceManager.getString('myResources','MYROOMS.EDITROOM')}" click="edit()" includeInLayout="{data.rol == Constants.OWNER_ROL}"/>
 	<mx:Image buttonMode="true" source="assets/images/icos/btnlogout.png"
-			  toolTip="Deshabilitar" click="checkDelete()"/>
+			  toolTip="{resourceManager.getString('myResources','MYROOMS.REMOVE')}" click="checkDelete()"/>
 </mx:HBox>
 
