@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
+	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:chat="es.uc3m.coldes.view.chat.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.messaging.events.MessageFaultEvent;
+			import mx.messaging.events.MessageEvent;
+			import es.uc3m.coldes.entities.User;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.entities.Room;
+			
+			[Bindable]
+			private var _room:Room;
+			public function get room():Room{
+				return _room;
+			}
+			public function set room(value:Room):void{
+				this._room = value;
+			}
+			
+			[Bindable]
+			private var _user:User;
+			public function get user():User{
+				return _user;
+			}
+			public function set user(value:User):void{
+				this._user = value;
+			}
+			
+			public function init():void{
+				//Inicializamos el chat
+				generateChatDestination(user,room);
+				generateLienzoDestination(user,room);
+				consumer.subscribe(); 
+				
+				(new RoomService).enterInRoom(user, room, callbackEnterInRoom);
+			}
+			
+			public function callbackEnterInRoom(usersRoomCallBack:ArrayCollection):void{
+				for each (var userNew:Object in usersRoomCallBack){
+					usersRooms.addItem(userNew as String);
+					roomChat.listOfUsers.addItem(userNew);
+					roomChat.listOfUsers.refresh();
+				}
+				(new RoomService).notifyUserToRoom(user, room, new Function());
+			}
+			
+			public function generateChatDestination(user:User, room:Room):void{
+				var chatDestination:String;
+				chatDestination = "chat"+room.id;
+				(new RoomService).createDestination(chatDestination,callbackcreateChatDestination);
+			}
+			
+			public function callbackcreateChatDestination(chatDestination:String):void {
+				roomChat.initDestination(chatDestination);
+			}
+			
+			public function generateLienzoDestination(user:User, room:Room):void{
+				var lienzoDestination:String;
+				lienzoDestination = "lienzo"+room.id;
+				(new RoomService).createDestination(lienzoDestination,callbackcreateLienzoDestination);
+			}
+			
+			public function callbackcreateLienzoDestination(lienzoDestination:String):void {
+				roomLienzo.initDestination(lienzoDestination);
+			}
+			
+			/*********************/
+			/** PAINT FUNCTIONS **/
+			/*********************/
+			public function selectLinea():void{
+				//Definimos correctamente los booleanos
+				roomLienzo.contLienzo.pintandoCirculo=false;
+				roomLienzo.contLienzo.pintandoCuadrado=false;
+				roomLienzo.contLienzo.pintandoRecta=false;
+				botonCirculo.emphasized = false;
+				botonCuadrado.emphasized = false;
+				botonRecta.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonLapiz.emphasized == true){
+					botonLapiz.emphasized = false;
+					roomLienzo.contLienzo.pintandoLinea = false;
+				}else{
+					botonLapiz.emphasized = true;
+					roomLienzo.contLienzo.pintandoLinea = true;
+				}
+			}
+			public function selectCirculo():void{
+				//Definimos correctamente los booleanos
+				roomLienzo.contLienzo.pintandoLinea=false;
+				roomLienzo.contLienzo.pintandoCuadrado=false;
+				roomLienzo.contLienzo.pintandoRecta=false;
+				botonLapiz.emphasized = false;
+				botonCuadrado.emphasized = false;
+				botonRecta.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonCirculo.emphasized == true){
+					botonCirculo.emphasized = false;
+					roomLienzo.contLienzo.pintandoCirculo = false;
+				}else{
+					botonCirculo.emphasized = true;
+					roomLienzo.contLienzo.pintandoCirculo = true;
+				}
+			}
+			public function selectCuadrado():void{
+				//Definimos correctamente los booleanos
+				roomLienzo.contLienzo.pintandoCirculo=false;
+				roomLienzo.contLienzo.pintandoLinea=false;
+				roomLienzo.contLienzo.pintandoRecta=false;
+				botonLapiz.emphasized = false;
+				botonCirculo.emphasized = false;
+				botonRecta.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonCuadrado.emphasized == true){
+					botonCuadrado.emphasized = false;
+					roomLienzo.contLienzo.pintandoCuadrado = false;
+				}else{
+					botonCuadrado.emphasized = true;
+					roomLienzo.contLienzo.pintandoCuadrado = true;
+				}
+			}
+			public function selectRecta():void{
+				//Definimos correctamente los booleanos
+				roomLienzo.contLienzo.pintandoCirculo=false;
+				roomLienzo.contLienzo.pintandoLinea=false;
+				roomLienzo.contLienzo.pintandoCuadrado=false;
+				botonLapiz.emphasized = false;
+				botonCirculo.emphasized = false;
+				botonCuadrado.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(botonRecta.emphasized == true){
+					botonRecta.emphasized = false;
+					roomLienzo.contLienzo.pintandoRecta = false;
+				}else{
+					botonRecta.emphasized = true;
+					roomLienzo.contLienzo.pintandoRecta = true;
+				}
+			}
+			
+			/*Cambios de propiedades del lienzo*/
+			
+			public function cambiarColorLinea():void{
+				roomLienzo.contLienzo.colorLinea = pickerLinea.selectedColor;
+			}
+			
+			public function cambiarColorRelleno():void{
+				roomLienzo.contLienzo.colorRelleno = pickerRelleno.selectedColor;
+			}
+			
+			public function cambiarGrosor():void{
+				roomLienzo.contLienzo.tamanoLinea = grosorTrazo.value;
+			}
+			
+			public function modificarRellenoAv():void{
+				if(rellenoAv.selected){
+					roomLienzo.contLienzo.tieneRelleno=true;
+				}else{
+					roomLienzo.contLienzo.tieneRelleno=false;
+				}
+			}
+			
+			/*Guardado/Borrado del contenido del lienzo*/
+			public function salvarContenido():void{
+				roomLienzo.contLienzo.saveCanvas();
+			}
+			
+			public function borrarContenido():void{
+				this.vaciarListasDeAcciones();
+				roomLienzo.contLienzo.limpiarLienzo();
+			}
+			
+			private function vaciarListasDeAcciones():void{
+				roomLienzo.contLienzo.borrarListasDeAcciones();
+			}
+			
+			public function uploadFile():void{
+				roomLienzo.contLienzo.uploadToCanvas();
+			}
+			
+			public function deshacer():void{
+				roomLienzo.contLienzo.deshacer();
+			}
+			
+			public function rehacer():void{
+				roomLienzo.contLienzo.rehacer();
+			}
+			
+			public function reproducirAcciones():void{
+				roomLienzo.contLienzo.reproducirAcciones();
+			}
+			
+			public function modificarVelocidadReproduccion():void{
+				roomLienzo.contLienzo.velocidad = velocidadReproduccion.value*1000;
+			}
+			
+			/********************************/
+			/** USER CONNECTIONS FUNCTIONS **/
+			/********************************/
+			[Bindable]
+			private var usersRooms:ArrayCollection = new ArrayCollection();
+			public function messageHandler(event:MessageEvent):void {
+       			var body:Object = event.message.body;
+       			if(room.id == body.room.id){
+       				roomChat.log += "<font color='#FF0000'><b>"+body.user + "</b> ha entrado en la sala </font>\n";
+       				usersRooms.addItem(body.user);
+       				roomChat.listOfUsers.addItem(body.user);
+       				roomChat.listOfUsers.refresh();
+       			}
+        	}
+        	
+       		public function faultHandler(event:MessageFaultEvent):void{
+       			Alert.show("Problema en la recepcion");
+       		}
+		]]>
+	</mx:Script>
+	<mx:Consumer id="consumer"
+		destination="updateUsersRooms"
+		message="messageHandler(event);"
+		fault="faultHandler(event);"/> 
+	<mx:HBox width="100%" height="100%" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5" backgroundColor="#00CFE8" backgroundAlpha="0.9">
+		<mx:VBox height="100%">
+			<chat:ChatForm id="roomChat" />
+			<mx:ApplicationControlBar width="100%" height="100%" >
+				<mx:VBox width="100%" height="100%">
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button width="30" height="30" id="botonCuadrado" toolTip="Pintar Cuadrado" click="selectCuadrado()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-rectangle.png')</mx:icon>
+						</mx:Button>
+						<mx:Button width="30" height="30" id="botonCirculo" toolTip="Pintar Circulo" click="selectCirculo()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-ellipse.png')</mx:icon>
+						</mx:Button>
+						<mx:Button width="30" height="30" id="botonRecta" toolTip="Pintar Recta" click="selectRecta()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-path.png')</mx:icon>
+						</mx:Button>
+						<mx:Button width="30" height="30" id="botonLapiz" toolTip="Pintar Trazo" click="selectLinea()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-freehand.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center">
+						<mx:HRule width="99%"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:ColorPicker id="pickerLinea" change="cambiarColorLinea()" toolTip="Color de trazo"/>
+						<mx:ColorPicker id="pickerRelleno" change="cambiarColorRelleno()" toolTip="Color de relleno"/>
+						<mx:CheckBox id="rellenoAv" click="modificarRellenoAv()" toolTip="Activar relleno"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+						<mx:HSlider width="100%" id="grosorTrazo" minimum="1" maximum="50" change="cambiarGrosor()" toolTip="Grosor del trazo"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center">
+						<mx:HRule width="99%"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button x="10" y="10" click="salvarContenido()" id="botonSalvar" width="35" height="35" toolTip="Guardar Imagen al PC">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/green_down.png')</mx:icon>
+						</mx:Button>
+						<mx:Button x="53" y="10" width="35" height="35" id="botonCargar" click="uploadFile()" toolTip="Cargar Imagen del PC">
+							<mx:icon>@Embed(source='../../../../../assets/canvas//blue_up.png')</mx:icon>
+						</mx:Button>
+						<mx:Button x="96" y="10" id="botonLimpiar" width="35" height="35" click="borrarContenido()" toolTip="Limpiar lienzo">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/window-new.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center">
+						<mx:HRule width="99%"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button x="182" y="10" click="deshacer()" id="botonUndo" toolTip="Deshacer">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/edit-undo.png')</mx:icon>
+						</mx:Button>
+						<mx:Button x="248" y="10" id="botonRedo" click="rehacer()" toolTip="Rehacer">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/edit-redo.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button x="308" y="50" id="botonPlay" width="76" height="36" click="reproducirAcciones()" toolTip="Play">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/media-playback-start.png')</mx:icon>
+						</mx:Button>
+						<mx:HSlider x="308" y="24" width="76" id="velocidadReproduccion" minimum="0.1" maximum="5" snapInterval="0.1" change="modificarVelocidadReproduccion()"/>
+					</mx:HBox>
+				</mx:VBox>
+
+			</mx:ApplicationControlBar>
+		</mx:VBox>
+		<!--<module:PaintCanvas id="roomLienzo" width="100%" height="100%"/>-->
+		<paint:PaintCanvasComponent id="roomLienzo" width="100%" height="100%" movable="false"/>
+		<!--<paint:StatePaintCanvas id="roomLienzo" width="100%" height="100%" />-->
+	</mx:HBox>
+	
+</mx:Canvas>

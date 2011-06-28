@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" height="100%"
+		   paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"
+		   creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import mx.managers.PopUpManager;
+			import es.uc3m.coldes.view.user.UserDataFormUpdate;
+			import es.uc3m.coldes.business.UserService;
+			import es.uc3m.coldes.entities.User;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var users:ArrayCollection = new ArrayCollection();
+					 
+			private function init():void {
+				new UserService().getAllUsers(callbackUsers);
+			}
+
+			private function callbackUsers(users:ArrayCollection):void {
+				this.users=users;
+			}
+
+			/* Funcion de filtrado */
+			private function userFilter(obj:Object):Boolean {
+				var result:Boolean = false;
+				var user:User = obj as User;
+				if (searchText.text.length > 0 ) {
+					if ((user.username != null && user.username.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) ||
+						(user.name != null && user.name.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) ||
+						(user.surname1 != null && user.surname1.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) ||
+						(user.surname2 != null && user.surname2.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) ||
+						(user.email != null && user.email.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1)
+						)
+					{
+						result = true;
+					}
+				}
+				return result;
+			}
+
+			private function filter(event:Event=null):void {
+				users.filterFunction = userFilter;
+				users.refresh();
+			}
+
+			public function restart():void {
+				init();
+				searchText.text="";
+			}
+			
+			private function edit(user:User):void{
+				var userUpd:UserDataFormUpdate = new UserDataFormUpdate();
+			
+				PopUpManager.addPopUp(userUpd, this, true);
+				PopUpManager.centerPopUp(userUpd);
+				userUpd.management = true;
+				userUpd.user = user;
+				userUpd.callBackFunction = submitUpdate;
+			}
+			
+			public function submitUpdate(user:User, passChange:Boolean):void{
+				(new UserService()).updateUser(user, passChange, updateUserCallback);
+			}
+			
+			private function updateUserCallback(updateResult:Boolean):void{
+				if(updateResult){
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.UPDATE'),
+										       resourceManager.getString('myResources','MESSAGE.UPDATE'));
+					refresh();
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}
+			}
+			
+			private function refresh():void{
+				new UserService().getAllUsers(callbackUsers);
+				searchText.text = "";
+			}
+		]]>
+	</mx:Script>
+	<mx:Canvas width="100%" height="100%">
+	<mx:VBox id="vbox" width="100%" height="100%" >
+		<mx:HBox width="100%" verticalAlign="middle">
+			<mx:FormItem label="{resourceManager.getString('myResources','USERMANAGEMENT.SEARCH')}:">
+				<mx:TextInput id="searchText" enter="filter()"/>
+			</mx:FormItem>
+			<mx:Button label="{resourceManager.getString('myResources','USERMANAGEMENT.SEARCHBTN')}" click="filter()"/>
+			<mx:Button label="{resourceManager.getString('myResources','USERMANAGEMENT.RESTART')}" click="restart()"/>
+			<mx:Button click="refresh()">
+				<mx:icon>@Embed(source='../../../../assets/images/refresh.png')</mx:icon>
+			</mx:Button>
+		</mx:HBox>
+
+		<mx:DataGrid id="gridUserMan" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto"
+			doubleClick="edit(gridUserMan.selectedItem as User)" doubleClickEnabled="true">
+			<mx:columns>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.USER')}" dataField="username"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.NAME')}" dataField="name"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME1')}" dataField="surname1"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME2')}" dataField="surname2"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+	</mx:Canvas>
+</mx:Module>
