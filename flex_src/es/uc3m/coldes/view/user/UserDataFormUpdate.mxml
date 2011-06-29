@@ -89,7 +89,7 @@
 					
 				newUser.active = isActiveCheck.selected;
 				newUser.admin = isAdminCheck.selected;
-				newUser.designer = isAdminCheck.selected;
+				newUser.designer = isDesignerChek.selected;
 				return newUser;
 			}
 		]]>

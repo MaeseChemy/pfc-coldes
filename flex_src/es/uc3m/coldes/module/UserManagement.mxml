@@ -4,6 +4,7 @@
 		   creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.business.Constants;
 			import es.uc3m.coldes.utils.popup.UtilPopUp;
 			import mx.managers.PopUpManager;
 			import es.uc3m.coldes.view.user.UserDataFormUpdate;
@@ -97,7 +98,27 @@
 		<mx:DataGrid id="gridUserMan" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto"
 			doubleClick="edit(gridUserMan.selectedItem as User)" doubleClickEnabled="true">
 			<mx:columns>
+				<!--
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.USER')}" dataField="username"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.NAME')}" dataField="name"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME1')}" dataField="surname1"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME2')}" dataField="surname2"/>
+				-->
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.USER')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).username}" 
+									color="{(data).active == Constants.DEACTIVE?0xff0000:0x008000}"
+									fontSize="15" fontWeight="bold">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.NAME')}" dataField="name"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME1')}" dataField="surname1"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME2')}" dataField="surname2"/>
