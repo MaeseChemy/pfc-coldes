@@ -133,7 +133,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGETITLE.REMOVEUSERRELATION']="ELIMINAR RELACION";
 			myResources.content['MESSAGE.REMOVEUSERRELATION']="¿Esta seguro que quiere borrarse de esta sala?";
 			myResources.content['MESSAGETITLE.USERROOMREGISTER']="OPCIONES DE REGISTRO EN SALA";
-			myResources.content['MESSAGE.REMOVEUSERRELATION']="¿Qué acción desea realizar?";
+			myResources.content['MESSAGE.USERROOMREGISTER']="¿Qué acción desea realizar?";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -275,7 +275,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGETITLE.REMOVEUSERRELATION']="DELETE RELATION";
 			myResources.content['MESSAGE.REMOVEUSERRELATION']="Are you sure you want to remove the room relation?"
 			myResources.content['MESSAGETITLE.USERROOMREGISTER']="LOG IN ROOM OPTIONS";
-			myResources.content['MESSAGE.REMOVEUSERRELATION']="What do you want?"
+			myResources.content['MESSAGE.USERROOMREGISTER']="What do you want?"
 
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";

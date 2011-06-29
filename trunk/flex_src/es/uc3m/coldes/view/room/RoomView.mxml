@@ -70,6 +70,48 @@
 				roomLienzo.initDestination(lienzoDestination);
 			}
 			
+			/********************************/
+			/** USER CONNECTIONS FUNCTIONS **/
+			/********************************/
+			[Bindable]
+			private var usersRooms:ArrayCollection = new ArrayCollection();
+			public function messageHandler(event:MessageEvent):void {
+       			var body:Object = event.message.body;
+       			if(room.id == body.room.id){
+       				if(body.action == "enter"){
+       					roomChat.log += "<font color='#0000FF'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
+       					if(findUser(body.user, usersRooms) < 0){
+       						usersRooms.addItem(body.user);
+       					}
+       					if(findUser(body.user, roomChat.listOfUsers) < 0){
+       						roomChat.listOfUsers.addItem(body.user);
+       					}
+       					
+       				}else{
+       					roomChat.log += "<font color='#FF0000'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USEREXIT')+"</font>\n";
+       					usersRooms.removeItemAt(findUser(body.user, usersRooms));
+       					roomChat.listOfUsers.removeItemAt(findUser(body.user, roomChat.listOfUsers));
+       				}
+       				roomChat.listOfUsers.refresh();
+       			}
+        	}
+        	
+        	private function findUser(username:String,lista:ArrayCollection):Number{
+        		var pos:Number = 0;
+        		for each(var str:String in lista){
+        			if(str == username){
+        				return pos;
+        			}
+        			pos++;
+        		}
+        		return -1;
+        	}
+        	
+       		public function faultHandler(event:MessageFaultEvent):void{
+       			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
+									   "There was an error performing the operation, contact your application administrator.");
+       		}
+			
 			/*********************/
 			/** PAINT FUNCTIONS **/
 			/*********************/
@@ -198,47 +240,7 @@
 				roomLienzo.contLienzo.velocidad = velocidadReproduccion.value*1000;
 			}
 			
-			/********************************/
-			/** USER CONNECTIONS FUNCTIONS **/
-			/********************************/
-			[Bindable]
-			private var usersRooms:ArrayCollection = new ArrayCollection();
-			public function messageHandler(event:MessageEvent):void {
-       			var body:Object = event.message.body;
-       			if(room.id == body.room.id){
-       				if(body.action == "enter"){
-       					roomChat.log += "<font color='#0000FF'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
-       					if(findUser(body.user, usersRooms) < 0){
-       						usersRooms.addItem(body.user);
-       					}
-       					if(findUser(body.user, roomChat.listOfUsers) < 0){
-       						roomChat.listOfUsers.addItem(body.user);
-       					}
-       					
-       				}else{
-       					roomChat.log += "<font color='#FF0000'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USEREXIT')+"</font>\n";
-       					usersRooms.removeItemAt(findUser(body.user, usersRooms));
-       					roomChat.listOfUsers.removeItemAt(findUser(body.user, roomChat.listOfUsers));
-       				}
-       				roomChat.listOfUsers.refresh();
-       			}
-        	}
-        	
-        	private function findUser(username:String,lista:ArrayCollection):Number{
-        		var pos:Number = 0;
-        		for each(var str:String in lista){
-        			if(str == username){
-        				return pos;
-        			}
-        			pos++;
-        		}
-        		return -1;
-        	}
-        	
-       		public function faultHandler(event:MessageFaultEvent):void{
-       			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
-									   "There was an error performing the operation, contact your application administrator.");
-       		}
+			
 		]]>
 	</mx:Script>
 	<mx:Consumer id="consumer"
