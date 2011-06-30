@@ -13,6 +13,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import es.uc3m.coldes.control.security.SHA1;
+import es.uc3m.coldes.model.Room;
 import es.uc3m.coldes.model.User;
 import es.uc3m.coldes.util.Constants;
 
@@ -205,6 +206,39 @@ public class UserDAO extends BBDD{
 					conn.close();
 				} catch (SQLException e) {
 					logger.error("[UserDAO-getAllUsers]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+	}
+	
+
+	public List<String> getColDesUsers(Room room) {
+		logger.info("[UserDAO-getColDesUsers]: Searching all users...");
+
+		List<String> usersResult = new ArrayList<String>();
+		String sqlSelectUsuario = "select username "
+			+ "from user where active=1 and username not in (select username from roomuser where id_room=?)";
+		try {
+			conn = getConnection();	
+			PreparedStatement st = conn.prepareStatement(sqlSelectUsuario);
+			st.setInt(1, room.getId());
+			
+			// Ejecutamos las query
+			ResultSet results = st.executeQuery();
+			while (results.next()) {
+				usersResult.add(results.getString("username"));
+			}
+			return usersResult;
+		} catch (SQLException e) {
+			logger.error("[UserDAO-getColDesUsers]: Error in SQL sentence: " + e.getLocalizedMessage());
+			return null;
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[UserDAO-getColDesUsers]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[UserDAO-getColDesUsers]: Error closing DB connection: " + e.getLocalizedMessage());
 				}
 			}
 		}

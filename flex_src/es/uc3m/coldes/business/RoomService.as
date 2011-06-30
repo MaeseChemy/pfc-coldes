@@ -125,12 +125,25 @@ package es.uc3m.coldes.business
 			service.addEventListener(FaultEvent.FAULT, error);
 			service.addEventListener(ResultEvent.RESULT, resultRoomLogout);
 			this.callback = callback;
-			service.roomLogout(user, room,totalLogout);
+			service.roomLogout(user, room, totalLogout);
 		}
 		
 		private function resultRoomLogout(event:ResultEvent):void {
 			//var usersRoom:ArrayCollection = event.result as ArrayCollection;
 			//callback(usersRoom);	
+		}
+		
+		public function getRoomUsers(room:Room, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultGetRoomUsers);
+			this.callback = callback;
+			service.getRoomUsers(room);
+		}
+		
+		private function resultGetRoomUsers(event:ResultEvent):void {
+			var roomUsers:ArrayCollection = event.result as ArrayCollection;
+			callback(roomUsers);	
 		}
 
 		private function error(event:FaultEvent):void {

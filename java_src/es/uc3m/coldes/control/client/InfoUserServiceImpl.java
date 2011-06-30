@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import es.uc3m.coldes.control.dao.UserDAO;
 import es.uc3m.coldes.control.server.InfoUserService;
+import es.uc3m.coldes.model.Room;
 import es.uc3m.coldes.model.User;
 
 public class InfoUserServiceImpl implements InfoUserService{
@@ -44,6 +45,11 @@ public class InfoUserServiceImpl implements InfoUserService{
 	/* SEARCH */
 	public List<User> getAllUsers() {
 		List<User> users = this.userDAO.getAllUsers();
+		return users;
+	}
+
+	public List<String> getColDesUsers(Room room) {
+		List<String> users = this.userDAO.getColDesUsers(room);
 		return users;
 	}
 

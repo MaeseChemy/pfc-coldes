@@ -91,6 +91,11 @@ public class ColDesService implements Serializable{
 		return this.userService.getAllUsers();
 	}
 	
+	public List<String> getColDesUsers(Room room) throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.userService.getColDesUsers(room);
+	}
+	
 	/***********/
 	/** ROOMS **/
 	/***********/
@@ -152,6 +157,11 @@ public class ColDesService implements Serializable{
 			this.notifyUserToRoom(user, room, "exit");
 		}
 		return result;
+	}
+	
+	public List<UserRoom> getRoomUsers(Room room) throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.roomService.getRoomUsers(room);
 	}
 	
 	/**************/

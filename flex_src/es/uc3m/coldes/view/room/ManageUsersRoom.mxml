@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
+	creationComplete="init()"
+	close="close()"
+	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*" 
+	width="350" height="450" horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.entities.Room;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.business.Constants;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import mx.managers.PopUpManager;
+			import es.uc3m.coldes.view.user.UserDataFormUpdate;
+			import es.uc3m.coldes.business.UserService;
+			import es.uc3m.coldes.entities.User;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var users:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var roomUsers:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var room:Room;
+			
+			private function init():void {
+				new UserService().getColDesUsers(room, callbackColDesUsers);
+				new RoomService().getRoomUsers(room, calbakcRoomUsers);
+			}
+
+			private function callbackColDesUsers(users:ArrayCollection):void {
+				this.users=users;
+			}	
+			
+			private function calbakcRoomUsers(roomUsers:ArrayCollection):void {
+				this.roomUsers=roomUsers;
+			}
+			
+			private function close():void{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:Canvas width="100%" height="100%">
+	<mx:VBox id="vbox" width="100%" height="100%" >
+
+		<mx:DataGrid id="gridUserColDesMan" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto">
+			<mx:columns>
+				<mx:DataGridColumn width="30">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.entities.User;
+										private function sendRoomInvitation():void{
+											//parentDocument.sendRoomInvitation(data as User);
+										}
+									]]>
+								</mx:Script>
+								<mx:Image buttonMode="true" source="assets/images/icos/useradd.png"
+										  toolTip="Enviar invitación" click="sendRoomInvitation()"/>
+							</mx:HBox>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="Usuarios de ColDes">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{data}" 
+									fontSize="10" fontWeight="bold">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:DataGrid id="gridRoomUserMan" width="100%" height="100%" dataProvider="{roomUsers}" verticalScrollPolicy="auto">
+			<mx:columns>
+				<mx:DataGridColumn width="60">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+										
+										private function removeUser():void{
+											//parentDocument.removeUser(data as User);
+										}
+										private function editUserRelation():void{
+											//parentDocument.removeUser(data as User);
+										}
+									]]>
+								</mx:Script>
+								<mx:Image buttonMode="true" source="assets/images/icos/mydata.png"
+										  toolTip="Editar rol" click="editUserRelation()"/>
+								<mx:Image buttonMode="true" source="assets/images/icos/userremove.png"
+										  toolTip="Eliminar usuario" click="removeUser()" 
+										  includeInLayout="{(data).rol != Constants.OWNER_ROL}" visible="{(data).rol != Constants.OWNER_ROL}"/>
+							</mx:HBox>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="Usuarios de la sala" dataField="userName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROL')}" dataField="rolDescription"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+	</mx:Canvas>
+		
+</ResizableWindow>
