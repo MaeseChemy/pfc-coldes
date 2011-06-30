@@ -49,6 +49,16 @@
 				return _userLoged;
 			}
 			
+			[Bindable]
+			private var _userMessages:Number = 0;
+			[Bindable]
+			public function set userMessages(value:Number):void{
+				_userMessages = value;
+			}
+			public function get userMessages():Number{
+				return _userMessages;
+			}
+			
 			/*************************************/
 			/**         INIT FUNCTIONS          **/
 			/*************************************/
@@ -56,6 +66,9 @@
 			private function init():void{
 				ResourceLanguage.setResources(resourceManager);
 				this.changeLocale("es_ES");
+				
+				//Aqui calcular con consulta a base de datos
+				this.userMessages = 0;
 				
 				primaryVS.selectedChild=loginFacade;
 				tabs.setClosePolicyForTab(0, SuperTab.CLOSE_NEVER);
@@ -303,9 +316,10 @@
 		<mx:Canvas id="mainWindow">
 			<mx:VBox horizontalAlign="center" width="100%" height="100%">
 				<mx:Canvas width="100%">	
-					<mx:HBox horizontalAlign="left" width="100%" paddingRight="5" paddingTop="5">
+					<mx:HBox horizontalAlign="left" verticalAlign="middle" width="100%" paddingRight="5" paddingTop="5">
 						<mx:Button id="btnLogOut" height="20" icon="@Embed(source='assets/images/btnlogout.png')" label="{resourceManager.getString('myResources','MAINWINDOW.LOGOUT')}"
 							click="initDoLogout()"/>
+						<mx:Button id="btnMessage" height="20" icon="@Embed(source='assets/images/buzoncorreo.png')" label="({userMessages})"/>
 						<mx:Label text="{resourceManager.getString('myResources','LOGIN.USERNAME')}:" fontWeight="bold" textDecoration="underline"/>
 						<mx:Label id="labelUsername" fontStyle="italic"/>
 					</mx:HBox>
@@ -362,18 +376,13 @@
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
 										   icon="@Embed(source='assets/images/searchrooms.png')" click="loadModule('SearchRooms')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.SEARCHROOMS')}"/>
-								<!--
-								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
-										   icon="@Embed(source='assets/images/addroom.png')"
-										   label="{resourceManager.getString('myResources','MAINWINDOW.CREATEROOM')}"/>
-								-->
 							</mx:HBox>
 							<mx:HBox width="100%" horizontalGap="20" horizontalAlign="center">
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
 										   icon="@Embed(source='assets/images/usersconfig.png')" click="loadModule('UserManagement')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.USERMANAGEMENT')}"/>
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
-										   icon="@Embed(source='assets/images/roomconfig.png')"
+										   icon="@Embed(source='assets/images/roomconfig.png')" click="loadModule('RoomManagement')"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.ROOMMANAGEMENT')}"/>
 							</mx:HBox>
 						</mx:ViewStack>

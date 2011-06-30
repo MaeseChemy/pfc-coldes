@@ -4,6 +4,8 @@
 		   creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import mx.core.Application;
+			import es.uc3m.coldes.view.room.ManageUsersRoom;
 			import mx.events.FlexEvent;
 			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
 			import es.uc3m.coldes.business.Constants;
@@ -158,6 +160,14 @@
 			public function deleteUserRoomCallback(result:Number):void{
 				refresh();
 			}
+			
+			public function manageUsersRoom(data:UserRoom):void{
+				var manageUsers:ManageUsersRoom=PopUpManager.createPopUp(DisplayObject(Application.application), ManageUsersRoom, true) as ManageUsersRoom;
+				manageUsers.room = data.room;
+				manageUsers.title = "Sala \"" + data.roomName +"\"";
+				PopUpManager.centerPopUp(manageUsers);
+			}
+			
 		]]>
 	</mx:Script>
 	
@@ -177,7 +187,7 @@
 		<mx:DataGrid id="gridUserRoom" width="100%" height="100%" dataProvider="{usersRooms}" verticalScrollPolicy="auto"
 			doubleClick="enter(gridUserRoom.selectedItem)" doubleClickEnabled="true">
 			<mx:columns>
-				<mx:DataGridColumn width="50" resizable="false" itemRenderer="es.uc3m.coldes.view.room.RoomUserAcctions"/>
+				<mx:DataGridColumn width="70" resizable="false" itemRenderer="es.uc3m.coldes.view.room.RoomUserAcctions"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="ownerUserName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="userName"/>

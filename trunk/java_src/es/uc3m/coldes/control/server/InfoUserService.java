@@ -3,6 +3,7 @@ package es.uc3m.coldes.control.server;
 import java.util.List;
 
 import es.uc3m.coldes.control.dao.UserDAO;
+import es.uc3m.coldes.model.Room;
 import es.uc3m.coldes.model.User;
 
 public interface InfoUserService {
@@ -18,7 +19,7 @@ public interface InfoUserService {
 	
 	/* SEARCH */
 	public List<User> getAllUsers();
+	public List<String> getColDesUsers(Room room);
 	
 	
-
 }

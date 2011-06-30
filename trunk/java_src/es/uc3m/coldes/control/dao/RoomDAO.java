@@ -425,6 +425,62 @@ public class RoomDAO extends BBDD{
 		return result;
 	}
 
+	public List<UserRoom> getRoomUsers(Room room) {
+		List<UserRoom> results = new ArrayList<UserRoom>();
+		logger.info("[RoomDAO-getUserRooms]: Searching users of room ["+room.getId()+"]..");
+		String sqlSelectUserSala = "select id_room, username, rol " +
+		"from roomuser where id_room=?";
+		try {
+			conn = getConnection();
+
+			PreparedStatement stUserSala = conn.prepareStatement(sqlSelectUserSala);
+			stUserSala.setInt(1, room.getId());
+			// Ejecutamos las query
+			ResultSet resultados = stUserSala.executeQuery();
+			while (resultados != null && resultados.next()) {
+				Room roomAux = this.findRoomById(resultados.getInt("id_room"));
+				if(roomAux != null){
+					UserRoom newUserRoom = new UserRoom();
+					newUserRoom.setRoom(roomAux);
+					newUserRoom.setRoomName(roomAux.getName());
+					newUserRoom.setOwnerUserName(roomAux.getOwner());
+					newUserRoom.setUserName(resultados.getString("username"));
+					newUserRoom.setRol(resultados.getInt("rol"));
+					int tipoRol = resultados.getInt("rol");
+					switch (tipoRol) {
+						case Constants.OWNER_ROL:
+							newUserRoom.setRolDescription("Owner");
+							break;
+						case Constants.MODERATOR_ROL:
+							newUserRoom.setRolDescription("Moderator");
+							break;
+						case Constants.COLABORATOR_ROL:
+							newUserRoom.setRolDescription("Colaborator");
+							break;
+						case Constants.GUEST_ROL:
+							newUserRoom.setRolDescription("Guest");
+							break;
+					}
+					results.add(newUserRoom);
+				}
+			
+			}
+
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-getUserRooms]: Error in SQL sentence: " + e.getLocalizedMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-getUserRooms]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-getUserRooms]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+		return results;
+	}
+
 
 
 }

@@ -71,6 +71,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.ROOMNAME']="Nombre de la Sala";
 			myResources.content['MYROOMS.OWNERUSERNAME']="Propietario";
 			myResources.content['MYROOMS.USER']="Usuario";
+			myResources.content['MYROOMS.USERS']="Usuarios";
 			myResources.content['MYROOMS.ROL']="Rol";
 			myResources.content['MYROOMS.EDITROOM']="Editar Sala";
 			myResources.content['MYROOMS.REMOVE']="Eliminar relación";
@@ -213,6 +214,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.ROOMNAME']="Room Name";
 			myResources.content['MYROOMS.OWNERUSERNAME']="Owner";
 			myResources.content['MYROOMS.USER']="Username";
+			myResources.content['MYROOMS.USERS']="Users";
 			myResources.content['MYROOMS.ROL']="Rol";
 			myResources.content['MYROOMS.EDITROOM']="Edit room";
 			myResources.content['MYROOMS.REMOVE']="Delete room relation";

@@ -1,5 +1,6 @@
 package es.uc3m.coldes.business{
 	
+	import es.uc3m.coldes.entities.Room;
 	import es.uc3m.coldes.entities.User;
 	import es.uc3m.coldes.utils.popup.LoadingPopUp;
 	import es.uc3m.coldes.utils.popup.UtilPopUp;
@@ -79,6 +80,19 @@ package es.uc3m.coldes.business{
 		}
 		
 		private function resultGetAllUsers(event:ResultEvent):void {
+			var users:ArrayCollection = event.result as ArrayCollection;
+			callback(users);	
+		}
+		
+		public function getColDesUsers(room:Room, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultGetColDesUsers);
+			this.callback = callback;
+			service.getColDesUsers(room);
+		}
+		
+		private function resultGetColDesUsers(event:ResultEvent):void {
 			var users:ArrayCollection = event.result as ArrayCollection;
 			callback(users);	
 		}

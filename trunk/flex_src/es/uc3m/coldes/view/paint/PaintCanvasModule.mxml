@@ -5,6 +5,7 @@
 	
 	<mx:Script>
 	<![CDATA[
+		import flash.utils.setTimeout;
 		import es.uc3m.coldes.utils.popup.UtilPopUp;
 		import mx.rpc.remoting.mxml.RemoteObject;
 		import mx.messaging.channels.AMFChannel;
@@ -171,7 +172,7 @@
 					pintando = false;
 					lienzo.removeChild(uiComponentTemporal);
 					//mandamos el canvas al resto :D
-					this.sendImage(obtenerLienzoTemporal());
+					setTimeout(this.sendImage,0,obtenerLienzoTemporal());
 				}
 			}
 		}

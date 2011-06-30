@@ -17,6 +17,13 @@ package es.uc3m.coldes.module
 						result = "User Management"
 					}
 					break;
+				case 'RoomManagement': 
+					if(lang == "es_ES"){
+						result = "Gestión de salas";
+					}else{
+						result = "Room Management"
+					}
+					break;
 				case 'MyRooms': 
 					if(lang == "es_ES"){
 						result = "Mis Salas";
@@ -35,8 +42,11 @@ package es.uc3m.coldes.module
 			return result;
 		}
 		
+		
 		[Embed('/assets/images/icos/usersconfig.png')]
 		public static const userManagement:Class;
+		[Embed('/assets/images/icos/roomconfig.png')]
+		public static const roomconfig:Class;
 		[Embed('/assets/images/icos/myrooms.png')]
 		public static const myRooms:Class;
 		[Embed('/assets/images/icos/searchrooms.png')]
@@ -46,8 +56,10 @@ package es.uc3m.coldes.module
 			var result:Class;
 			switch(moduleName){
 				case 'UserManagement': result = userManagement;break;
+				case 'RoomManagement': result = roomconfig;break;
 				case 'MyRooms': result = myRooms;break;
 				case 'SearchRooms': result = searchRooms;break;
+				
 			}
 			return result;
 		}
