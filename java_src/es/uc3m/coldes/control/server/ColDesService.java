@@ -109,6 +109,11 @@ public class ColDesService implements Serializable{
 		return this.roomService.getUserRooms(user);
 	}
 	
+	public int manageUserRoomRelation(UserRoom userRoom, boolean insert)throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.roomService.manageUserRoomRelation(userRoom, insert);
+	}
+	
 	public List<Room> getColDesRooms() throws SessionTimeoutException{
 		checkIsLogIn();
 		return this.roomService.getColDesRooms();
@@ -129,26 +134,6 @@ public class ColDesService implements Serializable{
 		return this.roomService.enterInRoom(user,room);
 	}
 	
-	public void notifyUserToRoom(User user, Room room, String action) throws SessionTimeoutException{
-		logger.info("[ColDesManager-enterInRoom]: User " +action+ " the room...");
-		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
-        String clientID = UUIDUtils.createUUID(false);
-        AsyncMessage msg = new AsyncMessage();
-        msg.setDestination("updateUsersRooms");
-        msg.setClientId(clientID);
-        msg.setMessageId(UUIDUtils.createUUID(false));
-        msg.setTimestamp(System.currentTimeMillis());
-        HashMap<String, Object> body = new HashMap<String, Object>();
-        body.put("user", user.getUsername());
-        body.put("room", room);
-        body.put("action", action);
-        msg.setBody(body);
-        logger.info("[ColDesManager-enterInRoom]: Sending message" + body);
-        msgBroker.routeMessageToService(msg, null);
-		logger.info("[ColDesManager-enterInRoom]: Sended");
-
-	}
-	
 	public int roomLogout(User user, Room room, boolean totalLogout) throws SessionTimeoutException{
 		if(!totalLogout)
 			checkIsLogIn();
@@ -162,6 +147,21 @@ public class ColDesService implements Serializable{
 	public List<UserRoom> getRoomUsers(Room room) throws SessionTimeoutException{
 		checkIsLogIn();
 		return this.roomService.getRoomUsers(room);
+	}
+	
+	public int sendRoomInvitation(String username, Room room, int rol) throws SessionTimeoutException{
+		checkIsLogIn();
+		UserRoom userroom = this.roomService.sendRoomInvitation(username, room, rol);
+		if(userroom != null){
+			notifyInvitationToUser(userroom);
+			return 0;
+		}
+		return -1;
+	}
+	
+	public List<UserRoom> getAllUserRoomInvitation(String username) throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.roomService.getAllUserRoomInvitation(username);
 	}
 	
 	/**************/
@@ -183,6 +183,44 @@ public class ColDesService implements Serializable{
 		}
 
 		return destinationStringValue;
+	}
+	
+	public void notifyUserToRoom(User user, Room room, String action) throws SessionTimeoutException{
+		logger.info("[ColDesManager-enterInRoom]: User " +action+ " the room...");
+		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
+        String clientID = UUIDUtils.createUUID(false);
+        AsyncMessage msg = new AsyncMessage();
+        msg.setDestination("updateUsersRooms");
+        msg.setClientId(clientID);
+        msg.setMessageId(UUIDUtils.createUUID(false));
+        msg.setTimestamp(System.currentTimeMillis());
+        HashMap<String, Object> body = new HashMap<String, Object>();
+        body.put("user", user.getUsername());
+        body.put("room", room);
+        body.put("action", action);
+        msg.setBody(body);
+        logger.info("[ColDesManager-enterInRoom]: Sending message" + body);
+        msgBroker.routeMessageToService(msg, null);
+		logger.info("[ColDesManager-enterInRoom]: Sended");
+	}
+	
+	public void notifyInvitationToUser(UserRoom userroom) throws SessionTimeoutException{
+		logger.info("[ColDesManager-enterInRoom]: Send invitation to user " +userroom.getUserName()+ " of room ["+userroom.getRoom().getId()+"]...");
+		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
+        String clientID = UUIDUtils.createUUID(false);
+        AsyncMessage msg = new AsyncMessage();
+        msg.setDestination("message");
+        msg.setClientId(clientID);
+        msg.setMessageId(UUIDUtils.createUUID(false));
+        msg.setTimestamp(System.currentTimeMillis());
+        HashMap<String, Object> body = new HashMap<String, Object>();
+        body.put("username", userroom.getUserName());
+        body.put("userroom", userroom);
+
+        msg.setBody(body);
+        logger.info("[ColDesManager-enterInRoom]: Sending message" + body);
+        msgBroker.routeMessageToService(msg, null);
+		logger.info("[ColDesManager-enterInRoom]: Sended");
 	}
 	
 	/*******************/

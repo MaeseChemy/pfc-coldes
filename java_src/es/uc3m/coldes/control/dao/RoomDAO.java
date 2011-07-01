@@ -158,6 +158,10 @@ public class RoomDAO extends BBDD{
 	}
 	
 	public int registerUserRoom(User user, Room room) {
+		return this.registerUserRoom(user.getUsername(), room, Constants.GUEST_ROL);
+	}
+	
+	private int registerUserRoom(String username, Room room, int rol) {
 		int idRoom = -1;
 		logger.info("[RoomDAO-addRoom]: Adding new user-room relation ...");
 		String sqlInserUserRoom = "insert into roomuser (id_room, username, rol) " +
@@ -166,8 +170,8 @@ public class RoomDAO extends BBDD{
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlInserUserRoom);
 			st.setInt(1, room.getId());
-			st.setString(2, user.getUsername());
-			st.setInt(3, Constants.COLABORATOR_ROL);
+			st.setString(2, username);
+			st.setInt(3, rol);
 
 			int i = st.executeUpdate();
 			if (i != 1){
@@ -479,6 +483,164 @@ public class RoomDAO extends BBDD{
 			}
 		}
 		return results;
+	}
+
+	public UserRoom sendRoomInvitation(String username, Room room, int rol) {
+		UserRoom result = null;
+		logger.info("[RoomDAO-sendRoomInvitation]: New room invitation...");
+		String sqlInserRoomInvitation = "insert into roomuserinvitation (username, id_room, rol) " +
+		"values (?,?,?)";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlInserRoomInvitation);
+			st.setString(1, username);
+			st.setInt(2, room.getId());
+			st.setInt(3, rol);
+
+			int i = st.executeUpdate();
+			if (i != 1){
+				logger.info("[RoomDAO-sendRoomInvitation]: The invitation can't be create");
+			}else{
+				result = new UserRoom();
+				result.setRoom(room);
+				result.setRoomName(room.getName());
+				result.setOwnerUserName(room.getOwner());
+				result.setUserName(username);
+				result.setRol(rol);
+				switch (rol) {
+					case Constants.OWNER_ROL:
+						result.setRolDescription("Owner");
+						break;
+					case Constants.MODERATOR_ROL:
+						result.setRolDescription("Moderator");
+						break;
+					case Constants.COLABORATOR_ROL:
+						result.setRolDescription("Colaborator");
+						break;
+					case Constants.GUEST_ROL:
+						result.setRolDescription("Guest");
+						break;
+				}
+			}
+			
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-sendRoomInvitation]: Error in SQL sentence: " + e.getLocalizedMessage());	
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-sendRoomInvitation]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-sendRoomInvitation]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return result;
+	}
+	
+	public int removeUserInvitation(UserRoom userRoom) {
+		int result = -1;
+		logger.info("[RoomDAO-removeUserInvitation]: Remove user invitation...");
+		String sqlDeleteRoomInvitation = "delete from roomuserinvitation where username=? and id_room=?";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlDeleteRoomInvitation);
+			st.setString(1, userRoom.getUserName());
+			st.setInt(2, userRoom.getRoom().getId());
+
+			int i = st.executeUpdate();
+			if (i < 0){
+				logger.info("[RoomDAO-removeUserInvitation]: The invitation can't be deleted");
+				result = -1;
+			}else{
+				result = 0;
+			}
+			
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-removeUserInvitation]: Error in SQL sentence: " + e.getLocalizedMessage());	
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-removeUserInvitation]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-removeUserInvitation]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+		return result;
+	}
+
+	public List<UserRoom> getAllUserRoomInvitation(String username) {
+		List<UserRoom> results = new ArrayList<UserRoom>();
+		logger.info("[RoomDAO-getAllUserRoomInvitation]: Searching invitations of user ["+username+"]..");
+		String sqlSelectUserInvitation = "select username, id_room, rol " +
+		"from roomuserinvitation where username=?";
+		try {
+			conn = getConnection();
+
+			PreparedStatement stUserSala = conn.prepareStatement(sqlSelectUserInvitation);
+			stUserSala.setString(1, username);
+			// Ejecutamos las query
+			ResultSet resultados = stUserSala.executeQuery();
+			while (resultados != null && resultados.next()) {
+				Room roomAux = this.findRoomById(resultados.getInt("id_room"));
+				if(roomAux != null){
+					UserRoom newUserRoom = new UserRoom();
+					newUserRoom.setRoom(roomAux);
+					newUserRoom.setRoomName(roomAux.getName());
+					newUserRoom.setOwnerUserName(roomAux.getOwner());
+					newUserRoom.setUserName(resultados.getString("username"));
+					newUserRoom.setRol(resultados.getInt("rol"));
+					int tipoRol = resultados.getInt("rol");
+					switch (tipoRol) {
+						case Constants.OWNER_ROL:
+							newUserRoom.setRolDescription("Owner");
+							break;
+						case Constants.MODERATOR_ROL:
+							newUserRoom.setRolDescription("Moderator");
+							break;
+						case Constants.COLABORATOR_ROL:
+							newUserRoom.setRolDescription("Colaborator");
+							break;
+						case Constants.GUEST_ROL:
+							newUserRoom.setRolDescription("Guest");
+							break;
+					}
+					results.add(newUserRoom);
+				}
+			
+			}
+
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-getAllUserRoomInvitation]: Error in SQL sentence: " + e.getLocalizedMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-getAllUserRoomInvitation]: Closing DB connection");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-getAllUserRoomInvitation]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+		return results;
+	}
+
+	public int manageUserRoomRelation(UserRoom userRoom, boolean insert) {
+		logger.info("[RoomDAO-manageUserRoomRelation]: Deleting room invitation...");
+		if(this.removeUserInvitation(userRoom) < 0){
+			logger.error("[RoomDAO-manageUserRoomRelation]: Error in room invitation delete...");
+			return -1;
+		}else{
+			if(insert){
+				logger.error("[RoomDAO-manageUserRoomRelation]: Insert new roomuser relation...");
+				return this.registerUserRoom(userRoom.getUserName(), userRoom.getRoom(), userRoom.getRol());
+			}else{
+				return 0;
+			}
+		}
 	}
 
 

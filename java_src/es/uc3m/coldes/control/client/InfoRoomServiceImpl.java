@@ -53,6 +53,12 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 		int result = this.roomDAO.roomLogout(user, room);
 		return result;
 	}
+	
+	public int manageUserRoomRelation(UserRoom userRoom, boolean insert) {
+		int result = this.roomDAO.manageUserRoomRelation(userRoom, insert);
+		return result;
+	}
+	
 	/* SEARCH ROOMS */
 	public List<UserRoom> getUserRooms(User user) {
 		List<UserRoom> resultRooms = this.roomDAO.getUserRooms(user);
@@ -66,6 +72,17 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 
 	public List<UserRoom> getRoomUsers(Room room) {
 		List<UserRoom> resultRoomUsers = this.roomDAO.getRoomUsers(room);
+		return resultRoomUsers;
+	}
+
+	/* INVITATIONS */
+	public UserRoom sendRoomInvitation(String username, Room room, int rol){
+		UserRoom result = this.roomDAO.sendRoomInvitation(username, room, rol);
+		return result;
+	}
+
+	public List<UserRoom> getAllUserRoomInvitation(String username) {
+		List<UserRoom> resultRoomUsers = this.roomDAO.getAllUserRoomInvitation(username);
 		return resultRoomUsers;
 	}
 
