@@ -145,7 +145,46 @@ package es.uc3m.coldes.business
 			var roomUsers:ArrayCollection = event.result as ArrayCollection;
 			callback(roomUsers);	
 		}
+		
+		public function sendRoomInvitation(username:String, room:Room, rol:Number, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultSendRoomInvitation);
+			this.callback = callback;
+			service.sendRoomInvitation(username, room, rol);
+		}
+		
+		private function resultSendRoomInvitation(event:ResultEvent):void {
+			var result:Number = event.result as Number;
+			callback(result);	
+		}
+		
+		public function getAllUserRoomInvitation(username:String, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultGetAllUserRoomInvitation);
+			this.callback = callback;
+			service.getAllUserRoomInvitation(username);
+		}
+		
+		private function resultGetAllUserRoomInvitation(event:ResultEvent):void {
+			var invitations:ArrayCollection = event.result as ArrayCollection;
+			callback(invitations);	
+		}
 
+		public function manageUserRoomRelation(userRoom:UserRoom, insert:Boolean, callback:Function):void{
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultManageUserRoomRelation);
+			this.callback = callback;
+			service.manageUserRoomRelation(userRoom, insert);
+		}
+		
+		private function resultManageUserRoomRelation(event:ResultEvent):void {
+			var result:Number = event.result as Number;
+			callback(result);	
+		}
+		
 		private function error(event:FaultEvent):void {
 			if (event.fault.faultString.indexOf("Session timeout") >= 0) {
 				UtilPopUp.showMessagePopUP("SESSION OVER",

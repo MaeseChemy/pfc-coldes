@@ -13,4 +13,8 @@
 	
 	<destination id="updateUsersRooms">
 	</destination> 
+	
+	<destination id="message">
+	</destination> 
+	
 </service>

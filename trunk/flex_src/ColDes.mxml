@@ -7,6 +7,9 @@
 
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.view.message.ManageUserMessages;
+			import mx.messaging.messages.IMessage;
+			import mx.collections.ArrayCollection;
 			import es.uc3m.coldes.business.RoomService;
 			import es.uc3m.coldes.view.room.RoomView;
 			import es.uc3m.coldes.entities.UserRoom;
@@ -42,6 +45,7 @@
 			
 			[Bindable]
 			private var _userLoged:User;
+			[Bindable]
 			public function set userLoged(user:User):void{
 				_userLoged = user;
 			}
@@ -59,6 +63,9 @@
 				return _userMessages;
 			}
 			
+			[Bindable]
+			public var userInvitationMessage:ArrayCollection = new ArrayCollection();
+			
 			/*************************************/
 			/**         INIT FUNCTIONS          **/
 			/*************************************/
@@ -66,9 +73,6 @@
 			private function init():void{
 				ResourceLanguage.setResources(resourceManager);
 				this.changeLocale("es_ES");
-				
-				//Aqui calcular con consulta a base de datos
-				this.userMessages = 0;
 				
 				primaryVS.selectedChild=loginFacade;
 				tabs.setClosePolicyForTab(0, SuperTab.CLOSE_NEVER);
@@ -94,7 +98,6 @@
                 }
             }
  
-			
 			/*************************************/
 			/**     COLDES ACCESS FUNCTIONS     **/
 			/*************************************/
@@ -124,6 +127,16 @@
 			    	menuAdmin.visible=true;
 			    }
 				primaryVS.selectedChild=mainWindow;
+				
+				//Aqui calcular con consulta a base de datos
+				consumer.subscribe();
+				
+				(new RoomService()).getAllUserRoomInvitation(userLoged.username, calbackGetInvitations);
+			}
+			
+			private function calbackGetInvitations(invitations:ArrayCollection):void{
+				userInvitationMessage = invitations;
+				userMessages = userInvitationMessage.length;
 			}
 			
 			private var popUpSalirConditional:ConditionalPopUp;
@@ -163,6 +176,10 @@
 				rooms.selected = false;
 				adminitration.selected = false;
 				secondaryVS.selectedIndex = 0;
+				
+				//Disable warning of new message
+				imgNewMessage.includeInLayout = false;
+				imgNewMessage.visible = false;
 			}
 			
 			/*************************************/
@@ -285,10 +302,29 @@
 				}
 			}
 			
+			/**********************************/
+			/**      MESSAGE FUNCTIONS		 **/
+			/**********************************/
+			private function messageHandler(message:IMessage):void{
+				if(message.body.username == userLoged.username){
+					userInvitationMessage.addItem(message.body.userroom as UserRoom);
+					userMessages = userInvitationMessage.length;
+					imgNewMessage.includeInLayout = true;
+					imgNewMessage.visible = true;
+				}
+			}
+			
+			private function openMessageManager():void{
+				var manageMessages:ManageUserMessages=PopUpManager.createPopUp(DisplayObject(Application.application), ManageUserMessages, true) as ManageUserMessages;
+				manageMessages.messages = userInvitationMessage;
+				manageMessages.title = "Mensajes del usuario \"" + userLoged.username +"\"";
+				PopUpManager.centerPopUp(manageMessages);
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:Style source="ColDes.css"/>
-	
+	<mx:Consumer id="consumer" destination="message" message="messageHandler(event.message)"/>
 	<mx:ViewStack height="100%" id="primaryVS" width="100%" creationPolicy="all">
 		<mx:Canvas height="100%" width="100%"/>	
 		<mx:Canvas id="loginFacade" width="100%" height="100%">
@@ -319,9 +355,18 @@
 					<mx:HBox horizontalAlign="left" verticalAlign="middle" width="100%" paddingRight="5" paddingTop="5">
 						<mx:Button id="btnLogOut" height="20" icon="@Embed(source='assets/images/btnlogout.png')" label="{resourceManager.getString('myResources','MAINWINDOW.LOGOUT')}"
 							click="initDoLogout()"/>
-						<mx:Button id="btnMessage" height="20" icon="@Embed(source='assets/images/buzoncorreo.png')" label="({userMessages})"/>
-						<mx:Label text="{resourceManager.getString('myResources','LOGIN.USERNAME')}:" fontWeight="bold" textDecoration="underline"/>
-						<mx:Label id="labelUsername" fontStyle="italic"/>
+							
+						<mx:HBox horizontalAlign="center" verticalAlign="middle" horizontalGap="0">
+							<mx:Button id="btnMessage" height="20" icon="@Embed(source='assets/images/buzoncorreo.png')" label="({userMessages})" click="openMessageManager()"/>
+							<mx:Image id="imgNewMessage" height="20" source="assets/images/newmessage.png"
+								includeInLayout="false" visible="false"/>
+						</mx:HBox>
+						
+						<mx:HBox horizontalAlign="center" verticalAlign="middle" horizontalGap="0">
+							<mx:Label text="{resourceManager.getString('myResources','LOGIN.USERNAME')}:" fontWeight="bold" textDecoration="underline"/>
+							<mx:Label id="labelUsername" fontStyle="italic"/>
+						</mx:HBox>
+						
 					</mx:HBox>
 					<mx:HBox horizontalAlign="right" width="100%" paddingRight="5" paddingTop="5" horizontalGap="5">
 						<lang:LangConfig id="btnsLangConfigMain" />
@@ -348,7 +393,7 @@
 								</mx:GridItem>
 							</mx:GridRow>
 						</mx:Grid>	
-						<mx:Grid paddingBottom="20" horizontalGap="100" verticalGap="30" id="menuAdmin" includeInLayout="false" visible="false">
+						<mx:Grid paddingBottom="20" horizontalGap="100" verticalGap="30" id="menuAdmin" includeInLayout="{userLoged.admin}" visible="{userLoged.admin}">
 							<mx:GridRow width="100%" horizontalAlign="center">
 								<mx:GridItem width="100%" horizontalAlign="center">
 									<mx:Button label="{resourceManager.getString('myResources','MAINWINDOW.ADMINISTRATOR')}"
