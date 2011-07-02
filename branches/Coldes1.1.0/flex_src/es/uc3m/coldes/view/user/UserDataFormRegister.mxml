@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
+	title="{resourceManager.getString('myResources','REGISTER.TITLE')}" 
+	close="cancelRegister()"
+	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.validators.Validator;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import es.uc3m.coldes.entities.User;
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			
+			public var callBackFunction:Function;
+			
+			public function cancelRegister():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function submitRegister():void{
+				var errors:Array=Validator.validateAll(validators);
+				if (errors.length==0) {
+					//parentApplication.submitRegister(mapUserForm());
+					callBackFunction(mapUserForm());
+					PopUpManager.removePopUp(this);
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTERFORM'),
+					resourceManager.getString('myResources','ERROR.REGISTERFORM'));
+				}
+			}
+			
+			private function verifyValidators():void{
+				passVal.validate();
+				rpasVal.validate();
+			}
+			
+			private function mapUserForm():User{
+				var newUser:User = new User();
+				newUser.name = nameField.text;
+				newUser.surname1 = surname1Field.text;
+				newUser.surname2 = surname2Field.text;
+				newUser.email = emailField.text;
+				newUser.username = usernameField.text;
+				newUser.password = passwordField.text;
+				newUser.active = true;
+				newUser.admin = false;
+				newUser.designer = true;
+				return newUser;
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- Form Registro -->
+	<mx:Form id="registerForm" defaultButton="{buttonRegister}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
+			<mx:TextInput id="nameField"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.SURNAME1')}">
+			<mx:TextInput id="surname1Field"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.SURNAME2')}">
+			<mx:TextInput id="surname2Field"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.EMAIL')}">
+			<mx:TextInput id="emailField"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.USERNAME')}">
+			<mx:TextInput id="usernameField"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PASSWORD')}">
+			<mx:TextInput id="passwordField" displayAsPassword="true" change="verifyValidators()"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PASSWORDCONFIRM')}">
+			<mx:TextInput id="repasswordField" displayAsPassword="true" change="verifyValidators()"/>
+		</mx:FormItem>
+		<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">
+			<mx:Button id="buttonRegister" x="72" y="5" 
+				label="{resourceManager.getString('myResources','REGISTER.CANCEL')}" 
+				width="85" height="30"
+				click="cancelRegister()"/>
+			<mx:Button id="buttonLogin" x="165" y="5" 
+				label="{resourceManager.getString('myResources','REGISTER.SUBMIT')}" 
+				width="85" height="30"
+				click="submitRegister()"/>
+		</mx:HBox>
+	</mx:Form>
+	
+	<!-- Validators -->
+	<mx:Array id="validators">
+		<mx:StringValidator id="nameVal" source="{nameField}" property="text" trigger="{nameField}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([nameField])"/>
+		<mx:StringValidator id="sur1Val" source="{surname1Field}" property="text" trigger="{surname1Field}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([surname1Field])"/>
+		<mx:StringValidator id="sur2Val" source="{surname2Field}" property="text" trigger="{surname2Field}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([surname2Field])"/>
+		<mx:EmailValidator  id="emailVal" source="{emailField}" property="text" trigger="{emailField}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([emailField])"/>
+		<mx:StringValidator id="userVal" source="{usernameField}" property="text" trigger="{usernameField}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([usernameField])"/>
+		<validator:FormPasswordValidator id="passVal" source="{passwordField}" property="text" 
+							_password1="{passwordField.text}" _password2="{repasswordField.text}"
+							_typeError="{resourceManager.getString('myResources','VALIDATORTYPE.PASSWORD')}"
+							_error="{resourceManager.getString('myResources','VALIDATOR.PASSWORD')}"
+							trigger="{passwordField}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([passwordField])"/>
+		<validator:FormPasswordValidator id="rpasVal" source="{repasswordField}" property="text" 
+							_password1="{repasswordField.text}" _password2="{passwordField.text}"
+							_typeError="{resourceManager.getString('myResources','VALIDATORTYPE.PASSWORD')}"
+							_error="{resourceManager.getString('myResources','VALIDATOR.PASSWORD')}"
+							trigger="{repasswordField}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([repasswordField])"/>
+	</mx:Array>
+	<mx:Glow id="glowEffect" color="0xFF0000" duration="1000" alphaFrom="1.0" alphaTo="0"
+			 blurXFrom="0.0" blurXTo="30.0" blurYFrom="0.0" blurYTo="30.0"/>
+		
+</ResizableWindow>

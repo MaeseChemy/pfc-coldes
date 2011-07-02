@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
+	title="{resourceManager.getString('myResources','REGISTER.TITLE')}" 
+	close="cancelRegister()"
+	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*"
+	creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import es.uc3m.coldes.business.Constants;
+			import es.uc3m.coldes.entities.Room;
+			import mx.validators.Validator;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import es.uc3m.coldes.entities.User;
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			
+			public var userLoged:User;
+			public var callBackFunction:Function;
+			
+			[Bindable]
+			private var paticipationTypes:Array;
+			
+			public function init():void{
+				this.paticipationTypes = new Array(
+					resourceManager.getString('myResources','REGISTER.ONEPAINTING'),
+					resourceManager.getString('myResources','REGISTER.ALLPAITING')
+				);
+			}
+			
+			public function cancelRegister():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function submitRegister():void{
+				var errors:Array=Validator.validateAll(validators);
+				if (errors.length==0) {
+					//parentApplication.submitRegister(mapUserForm());
+					callBackFunction(mapRoomForm());
+					PopUpManager.removePopUp(this);
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTERFORM'),
+					resourceManager.getString('myResources','ERROR.REGISTERFORM'));
+				}
+			}
+			
+			private function mapRoomForm():Room{
+				var newRoom:Room = new Room();
+				newRoom.name = nameField.text;
+				newRoom.description = descriptionField.text;
+				newRoom.owner = userLoged.username;
+				newRoom.privateRoom = privateRoomCheck.selected;
+				switch(comboParticipationType.selectedItem as String){
+ 		 			case resourceManager.getString('myResources','REGISTER.ONEPAINTING'):{
+ 		 				newRoom.participationType = Constants.ONE_PAINTING;
+ 						break;
+   					}
+   					case resourceManager.getString('myResources','REGISTER.ALLPAITING'):{ 
+   						newRoom.participationType = Constants.ALL_PAINTING;
+ 						break;
+   					} 
+   				}
+				return newRoom;
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- Form Registro -->
+	<mx:Form id="registerForm" defaultButton="{buttonRegister}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
+			<mx:TextInput id="nameField"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PRIVATE')}">
+			<mx:CheckBox id="privateRoomCheck" />
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PARTICIPATIONTYPE')}">
+			<mx:ComboBox id="comboParticipationType" dataProvider="{paticipationTypes}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Descripción:">
+			<mx:TextArea id="descriptionField"/>
+		</mx:FormItem>
+		<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">
+			<mx:Button id="buttonRegister" x="72" y="5" 
+				label="{resourceManager.getString('myResources','REGISTER.CANCEL')}" 
+				width="85" height="30"
+				click="cancelRegister()"/>
+			<mx:Button id="buttonLogin" x="165" y="5" 
+				label="{resourceManager.getString('myResources','REGISTER.SUBMIT')}" 
+				width="85" height="30"
+				click="submitRegister()"/>
+		</mx:HBox>
+	</mx:Form>
+	
+	<!-- Validators -->
+	<mx:Array id="validators">
+		<mx:StringValidator id="nameVal" source="{nameField}" property="text" trigger="{nameField}" triggerEvent="focusOut"
+							required="true" invalid="glowEffect.play([nameField])"/>
+	</mx:Array>
+	<mx:Glow id="glowEffect" color="0xFF0000" duration="1000" alphaFrom="1.0" alphaTo="0"
+			 blurXFrom="0.0" blurXTo="30.0" blurYFrom="0.0" blurYTo="30.0"/>
+		
+</ResizableWindow>
