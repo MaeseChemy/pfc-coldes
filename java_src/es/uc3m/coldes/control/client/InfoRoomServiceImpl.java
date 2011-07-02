@@ -69,6 +69,11 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 		List<Room> resultRooms = this.roomDAO.getColDesRooms();
 		return resultRooms;
 	}
+	
+	public List<Room> getColDesPublicRooms() {
+		List<Room> resultRooms = this.roomDAO.getColDesPublicRooms();
+		return resultRooms;
+	}
 
 	public List<UserRoom> getRoomUsers(Room room) {
 		List<UserRoom> resultRoomUsers = this.roomDAO.getRoomUsers(room);

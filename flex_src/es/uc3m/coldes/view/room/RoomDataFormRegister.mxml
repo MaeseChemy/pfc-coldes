@@ -2,10 +2,13 @@
 <ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
 	title="{resourceManager.getString('myResources','REGISTER.TITLE')}" 
 	close="cancelRegister()"
-	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*">
+	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*"
+	creationComplete="init()">
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import es.uc3m.coldes.business.Constants;
 			import es.uc3m.coldes.entities.Room;
 			import mx.validators.Validator;
 			import es.uc3m.coldes.utils.popup.UtilPopUp;
@@ -16,6 +19,16 @@
 			
 			public var userLoged:User;
 			public var callBackFunction:Function;
+			
+			[Bindable]
+			private var paticipationTypes:Array;
+			
+			public function init():void{
+				this.paticipationTypes = new Array(
+					resourceManager.getString('myResources','REGISTER.ONEPAINTING'),
+					resourceManager.getString('myResources','REGISTER.ALLPAITING')
+				);
+			}
 			
 			public function cancelRegister():void{
 				PopUpManager.removePopUp(this);
@@ -38,6 +51,17 @@
 				newRoom.name = nameField.text;
 				newRoom.description = descriptionField.text;
 				newRoom.owner = userLoged.username;
+				newRoom.privateRoom = privateRoomCheck.selected;
+				switch(comboParticipationType.selectedItem as String){
+ 		 			case resourceManager.getString('myResources','REGISTER.ONEPAINTING'):{
+ 		 				newRoom.participationType = Constants.ONE_PAINTING;
+ 						break;
+   					}
+   					case resourceManager.getString('myResources','REGISTER.ALLPAITING'):{ 
+   						newRoom.participationType = Constants.ALL_PAINTING;
+ 						break;
+   					} 
+   				}
 				return newRoom;
 			}
 		]]>
@@ -47,6 +71,12 @@
 	<mx:Form id="registerForm" defaultButton="{buttonRegister}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
 		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
 			<mx:TextInput id="nameField"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PRIVATE')}">
+			<mx:CheckBox id="privateRoomCheck" />
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PARTICIPATIONTYPE')}">
+			<mx:ComboBox id="comboParticipationType" dataProvider="{paticipationTypes}"/>
 		</mx:FormItem>
 		<mx:FormItem label="Descripción:">
 			<mx:TextArea id="descriptionField"/>

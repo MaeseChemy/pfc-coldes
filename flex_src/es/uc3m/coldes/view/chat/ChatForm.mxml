@@ -20,7 +20,7 @@
 			consumer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			consumer.channelSet = channelSet;
 			consumer.subscribe();
@@ -30,7 +30,7 @@
 			producer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			producer.channelSet = channelSet;
 		}

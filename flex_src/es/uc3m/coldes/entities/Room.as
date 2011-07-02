@@ -13,6 +13,8 @@ package es.uc3m.coldes.entities
 		public var name:String;
 		public var description:String;
 		public var owner:String;
+		public var privateRoom:Boolean;
+		public var participationType:Number;
 				
 	}
 }

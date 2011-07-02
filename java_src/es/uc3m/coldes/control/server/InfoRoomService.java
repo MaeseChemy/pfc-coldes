@@ -19,6 +19,7 @@ public interface InfoRoomService {
 	/* SEARCH ROOMS */
 	public List<UserRoom> getUserRooms(User user);
 	public List<Room> getColDesRooms();
+	public List<Room> getColDesPublicRooms();
 	public List<UserRoom> getRoomUsers(Room room);
 	
 	/* INVITATIONS */

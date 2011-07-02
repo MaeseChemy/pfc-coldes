@@ -172,7 +172,8 @@
 					pintando = false;
 					lienzo.removeChild(uiComponentTemporal);
 					//mandamos el canvas al resto :D
-					setTimeout(this.sendImage,0,obtenerLienzoTemporal());
+					if(producerConect)
+						setTimeout(this.sendImage,0,obtenerLienzoTemporal());
 				}
 			}
 		}
@@ -476,12 +477,12 @@
 		
 		
 		/*--*/
-		/*VARIABLES PARA CARGA DE IMAGENES*/
+		/*VARIABLES PARA LOS CONSUMIDORES*/
 		public function configConsumer(destination:String):void{
 			consumer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			consumer.channelSet = channelSet;
 			consumer.subscribe();
@@ -491,14 +492,24 @@
 			producer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			producer.channelSet = channelSet;
 		}
 		
+		private var producerConect:Boolean = true;
+		public function disconect():void{
+			consumer.unsubscribe();
+			producerConect = false;
+		}
+		public function conect():void{
+			consumer.subscribe();
+			producerConect = true;
+			setTimeout(this.sendImage,0,obtenerLienzoTemporal());
+		}
+		
 		public var myMessageBitmap:Bitmap;
 		public var loaderMessage:Loader = new Loader();
-		
 		private function sendImage(bitmapData:BitmapData):void{
 			var message:IMessage = new AsyncMessageExt();
 			var ba:ByteArray = (new PNGEncoder()).encode(bitmapData);

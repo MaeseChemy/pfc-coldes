@@ -2,7 +2,7 @@
 <ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
 	close="close()"
 	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*" 
-	width="500" height="200" horizontalAlign="center" verticalAlign="middle">
+	height="200" horizontalAlign="center" verticalAlign="middle">
 	<mx:Script>
 		<![CDATA[
 			import es.uc3m.coldes.entities.UserRoom;
@@ -25,7 +25,10 @@
 			}
 			
 			private function renderMessage(item:Object, col:DataGridColumn):String {
-				return "Invitacion para la sala ["+item.roomName+"] del usuario ("+item.ownerUserName+") como \"" +item.rolDescription+"\"";
+				//return "Invitacion para la sala ["+item.roomName+"] del usuario ("+item.ownerUserName+") como \"" +item.rolDescription+"\"";
+				return resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT1') +item.roomName+ 
+				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT2') +item.ownerUserName+ 
+				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT3') +item.rolDescription+"\"";
 			}
 			
 			public function accept(data:UserRoom):void{
@@ -52,7 +55,7 @@
 	<mx:Canvas width="100%" height="100%">
 	<mx:VBox id="vbox" width="100%" height="100%" >
 
-		<mx:DataGrid id="gridUserMessages" width="100%" height="100%" dataProvider="{messages}" verticalScrollPolicy="auto"
+		<mx:DataGrid id="gridUserMessages" width="460" height="100%" dataProvider="{messages}" verticalScrollPolicy="auto"
 			wordWrap="true" variableRowHeight="true">
 			<mx:columns>
 				<mx:DataGridColumn width="60" resizable="false">
@@ -71,20 +74,16 @@
 									]]>
 								</mx:Script>
 								<mx:Image buttonMode="true" source="assets/images/icos/mailremove.png"
-										  toolTip="Rechazar" click="decline()"/>
+										  toolTip="{resourceManager.getString('myResources','MESSAGESMANAGEMENT.DECLINE')}" click="decline()"/>
 								<mx:Image buttonMode="true" source="assets/images/icos/mailaccept.png"
-										  toolTip="Aceptar" click="accept()"/>
+										  toolTip="{resourceManager.getString('myResources','MESSAGESMANAGEMENT.ACCEPT')}" click="accept()"/>
 							</mx:HBox>
 						</mx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
 				
-				<mx:DataGridColumn headerText="Invitacion" labelFunction="renderMessage"/>
-				<!--
-				<mx:DataGridColumn headerText="Propietario" dataField="ownerUserName"/>
-				<mx:DataGridColumn headerText="Nombre de la sala" dataField="roomName"/>
-				<mx:DataGridColumn headerText="Rol a desempeñar" dataField="rolDescription"/>
-				-->
+				<mx:DataGridColumn width="400" headerText="{resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATION')}" labelFunction="renderMessage"/>
+
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:VBox>

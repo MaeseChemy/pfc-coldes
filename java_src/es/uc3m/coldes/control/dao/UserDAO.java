@@ -349,14 +349,6 @@ public class UserDAO extends BBDD{
 				logger.error("[UserDAO-validate]: Failed to invalidate the user " + username);
 			}
 			
-			sql = "update roomuser set online=0 where username=?";
-			conn = getConnection();
-			st = conn.prepareStatement(sql);
-			st.setString(1, username);
-			actualizados = st.executeUpdate();
-			if (actualizados < 1) {
-				logger.error("[UserDAO-validate]: Failed to invalidate the user rooms " + username);
-			}
 		} catch (SQLException e) {
 			logger.error("[UserDAO-validate]: Error in SQL sentence: " + e.getLocalizedMessage());
 		} finally {
