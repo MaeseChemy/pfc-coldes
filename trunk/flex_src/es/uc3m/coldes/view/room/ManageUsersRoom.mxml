@@ -47,9 +47,8 @@
 			
 			private function calbakcSendRoomInvitation(result:Number):void {
 				if(result < 0){
-					Alert.show("Error interno");
-				}else{
-					Alert.show("Mensaje enviado con exito");
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+					       resourceManager.getString('myResources','ERROR.SERVER'));
 				}
 			}	
 		]]>
@@ -58,7 +57,8 @@
 	<mx:Canvas width="100%" height="100%">
 	<mx:VBox id="vbox" width="100%" height="100%" >
 
-		<mx:DataGrid id="gridUserColDesMan" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto">
+		<mx:DataGrid id="gridUserColDesMan" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto"
+			wordWrap="true" variableRowHeight="true">
 			<mx:columns>
 				<mx:DataGridColumn width="30" resizable="false">
 					<mx:itemRenderer>
@@ -72,12 +72,12 @@
 									]]>
 								</mx:Script>
 								<mx:Image buttonMode="true" source="assets/images/icos/useradd.png"
-										  toolTip="Enviar invitación" click="sendRoomInvitation()"/>
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.SENDINVITATION')}" click="sendRoomInvitation()"/>
 							</mx:HBox>
 						</mx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
-				<mx:DataGridColumn headerText="Usuarios de ColDes">
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERSOFCOLDES')}">
 					<mx:itemRenderer>
 						<mx:Component >
 							<mx:Text text="{data}" 
@@ -112,16 +112,16 @@
 									]]>
 								</mx:Script>
 								<mx:Image buttonMode="true" source="assets/images/icos/mydata.png"
-										  toolTip="Editar rol" click="editUserRelation()"/>
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROLEDIT')}" click="editUserRelation()"/>
 								<mx:Image buttonMode="true" source="assets/images/icos/userremove.png"
-										  toolTip="Eliminar usuario" click="removeUser()" 
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.DELETEUSER')}" click="removeUser()" 
 										  includeInLayout="{(data).rol != Constants.OWNER_ROL}" visible="{(data).rol != Constants.OWNER_ROL}"/>
 							</mx:HBox>
 						</mx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
-				<mx:DataGridColumn headerText="Usuarios de la sala" dataField="userName"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROL')}" dataField="rolDescription"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERSOFROOM')}" dataField="userName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROL')}" dataField="rolDescription"/>
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:VBox>

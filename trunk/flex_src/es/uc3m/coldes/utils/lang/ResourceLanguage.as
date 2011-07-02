@@ -49,6 +49,10 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.ADMIN']="Administrador";
 			myResources.content['REGISTER.DESIGNER']="Diseñador";
 			myResources.content['REGISTER.ACTIVE']="Activo";
+			myResources.content['REGISTER.PRIVATE']="Privada";
+			myResources.content['REGISTER.PARTICIPATIONTYPE']="Tipo de participación";
+			myResources.content['REGISTER.ONEPAINTING']="Uno a Uno";
+			myResources.content['REGISTER.ALLPAITING']="Todos a la Vez";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Salir";
@@ -95,6 +99,9 @@ package es.uc3m.coldes.utils.lang
 			//ROOMVIEW
 			myResources.content['ROOMVIEW.USERENTER']="ha entrado en la sala";
 			myResources.content['ROOMVIEW.USEREXIT']="ha salido de la sala";
+			myResources.content['ROOMVIEW.PENCILREQUEST']="ha solicitado el pincel";
+			myResources.content['ROOMVIEW.PENCILLEFT']="ha dejado el pincel";
+			myResources.content['ROOMVIEW.PENCILOWNER']="es el nuevo propietario del pincel";
 			myResources.content['ROOMVIEW.SQUARE']="Cuadrado";
 			myResources.content['ROOMVIEW.CIRCLE']="Circulo";
 			myResources.content['ROOMVIEW.STRAIGHT']="Recta";
@@ -109,7 +116,30 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.UNDO']="Deshacer";
 			myResources.content['ROOMVIEW.REDO']="Rehacer";
 			myResources.content['ROOMVIEW.PLAY']="Reproducir";
+			myResources.content['ROOMVIEW.UPLOADFROMDB']="Importar de mis diseños";
+			myResources.content['ROOMVIEW.SAVETODB']="Guardar en mis diseños";
+			myResources.content['ROOMVIEW.STOPSYNCRONIZE']="Sincronizar lienzo";
+			myResources.content['ROOMVIEW.STARTSYNCRONIZE']="Desincronizar lienzo";
+			myResources.content['ROOMVIEW.REQUESTPENCIL']="Solicitar pincel";
+			myResources.content['ROOMVIEW.LEFTPENCIL']="Dejar pincel";
+			myResources.content['ROOMVIEW.SAVECANVASTOROOM']="Asociar diseño a la sala";
 			
+			//MANAGE USERS ROOM
+			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Enviar Invitación";
+			myResources.content['MANAGEUSERROOMS.USERSOFCOLDES']="Usuarios de ColDes";
+			myResources.content['MANAGEUSERROOMS.ROLEDIT']="Editar Rol";
+			myResources.content['MANAGEUSERROOMS.DELETEUSER']="Eliminar Usuario";
+			myResources.content['MANAGEUSERROOMS.USERSOFROOM']="Usuarios de la Sala";
+			myResources.content['MANAGEUSERROOMS.ROL']="Rol";
+
+			//MANAGE USER MESSAGES
+			myResources.content['MESSAGESMANAGEMENT.ACCEPT']="Aceptar";
+			myResources.content['MESSAGESMANAGEMENT.DECLINE']="Rechazar";
+			myResources.content['MESSAGESMANAGEMENT.INVITATION']="Invitación";
+			myResources.content['MESSAGESMANAGEMENT.INVITATIONTEXT1']="Invitación para la sala [";
+			myResources.content['MESSAGESMANAGEMENT.INVITATIONTEXT2']="] del usuario (";
+			myResources.content['MESSAGESMANAGEMENT.INVITATIONTEXT3']=") como \"";
+
 			//POPUP ANSWERS
 			myResources.content['ANSWERS.YES']="Si";
 			myResources.content['ANSWERS.NO']="No";
@@ -192,7 +222,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.ADMIN']="Administrator";
 			myResources.content['REGISTER.DESIGNER']="Designer";
 			myResources.content['REGISTER.ACTIVE']="Active";
-			
+			myResources.content['REGISTER.PRIVATE']="Private";
+			myResources.content['REGISTER.PARTICIPATIONTYPE']="Type of Participation";
+			myResources.content['REGISTER.ONEPAINTING']="One to One";
+			myResources.content['REGISTER.ALLPAITING']="All at Once";
+
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Logout";
 			myResources.content['MAINWINDOW.TITLE']="Home";
@@ -238,6 +272,9 @@ package es.uc3m.coldes.utils.lang
 			//ROOMVIEW
 			myResources.content['ROOMVIEW.USERENTER']="has entered in the room";
 			myResources.content['ROOMVIEW.USEREXIT']="has left the room";
+			myResources.content['ROOMVIEW.PENCILREQUEST']= "has requested the pencil";
+			myResources.content['ROOMVIEW.PENCILLEFT']="has left the pencil";
+			myResources.content['ROOMVIEW.PENCILOWNER']="is the new owner of the pencil";
 			myResources.content['ROOMVIEW.SQUARE']="Square";
 			myResources.content['ROOMVIEW.CIRCLE']="Circle";
 			myResources.content['ROOMVIEW.STRAIGHT']="Line";
@@ -252,6 +289,29 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.UNDO']="Undo";
 			myResources.content['ROOMVIEW.REDO']="Redo";
 			myResources.content['ROOMVIEW.PLAY']="Play";
+			myResources.content['ROOMVIEW.UPLOADFROMDB']="Import of my designs";
+			myResources.content['ROOMVIEW.SAVETODB']="Save to my designs";
+			myResources.content['ROOMVIEW.STOPSYNCRONIZE']="Sync canvas";
+			myResources.content['ROOMVIEW.STARTSYNCRONIZE']="Unsync canvas";
+			myResources.content['ROOMVIEW.REQUESTPENCIL']="Request pencil";
+			myResources.content['ROOMVIEW.LEFTPENCIL']="Leave pencil";
+			myResources.content['ROOMVIEW.SAVECANVASTOROOM']="Link design to the room";
+			
+			//MANAGE USERS ROOM
+			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Send Invitation";
+			myResources.content['MANAGEUSERROOMS.USERSOFCOLDES']="ColDes Users";
+			myResources.content['MANAGEUSERROOMS.ROLEDIT']="Edit Rol";
+			myResources.content['MANAGEUSERROOMS.DELETEUSER']="Delete User";
+			myResources.content['MANAGEUSERROOMS.USERSOFROOM']="Room Users";
+			myResources.content['MANAGEUSERROOMS.ROL']="Rol";
+			
+			//MANAGE USER MESSAGES
+			myResources.content['MESSAGESMANAGEMENT.ACCEPT']="Accept";
+			myResources.content['MESSAGESMANAGEMENT.DECLINE']="Decline";
+			myResources.content['MESSAGESMANAGEMENT.INVITATION']="Invitation";
+			myResources.content['MESSAGESMANAGEMENT.INVITATIONTEXT1']="Invitation from room [";
+			myResources.content['MESSAGESMANAGEMENT.INVITATIONTEXT2']="] of user (";
+			myResources.content['MESSAGESMANAGEMENT.INVITATIONTEXT3']=") as \"";
 			
 			//POPUP ANSWERS
 			myResources.content['ANSWERS.YES']="Yes";

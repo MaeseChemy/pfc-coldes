@@ -111,6 +111,7 @@
 					roomNew = new RoomView();
 					roomNew.room = userRoom.room;
 					roomNew.user = userLoged;
+					roomNew.userRol = userRoom.rol;
 					roomNew.label = userRoom.roomName;
 					roomNew.icon = roomIcon;
 					parentApplication.tabs.addChild(roomNew);

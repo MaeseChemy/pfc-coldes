@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import es.uc3m.coldes.control.client.InfoPencilServiceImpl;
 import es.uc3m.coldes.control.client.InfoRoomServiceImpl;
 import es.uc3m.coldes.control.client.InfoUserServiceImpl;
 import es.uc3m.coldes.exceptions.SessionTimeoutException;
@@ -28,11 +29,13 @@ public class ColDesService implements Serializable{
 	//Services
 	private InfoUserService userService;
 	private InfoRoomService roomService;
+	private InfoPencilService pencilService;
 
 	public ColDesService(){
 		this.session = new ColDesSession();
 		this.userService = new InfoUserServiceImpl();
 		this.roomService = new InfoRoomServiceImpl();
+		this.pencilService = new InfoPencilServiceImpl();
 	}
 	
 	public void finalize() {
@@ -119,6 +122,11 @@ public class ColDesService implements Serializable{
 		return this.roomService.getColDesRooms();
 	}
 	
+	public List<Room> getColDesPublicRooms() throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.roomService.getColDesPublicRooms();
+	}
+	
 	public int registerUserRoom(User user, Room room) throws SessionTimeoutException{
 		checkIsLogIn();
 		return this.roomService.registerUserRoom(user, room);
@@ -137,9 +145,18 @@ public class ColDesService implements Serializable{
 	public int roomLogout(User user, Room room, boolean totalLogout) throws SessionTimeoutException{
 		if(!totalLogout)
 			checkIsLogIn();
+		boolean oldOwner = this.pencilService.isUserPencilOwner(room, user.getUsername());
 		int result = this.roomService.roomLogout(user,room);
 		if(result >= 0){
-			this.notifyUserToRoom(user, room, "exit");
+			
+			//Actualizamos las peticiones de pinceles del usuario en la sala
+			String nextUser = this.pencilService.deleteUserPencilRequestRoom(user.getUsername(), room);
+			if(oldOwner){
+				this.notifyUserToRoom(user.getUsername(), room, "exit", nextUser);
+			}else{
+				this.notifyUserToRoom(user.getUsername(), room, "exit", null);
+			}
+			
 		}
 		return result;
 	}
@@ -164,6 +181,37 @@ public class ColDesService implements Serializable{
 		return this.roomService.getAllUserRoomInvitation(username);
 	}
 	
+	/*************/
+	/** PENCILS **/
+	/*************/
+	public boolean pencilBusy(Room room, String username, int userrol)throws SessionTimeoutException{
+		checkIsLogIn();
+		boolean result = this.pencilService.pencilBusy(room, username, userrol);
+		if(!result){
+			this.notifyUserToRoom(username,room,"pencilRequest",username);
+		}
+		return result;
+	}
+	
+	public boolean addPencilRequest(Room room, String username, int userrol)throws SessionTimeoutException{
+		checkIsLogIn();
+		boolean result = this.pencilService.addPencilRequest(room, username, userrol);
+		if(result){
+			if(this.pencilService.isUserPencilOwner(room, username)){
+				this.notifyUserToRoom(username,room,"pencilRequest",username);
+			}else{
+				this.notifyUserToRoom(username,room,"pencilRequest",null);
+			}
+		}
+		return result;
+	}
+	
+	public String removePencilRequest(Room room, String username, int userrol)throws SessionTimeoutException{
+		checkIsLogIn();
+		String nextUser = this.pencilService.deleteUserPencilRequestRoom(username, room);
+		this.notifyUserToRoom(username, room, "pencilLeft", nextUser);
+		return nextUser;
+	}
 	/**************/
 	/** CHANNELS **/
 	/**************/
@@ -185,7 +233,7 @@ public class ColDesService implements Serializable{
 		return destinationStringValue;
 	}
 	
-	public void notifyUserToRoom(User user, Room room, String action) throws SessionTimeoutException{
+	public void notifyUserToRoom(String username, Room room, String action, String nextPencilOwner) throws SessionTimeoutException{
 		logger.info("[ColDesManager-enterInRoom]: User " +action+ " the room...");
 		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
         String clientID = UUIDUtils.createUUID(false);
@@ -195,9 +243,12 @@ public class ColDesService implements Serializable{
         msg.setMessageId(UUIDUtils.createUUID(false));
         msg.setTimestamp(System.currentTimeMillis());
         HashMap<String, Object> body = new HashMap<String, Object>();
-        body.put("user", user.getUsername());
+        body.put("user", username);
         body.put("room", room);
         body.put("action", action);
+        
+        //Next pencil Owner
+        body.put("nextPencilOwner", nextPencilOwner);
         msg.setBody(body);
         logger.info("[ColDesManager-enterInRoom]: Sending message" + body);
         msgBroker.routeMessageToService(msg, null);

@@ -152,6 +152,16 @@
 			
 			private function doLogout(event:Event):void{
 				if(popUpSalirConditional.answer){
+					for each (var child:DisplayObject in tabs.getChildren()) {
+						if (child!=tabInit) {
+							if(child is RoomView){
+								var roomViewAux:RoomView = child as RoomView;
+								(new RoomService()).roomLogout(userLoged, roomViewAux.room, true, roomLogoutCallback);
+							}	
+							tabs.removeChild(child);
+						}
+					}
+
 					(new UserService()).doLogout(userLoged,logoutCallback);
 				}
 			}
@@ -162,15 +172,7 @@
 			}
 
 			private function cleanSite():void {
-				for each (var child:DisplayObject in tabs.getChildren()) {
-					if (child!=tabInit) {
-						if(child is RoomView){
-							var roomViewAux:RoomView = child as RoomView;
-							(new RoomService()).roomLogout(userLoged, roomViewAux.room, true, roomLogoutCallback);
-						}	
-						tabs.removeChild(child);
-					}
-				}
+
 				//Unselect main buttons
 				users.selected = false;
 				rooms.selected = false;
