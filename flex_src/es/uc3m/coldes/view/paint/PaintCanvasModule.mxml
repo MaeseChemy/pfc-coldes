@@ -20,10 +20,6 @@
 		import mx.messaging.messages.AbstractMessage;
 		import mx.messaging.messages.AsyncMessage;
 		import mx.messaging.messages.IMessage;
-
-		/*-***************-*/
-		/*CODIGO DEL LIENZO*/
-		/*-***************-*/
 		
 		import flash.utils.ByteArray;
 	
@@ -31,7 +27,6 @@
 		import mx.core.UIComponent;
 		import mx.graphics.codec.PNGEncoder;
 
-		/*CONSTANTES*/
 
 		/*VARIABLES DE POSICIONAMIENTO*/
 		//Coordenadas para definir el dibujo
@@ -82,6 +77,7 @@
 		public var velocidad:uint;
 		
 		/*Usuario logado*/
+		[Bindable]
 		private var user:User;
 		/* METODOS */
 		
@@ -390,6 +386,15 @@
 			pintando = false;
 		}
 		
+		/* FUNCIONES PARA SALVAR Y CARGAR DE BBDD */
+		
+		public function getSnapShot():ByteArray{
+			var bd:BitmapData = new BitmapData(lienzo.width,lienzo.height);
+			bd.draw(lienzo);
+			var ba:ByteArray = (new PNGEncoder()).encode(bd);
+			return ba;
+		}
+		
 		/*FUNCIONES PARA SALVAR Y CARGAR DE FICHERO*/
 		public function saveCanvas():void {
 			//Abrimos un popup para que seleccione la ruta
@@ -505,7 +510,6 @@
 		public function conect():void{
 			consumer.subscribe();
 			producerConect = true;
-			setTimeout(this.sendImage,0,obtenerLienzoTemporal());
 		}
 		
 		public var myMessageBitmap:Bitmap;
