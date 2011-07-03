@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import es.uc3m.coldes.control.client.InfoDesignServiceImpl;
 import es.uc3m.coldes.control.client.InfoPencilServiceImpl;
 import es.uc3m.coldes.control.client.InfoRoomServiceImpl;
 import es.uc3m.coldes.control.client.InfoUserServiceImpl;
 import es.uc3m.coldes.exceptions.SessionTimeoutException;
+import es.uc3m.coldes.model.Design;
 import es.uc3m.coldes.model.Room;
 import es.uc3m.coldes.model.User;
 import es.uc3m.coldes.model.UserRoom;
@@ -30,12 +32,14 @@ public class ColDesService implements Serializable{
 	private InfoUserService userService;
 	private InfoRoomService roomService;
 	private InfoPencilService pencilService;
+	private InfoDesignService designService;
 
 	public ColDesService(){
 		this.session = new ColDesSession();
 		this.userService = new InfoUserServiceImpl();
 		this.roomService = new InfoRoomServiceImpl();
 		this.pencilService = new InfoPencilServiceImpl();
+		this.designService = new InfoDesignServiceImpl();
 	}
 	
 	public void finalize() {
@@ -212,6 +216,45 @@ public class ColDesService implements Serializable{
 		this.notifyUserToRoom(username, room, "pencilLeft", nextUser);
 		return nextUser;
 	}
+	
+	/*************/
+	/** DESIGNS **/
+	/*************/
+	public boolean saveDesignToCanvas(Room room, byte[] content) throws SessionTimeoutException{
+		checkIsLogIn();
+		boolean result = this.designService.saveDesignToCanvas(room, content);
+		return result;
+	}
+	
+	public byte[] getRoomSaveContent(Room room)throws SessionTimeoutException{
+		checkIsLogIn();
+		byte[] designContent = this.designService.getRoomSaveContent(room);
+		return designContent;
+	}
+	
+	public boolean removeDesingRoom(Room room) throws SessionTimeoutException{
+		checkIsLogIn();
+		boolean result = this.designService.removeDesingRoom(room);
+		return result;
+	}
+	
+	public boolean saveDesignToUser(Design design) throws SessionTimeoutException{
+		checkIsLogIn();
+		boolean result = this.designService.saveDesignToUser(design);
+		return result;
+	}
+	
+	public List<Design> getUserDesigns(User user){
+		List<Design> userDesigns = this.designService.getUserDesigns(user);
+		return userDesigns;
+	}
+	
+	public boolean removeUserDesign(Design design) throws SessionTimeoutException{
+		checkIsLogIn();
+		boolean result = this.designService.removeUserDesign(design);
+		return result;
+	}
+	
 	/**************/
 	/** CHANNELS **/
 	/**************/
