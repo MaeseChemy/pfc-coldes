@@ -44,7 +44,7 @@
 				newUser.email = emailField.text;
 				newUser.username = usernameField.text;
 				newUser.password = passwordField.text;
-				newUser.active = true;
+				newUser.active = false;
 				newUser.admin = false;
 				newUser.designer = true;
 				return newUser;

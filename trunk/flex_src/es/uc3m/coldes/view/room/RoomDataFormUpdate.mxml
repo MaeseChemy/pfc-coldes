@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
-	title="{resourceManager.getString('myResources','REGISTER.TITLEROOM')}" 
+	title="{resourceManager.getString('myResources','REGISTER.TITLE')}" 
 	close="cancelRegister()"
 	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*"
 	creationComplete="init()">
@@ -19,6 +19,7 @@
 			
 			public var userLoged:User;
 			public var callBackFunction:Function;
+			public var room:Room;
 			
 			[Bindable]
 			private var paticipationTypes:Array;
@@ -28,6 +29,7 @@
 					resourceManager.getString('myResources','REGISTER.ONEPAINTING'),
 					resourceManager.getString('myResources','REGISTER.ALLPAITING')
 				);
+				this.mapToForm(room);
 			}
 			
 			public function cancelRegister():void{
@@ -44,6 +46,22 @@
 					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTERFORM'),
 					resourceManager.getString('myResources','ERROR.REGISTERFORM'));
 				}
+			}
+			
+			private function mapToForm(room:Room):void{
+				nameField.text = room.name;
+				descriptionField.text = room.description;
+				privateRoomCheck.selected = room.privateRoom;
+				switch(room.participationType){
+ 		 			case Constants.ONE_PAINTING:{
+ 		 				comboParticipationType.selectedItem = resourceManager.getString('myResources','REGISTER.ONEPAINTING');
+ 						break;
+   					}
+   					case Constants.ALL_PAINTING:{ 
+   						comboParticipationType.selectedItem = resourceManager.getString('myResources','REGISTER.ALLPAITING');
+ 						break;
+   					} 
+   				}
 			}
 			
 			private function mapRoomForm():Room{

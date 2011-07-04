@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
 	close="close()" creationComplete="init()"
+	title="{resourceManager.getString('myResources','MANAGEUSERDESIGNS.TITLE')}" 
 	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*" 
 	height="200" horizontalAlign="center" verticalAlign="middle" width="300">
 	<mx:Script>
@@ -77,12 +78,12 @@
 									]]>
 								</mx:Script>
 								<mx:Image buttonMode="true" source="assets/images/icos/designremove.png"
-										  toolTip="Borrar diseño" click="removeUserDesing()"/>
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERDESIGNS.TOOLTIPREMOVE')}" click="removeUserDesing()"/>
 							</mx:HBox>
 						</mx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
-				<mx:DataGridColumn headerText="Diseños" dataField="designname"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERDESIGNS.DESIGNS')}" dataField="designname"/>
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:VBox>

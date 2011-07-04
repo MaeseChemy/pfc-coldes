@@ -4,6 +4,7 @@
 		   creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.view.room.RoomDataFormUpdate;
 			import mx.core.Application;
 			import es.uc3m.coldes.view.room.ManageUsersRoom;
 			import mx.events.FlexEvent;
@@ -134,7 +135,26 @@
 			/***************************/
 			
 			public function editRoom(data:UserRoom):void{
-
+				var updateRoom:RoomDataFormUpdate=PopUpManager.createPopUp(DisplayObject(Application.application), RoomDataFormUpdate, true) as RoomDataFormUpdate;
+				updateRoom.room = data.room;
+				updateRoom.callBackFunction = doUpdateRoom;
+				PopUpManager.centerPopUp(updateRoom);
+			}
+			
+			public function doUpdateRoom(room:Room):void{
+				(new RoomService()).updateRoom(room, doUpdateRoomCallback);
+			}
+			
+			public function doUpdateRoomCallback(result:Boolean):void{
+				if(result){
+					//Internal error
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.UPDATERROOM'),
+										       resourceManager.getString('myResources','MESSAGE.UPDATERROOM'));
+					refresh();
+				}
 			}
 			
 			public var condDelete:ConditionalPopUp;
@@ -165,7 +185,7 @@
 			public function manageUsersRoom(data:UserRoom):void{
 				var manageUsers:ManageUsersRoom=PopUpManager.createPopUp(DisplayObject(Application.application), ManageUsersRoom, true) as ManageUsersRoom;
 				manageUsers.room = data.room;
-				manageUsers.title = "Sala \"" + data.roomName +"\"";
+				manageUsers.title = resourceManager.getString('myResources','MYROOMS.ROOM')+ " \"" + data.roomName +"\"";
 				PopUpManager.centerPopUp(manageUsers);
 			}
 			

@@ -8,8 +8,9 @@ import es.uc3m.coldes.model.UserRoom;
 
 public interface InfoRoomService {
 
-	/* MANAGEMENT USER */
+	/* MANAGEMENT ROOM */
 	public int addRoom(Room room);
+	public boolean updateRoom(Room room);
 	public int registerUserRoom(User user, Room room);
 	public int deleteUserRoom(UserRoom userRoom);
 	public List<String> enterInRoom(User user, Room room);
@@ -25,5 +26,6 @@ public interface InfoRoomService {
 	/* INVITATIONS */
 	public UserRoom sendRoomInvitation(String username, Room room, int rol);
 	public List<UserRoom> getAllUserRoomInvitation(String username);
+	
 	
 }

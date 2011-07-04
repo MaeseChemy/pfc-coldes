@@ -689,6 +689,43 @@ public class RoomDAO extends BBDD{
 		}
 	}
 
+	public boolean updateRoom(Room room) {
+		logger.info("[RoomDAO-updateRoom]: Logout from room ...");
+		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, participationtype=? where id_room=?";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlDeleteUserRoom);
+			st.setString(1, room.getName());
+			st.setString(2, room.getDescription());
+			st.setString(3, room.getOwner());
+			st.setBoolean(4, room.getPrivateRoom());
+			st.setInt(5, room.getParticipationType());
+
+			int i = st.executeUpdate();
+			if (i != 1){
+				logger.info("[RoomDAO-updateRoom]: The room can't be updated");
+				return false;
+			}else{
+				return true;
+			}
+						
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-updateRoom]: Error in SQL sentence: " + e.getLocalizedMessage());
+			return false;
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-updateRoom]: Closing DB connection");
+					conn.close();
+					
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-updateRoom]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+	}
+
 
 
 }

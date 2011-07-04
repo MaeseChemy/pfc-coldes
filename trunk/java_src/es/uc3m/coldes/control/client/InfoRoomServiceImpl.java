@@ -21,9 +21,14 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 		this.roomDAO = new RoomDAO();
 	}
 	
-	/* MANAGEMENT USER */
+	/* MANAGEMENT ROOM */
 	public int addRoom(Room room) {
 		int result = this.roomDAO.addRoom(room);
+		return result;
+	}
+	
+	public boolean updateRoom(Room room) {
+		boolean result = this.roomDAO.updateRoom(room);
 		return result;
 	}
 
