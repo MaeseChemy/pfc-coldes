@@ -34,6 +34,8 @@ package es.uc3m.coldes.utils.lang
 			
 			//REGISTER
 			myResources.content['REGISTER.TITLE']="Registro de usuario";
+			myResources.content['REGISTER.TITLEROOM']="Registro de sala";
+			myResources.content['REGISTER.TITLEDESING']="Registro de diseño";
 			myResources.content['REGISTER.USERNAME']="Usuario";
 			myResources.content['REGISTER.PASSWORD']="Contraseña";
 			myResources.content['REGISTER.PASSWORDCONFIRM']="Confirme Contraseña";
@@ -74,6 +76,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.SEARCHBTN']="Buscar";
 			myResources.content['MYROOMS.ROOMNAME']="Nombre de la Sala";
 			myResources.content['MYROOMS.OWNERUSERNAME']="Propietario";
+			myResources.content['MYROOMS.ROOM']="Sala";
 			myResources.content['MYROOMS.USER']="Usuario";
 			myResources.content['MYROOMS.USERS']="Usuarios";
 			myResources.content['MYROOMS.ROL']="Rol";
@@ -91,6 +94,14 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['USERMANAGEMENT.NAME']="Nombre";
 			myResources.content['USERMANAGEMENT.SURNAME1']="Apellido 1";
 			myResources.content['USERMANAGEMENT.SURNAME2']="Apellido 2";
+		
+			//MANAGE USER DESIGNS
+			myResources.content['SAVEUSERDESIGN.TITLE']="Mis diseños";
+			myResources.content['MANAGEUSERDESIGNS.DESIGNS']="Diseños";
+			myResources.content['MANAGEUSERDESIGNS.TOOLTIPREMOVE']="Borar diseño";
+			
+			//SAVE USER DESIGNS
+			myResources.content['SAVEUSERDESIGN.TITLE']="Salvar en mis diseños";
 		
 			//CHAT
 			myResources.content['CHAT.USERS']="Usuarios";
@@ -123,6 +134,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.REQUESTPENCIL']="Solicitar pincel";
 			myResources.content['ROOMVIEW.LEFTPENCIL']="Dejar pincel";
 			myResources.content['ROOMVIEW.SAVECANVASTOROOM']="Asociar diseño a la sala";
+			
 			
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Enviar Invitación";
@@ -158,6 +170,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.UPDATE']="Actualización del usuario realizada con éxito.";
 			myResources.content['MESSAGETITLE.REGISTERROOM']="REGISTRO DE SALA COMPLETO";
 			myResources.content['MESSAGE.REGISTERROOM']="La creación de la nueva sala se realizo correctamente.";
+			myResources.content['MESSAGETITLE.UPDATERROOM']="ACTUALIZACIÓN DE SALA COMPLETO";
+			myResources.content['MESSAGE.UPDATERROOM']="La actualización de la sala se realizo correctamente.";
 			myResources.content['MESSAGETITLE.REMOVEUSERRELATIONOWNER']="ELIMINAR RELACION Y SALA";
 			myResources.content['MESSAGE.REMOVEUSERRELATIONOWNER']="Al ser el propietario de la sala, borrar la relación " + 
 					"implicará borrar la sala y con ello todas las relaciones asociadas. ¿Esta seguro?";
@@ -165,6 +179,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.REMOVEUSERRELATION']="¿Esta seguro que quiere borrarse de esta sala?";
 			myResources.content['MESSAGETITLE.USERROOMREGISTER']="OPCIONES DE REGISTRO EN SALA";
 			myResources.content['MESSAGE.USERROOMREGISTER']="¿Qué acción desea realizar?";
+			myResources.content['MESSAGETITLE.SAVEDESIGN']="GUARDADO DE CONTENIDO";
+			myResources.content['MESSAGE.SAVEDESIGNTOUSER']="Se ha asociado con éxito el diseño al usuario";
+			myResources.content['MESSAGE.SAVEDESIGNTOCANVAS']="Se ha asociado con éxito el diseño a la sala";
+			myResources.content['MESSAGETITLE.REMOVEDESIGN']="BORRADO DE CONTENIDO";
+			myResources.content['MESSAGE.REMOVEDESIGN']="Se ha borrado con éxito el diseño asociado a la sala.";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -175,7 +194,10 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ERROR.REGISTERFORM']="Existen errores en el formulario de registro, verifique los campos.";
 			myResources.content['ERRORTITLE.REGISTERROOM']="SALA EXISTENTE";
 			myResources.content['ERROR.REGISTERROOM']="La sala que desea crear ya existe.";
-			
+			myResources.content['ERRORTITLE.SAVEDESIGN']="ERROR EN GUARDADO";
+			myResources.content['ERROR.SAVEDESIGN']="Se produjo un error al asociar el contenido del lienzo";
+
+
 			//ERROR VALIDATORS's
 			myResources.content['VALIDATORTYPE.PASSWORD']="Password Incorrecta";
 			myResources.content['VALIDATOR.PASSWORD']="Las contraseñas deben coincidir.";
@@ -207,6 +229,8 @@ package es.uc3m.coldes.utils.lang
 			
 			//REGISTER
 			myResources.content['REGISTER.TITLE']="User register";
+			myResources.content['REGISTER.TITLEROOM']="Room register";
+			myResources.content['REGISTER.TITLEDESING']="Room register";
 			myResources.content['REGISTER.USERNAME']="User";
 			myResources.content['REGISTER.PASSWORD']="Password";
 			myResources.content['REGISTER.PASSWORDCONFIRM']="Confirm Password";
@@ -247,6 +271,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.SEARCHBTN']="Search";
 			myResources.content['MYROOMS.ROOMNAME']="Room Name";
 			myResources.content['MYROOMS.OWNERUSERNAME']="Owner";
+			myResources.content['MYROOMS.ROOM']="Room";
 			myResources.content['MYROOMS.USER']="Username";
 			myResources.content['MYROOMS.USERS']="Users";
 			myResources.content['MYROOMS.ROL']="Rol";
@@ -264,6 +289,14 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['USERMANAGEMENT.NAME']="Name";
 			myResources.content['USERMANAGEMENT.SURNAME1']="Surname 1";
 			myResources.content['USERMANAGEMENT.SURNAME2']="Surname 2";
+			
+			//MANAGE USER DESIGNS
+			myResources.content['SAVEUSERDESIGN.TITLE']="My Designs";
+			myResources.content['MANAGEUSERDESIGNS.DESIGNS']="Designs";
+			myResources.content['MANAGEUSERDESIGNS.TOOLTIPREMOVE']="Remove design";
+			
+			//SAVE USER DESIGNS
+			myResources.content['SAVEUSERDESIGN.TITLE']="Save in my Design";
 			
 			//CHAT
 			myResources.content['CHAT.USERS']="Users";
@@ -331,6 +364,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.UPDATE']="User update completed successfully.";
 			myResources.content['MESSAGETITLE.REGISTERROOM']="ROOM REGISTER COMPLETE";
 			myResources.content['MESSAGE.REGISTERROOM']="Room register successful.";
+			myResources.content['MESSAGETITLE.UPDATERROOM']="UPDATE COMPLETE";
+			myResources.content['MESSAGE.UPDATERROOM']="Room update completed successfully.";
 			myResources.content['MESSAGETITLE.REMOVEUSERRELATIONOWNER']="DELETE RELATION AND ROOM";
 			myResources.content['MESSAGE.REMOVEUSERRELATIONOWNER']="As the owner of the room, clear the relationship involve" + 
 					" the room and remove all relationships associated with it. Are you sure?";
@@ -338,6 +373,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.REMOVEUSERRELATION']="Are you sure you want to remove the room relation?"
 			myResources.content['MESSAGETITLE.USERROOMREGISTER']="LOG IN ROOM OPTIONS";
 			myResources.content['MESSAGE.USERROOMREGISTER']="What do you want?"
+			myResources.content['MESSAGETITLE.SAVEDESIGN']="SAVE DESIGN";
+			myResources.content['MESSAGE.SAVEDESIGNTOUSER']="You have successfully associated with the design to the user";
+			myResources.content['MESSAGE.SAVEDESIGNTOCANVAS']="You have success has been associated with the design to the room ";
+			myResources.content['MESSAGETITLE.REMOVEDESIGN']="REMOVE DESIGN";
+			myResources.content['MESSAGE.REMOVEDESIGN']="You have successfully deleted the associated room-design."
 
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";
@@ -348,7 +388,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ERROR.REGISTERFORM']="There are errors in the registration form, check the form fields.";
 			myResources.content['ERRORTITLE.REGISTERROOM']="REGISTER ROOM";
 			myResources.content['ERROR.REGISTERROOM']="The room already exist in your rooms.";
-			
+			myResources.content['ERRORTITLE.SAVEDESIGN']="ERROR IN STORAGE";
+			myResources.content['ERROR.SAVEDESIGN']="Error occurred when attaching the contents of the canvas";
 			//ERROR VALIDATORS's
 			myResources.content['VALIDATORTYPE.PASSWORD']="Incorrect Password";
 			myResources.content['VALIDATOR.PASSWORD']="Passwords must match.";

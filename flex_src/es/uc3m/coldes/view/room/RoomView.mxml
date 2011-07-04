@@ -163,7 +163,7 @@
        			if(room.id == body.room.id){
        				if(body.action == "enter"){
        					roomChat.log += "<font color='#0101DF'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
-       					logInfoRoomEvents += "<b>" +date+" </b><font color='#0101DF'> <b>"+ body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
+       					logInfoRoomEvents += "<b>" +date+" </b><font color='#0101DF'><b>"+ body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
        					if(findUser(body.user, usersRooms) < 0){
        						usersRooms.addItem(body.user);
        					}
@@ -392,11 +392,11 @@
 			
 			public function calbackSaveToUserDB(result:Boolean):void{
 				if(result){
-					UtilPopUp.showMessagePopUP("GUARDADO DE CONTENIDO",
-									   "Se ha asociado con éxito el diseño al usuario.");
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','MESSAGE.SAVEDESIGNTOUSER'));
 				}else{
-					UtilPopUp.showMessagePopUP("ERROR EN GUARDADO",
-									   "Se produjo un error al asociar el diseño, intentelo con otro nombre.");
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','ERROR.SAVEDESIGN'));
 				}
 			}
 			
@@ -416,8 +416,11 @@
 			
 			public function calbackSaveToCanvasDB(result:Boolean):void{
 				if(result){
-					UtilPopUp.showMessagePopUP("GUARDADO DE CONTENIDO",
-									   "Se ha asociado con éxito el diseño a la sala.");
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','MESSAGE.SAVEDESIGNTOCANVAS'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','ERROR.SAVEDESIGN'));
 				}
 			}
 			
@@ -427,8 +430,8 @@
 			
 			public function calbackRemoveFromCanvasDB(result:Boolean):void{
 				if(result){
-					UtilPopUp.showMessagePopUP("BORRADO DE CONTENIDO",
-									   "Se ha borrado con éxito el diseño asociado a la sala.");
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEDESIGN'),
+									   resourceManager.getString('myResources','MESSAGE.REMOVEDESIGN'));
 				}
 			}
 			

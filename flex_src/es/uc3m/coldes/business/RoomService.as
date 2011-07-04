@@ -35,6 +35,19 @@ package es.uc3m.coldes.business
 			callback(addResult);	
 		}
 		
+		public function updateRoom(room:Room, callback:Function):void {
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultUpdateRoom);
+			this.callback = callback;
+			service.addRoom(room);
+		}
+		
+		private function resultUpdateRoom(event:ResultEvent):void {
+			var addResult:Number = event.result as Number;
+			callback(addResult);	
+		}
+		
 		public function registerUserRoom(user:User, room:Room, callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
