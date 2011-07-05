@@ -690,8 +690,8 @@ public class RoomDAO extends BBDD{
 	}
 
 	public boolean updateRoom(Room room) {
-		logger.info("[RoomDAO-updateRoom]: Logout from room ...");
-		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, participationtype=? where id_room=?";
+		logger.info("[RoomDAO-updateRoom]: Update room ...");
+		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, participationtype=? where id=?";
 		try {
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlDeleteUserRoom);
@@ -700,7 +700,8 @@ public class RoomDAO extends BBDD{
 			st.setString(3, room.getOwner());
 			st.setBoolean(4, room.getPrivateRoom());
 			st.setInt(5, room.getParticipationType());
-
+			st.setInt(6, room.getId());
+			
 			int i = st.executeUpdate();
 			if (i != 1){
 				logger.info("[RoomDAO-updateRoom]: The room can't be updated");
@@ -724,6 +725,87 @@ public class RoomDAO extends BBDD{
 			}
 		}
 
+	}
+
+	public boolean updateUserRoom(UserRoom userRoom){
+		logger.info("[RoomDAO-updateUserRoom]: Update room-user ...");
+		String sqlDeleteUserRoom = "update roomuser set rol=? where id_room=? and username=?";
+		try {
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlDeleteUserRoom);
+			st.setInt(1, userRoom.getRol());
+			st.setInt(2, userRoom.getRoom().getId());
+			st.setString(3, userRoom.getUserName());
+
+			int i = st.executeUpdate();
+			if (i != 1){
+				logger.info("[RoomDAO-updateUserRoom]: The room-user can't be updated");
+				return false;
+			}else{
+				return true;
+			}
+						
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-updateUserRoom]: Error in SQL sentence: " + e.getLocalizedMessage());
+			return false;
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-updateUserRoom]: Closing DB connection");
+					conn.close();
+					
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-updateUserRoom]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+	}
+	
+	public boolean changeUserOwner(int idRoom, String newOwner, String oldOwner) {
+		logger.info("[RoomDAO-changeUserOwner]: Change user owner of user room relation ...");
+		try {
+			String sqlChangeOwnerRoom = "update roomuser set rol=? where id_room=? and username=?";
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlChangeOwnerRoom);
+			st.setInt(1, Constants.OWNER_ROL);
+			st.setInt(2, idRoom);
+			st.setString(3, newOwner);
+
+			int i = st.executeUpdate();
+			if (i != 1){
+				logger.info("[RoomDAO-changeUserOwner]: (new Owner) The room-user can't be updated");
+				return false;
+			}else{
+				st = conn.prepareStatement(sqlChangeOwnerRoom);
+				st.setInt(1, Constants.MODERATOR_ROL);
+				st.setInt(2, idRoom);
+				st.setString(3, oldOwner);
+				i = st.executeUpdate();
+				if (i != 1){
+					logger.info("[RoomDAO-changeUserOwner]: (old Owner) The room-user can't be updated");
+					return false;
+				}else{
+					return true;
+				}
+			}
+			
+						
+		} catch (SQLException e) {
+			logger.error("[RoomDAO-changeUserOwner]: Error in SQL sentence: " + e.getLocalizedMessage());
+			return false;
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[RoomDAO-changeUserOwner]: Closing DB connection");
+					conn.close();
+					
+				} catch (SQLException e) {
+					logger.error("[RoomDAO-changeUserOwner]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+		
 	}
 
 

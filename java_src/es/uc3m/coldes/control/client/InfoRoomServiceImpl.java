@@ -48,6 +48,27 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 		
 		return result;
 	}
+
+	public boolean updateUserRoom(UserRoom userRoom) {
+		if(userRoom.getRol() == Constants.OWNER_ROL){			
+			logger.info("[InfoRoom-updateUserRoom]: The user ["+userRoom.getUserName()+"] is the new owner of the room [" + userRoom.getRoom().getName() + "]...");
+			//Update owner user relation
+
+			//Update room
+			Room aux = userRoom.getRoom();
+			aux.setOwner(userRoom.getUserName());
+			this.roomDAO.updateRoom(aux);
+			if(this.roomDAO.updateRoom(aux)){
+				//Update user relation
+				return this.roomDAO.changeUserOwner(userRoom.getRoom().getId(), userRoom.getUserName(), userRoom.getOwnerUserName());	
+			}else{
+				return false;
+			}
+		}else{
+			return this.roomDAO.updateUserRoom(userRoom);
+
+		}
+	}
 	
 	public List<String> enterInRoom(User user, Room room) {
 		List<String> usersRoom = this.roomDAO.enterInRoom(user,room);

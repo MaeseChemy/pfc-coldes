@@ -62,7 +62,7 @@
 				searchText.text="";
 			}
 			
-			private function refresh():void{
+			private function refresh(event:Event=null):void{
 				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
 				searchText.text = "";
 			}
@@ -132,7 +132,9 @@
 				return null;
 			}
 			
-			/***************************/
+			/*************************************/
+			/**         ROOM MANAGEMENT         **/
+			/*************************************/
 			
 			public function editRoom(data:UserRoom):void{
 				var updateRoom:RoomDataFormUpdate=PopUpManager.createPopUp(DisplayObject(Application.application), RoomDataFormUpdate, true) as RoomDataFormUpdate;
@@ -187,6 +189,7 @@
 				manageUsers.room = data.room;
 				manageUsers.title = resourceManager.getString('myResources','MYROOMS.ROOM')+ " \"" + data.roomName +"\"";
 				PopUpManager.centerPopUp(manageUsers);
+				manageUsers.addEventListener(FlexEvent.REMOVE, refresh);
 			}
 			
 		]]>
@@ -212,7 +215,23 @@
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="ownerUserName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="userName"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROL')}" dataField="rolDescription"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROL')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).rol == Constants.OWNER_ROL?resourceManager.getString('myResources','ROLNAME.OWNER'):
+										(data).rol == Constants.MODERATOR_ROL?resourceManager.getString('myResources','ROLNAME.MODERATOR'):
+										(data).rol == Constants.COLABORATOR_ROL ?resourceManager.getString('myResources','ROLNAME.COLABORATOR'):
+										(data).rol == Constants.GUEST_ROL?resourceManager.getString('myResources','ROLNAME.GUEST'):
+										resourceManager.getString('myResources','ROLNAME.DEFAULT')}" >
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
 			</mx:columns>
 		</mx:DataGrid>
 		<mx:HBox width="100%" horizontalAlign="center">

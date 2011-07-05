@@ -58,12 +58,11 @@
 			}
 
 			public function restart():void {
-				init();
-				searchText.text="";
+				refresh();
 			}
 			
 			private function refresh():void{
-				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
+				new RoomService().getColDesRooms(callbackUsersRooms);
 				searchText.text = "";
 			}
 			
