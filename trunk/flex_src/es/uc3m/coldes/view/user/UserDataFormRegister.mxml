@@ -76,11 +76,11 @@
 			<mx:TextInput id="repasswordField" displayAsPassword="true" change="verifyValidators()"/>
 		</mx:FormItem>
 		<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">
-			<mx:Button id="buttonRegister" x="72" y="5" 
+			<mx:Button id="buttonCancel" x="72" y="5" 
 				label="{resourceManager.getString('myResources','REGISTER.CANCEL')}" 
 				width="85" height="30"
 				click="cancelRegister()"/>
-			<mx:Button id="buttonLogin" x="165" y="5" 
+			<mx:Button id="buttonRegister" x="165" y="5" 
 				label="{resourceManager.getString('myResources','REGISTER.SUBMIT')}" 
 				width="85" height="30"
 				click="submitRegister()"/>

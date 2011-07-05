@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
-	title="{resourceManager.getString('myResources','REGISTER.TITLE')}" 
+	title="{resourceManager.getString('myResources','REGISTER.TITLEUPDATE')}" 
 	close="cancelRegister()"
 	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*"
 	creationComplete="init()">
@@ -66,9 +66,10 @@
 			
 			private function mapRoomForm():Room{
 				var newRoom:Room = new Room();
+				newRoom.id = room.id;
 				newRoom.name = nameField.text;
 				newRoom.description = descriptionField.text;
-				newRoom.owner = userLoged.username;
+				newRoom.owner = room.owner;
 				newRoom.privateRoom = privateRoomCheck.selected;
 				switch(comboParticipationType.selectedItem as String){
  		 			case resourceManager.getString('myResources','REGISTER.ONEPAINTING'):{
@@ -86,7 +87,7 @@
 	</mx:Script>
 	
 	<!-- Form Registro -->
-	<mx:Form id="registerForm" defaultButton="{buttonRegister}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
+	<mx:Form id="registerForm" defaultButton="{buttonUpdate}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
 		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
 			<mx:TextInput id="nameField"/>
 		</mx:FormItem>
@@ -96,16 +97,16 @@
 		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PARTICIPATIONTYPE')}">
 			<mx:ComboBox id="comboParticipationType" dataProvider="{paticipationTypes}"/>
 		</mx:FormItem>
-		<mx:FormItem label="Descripción:">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.DESCRIPTION')}:">
 			<mx:TextArea id="descriptionField"/>
 		</mx:FormItem>
 		<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">
-			<mx:Button id="buttonRegister" x="72" y="5" 
+			<mx:Button id="buttonCancel" x="72" y="5" 
 				label="{resourceManager.getString('myResources','REGISTER.CANCEL')}" 
 				width="85" height="30"
 				click="cancelRegister()"/>
-			<mx:Button id="buttonLogin" x="165" y="5" 
-				label="{resourceManager.getString('myResources','REGISTER.SUBMIT')}" 
+			<mx:Button id="buttonUpdate" x="165" y="5" 
+				label="{resourceManager.getString('myResources','REGISTER.SUBMITUPDATE')}" 
 				width="85" height="30"
 				click="submitRegister()"/>
 		</mx:HBox>

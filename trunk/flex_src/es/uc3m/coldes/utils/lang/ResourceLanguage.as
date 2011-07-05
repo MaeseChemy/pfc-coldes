@@ -11,9 +11,10 @@ package es.uc3m.coldes.utils.lang
 		
 		public static function setResources(resourceManager:IResourceManager):void{
 			
-			/***********/		
-			/**ESPAÑOL**/
-			/***********/
+/****************************************************************************************************************/		
+/*******************************************************ESPAÑOL**************************************************/
+/****************************************************************************************************************/
+
 			var myResources:ResourceBundle=new ResourceBundle("es_ES","myResources");
 			myResources.content['ICON']="assets/lang/es.png";
 			
@@ -24,6 +25,13 @@ package es.uc3m.coldes.utils.lang
 			//MODULES NAMES
 			myResources.content['MODULE.USERMANAGEMENT']="Gestión de usuarios";
 			myResources.content['MODULE.ROOMMANAGEMENT']="Gestión de salas";
+			
+			//ROLNAMES
+			myResources.content['ROLNAME.DEFAULT']="Defecto";
+			myResources.content['ROLNAME.OWNER']="Propietario";
+			myResources.content['ROLNAME.MODERATOR']="Moderador";
+			myResources.content['ROLNAME.COLABORATOR']="Colaborador";
+			myResources.content['ROLNAME.GUEST']="Invitado";
 			
 			//LOGIN
 			myResources.content['LOGIN.TITLE']="Acceder a ColDes";
@@ -47,14 +55,18 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.SUBMIT']="Registrar";
 			myResources.content['REGISTER.TITLEUPDATE']="Datos de usuario";
 			myResources.content['REGISTER.SUBMITUPDATE']="Actualizar";
+			myResources.content['REGISTER.TITLEROOMUPDATE']="Datos de la sala";
+			myResources.content['REGISTER.TITLEDESINGUPDATE']="Datos del diseño";
 			myResources.content['REGISTER.CHANGEPASSCHECK']="Cambiar Contraseña";
 			myResources.content['REGISTER.ADMIN']="Administrador";
 			myResources.content['REGISTER.DESIGNER']="Diseñador";
 			myResources.content['REGISTER.ACTIVE']="Activo";
 			myResources.content['REGISTER.PRIVATE']="Privada";
 			myResources.content['REGISTER.PARTICIPATIONTYPE']="Tipo de participación";
+			myResources.content['REGISTER.DESCRIPTION']="Descripción";
 			myResources.content['REGISTER.ONEPAINTING']="Uno a Uno";
 			myResources.content['REGISTER.ALLPAITING']="Todos a la Vez";
+			myResources.content['REGISTER.ROL']="Rol";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Salir";
@@ -96,7 +108,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['USERMANAGEMENT.SURNAME2']="Apellido 2";
 		
 			//MANAGE USER DESIGNS
-			myResources.content['SAVEUSERDESIGN.TITLE']="Mis diseños";
+			myResources.content['MANAGEUSERDESIGNS.TITLE']="Mis diseños";
 			myResources.content['MANAGEUSERDESIGNS.DESIGNS']="Diseños";
 			myResources.content['MANAGEUSERDESIGNS.TOOLTIPREMOVE']="Borar diseño";
 			
@@ -184,6 +196,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.SAVEDESIGNTOCANVAS']="Se ha asociado con éxito el diseño a la sala";
 			myResources.content['MESSAGETITLE.REMOVEDESIGN']="BORRADO DE CONTENIDO";
 			myResources.content['MESSAGE.REMOVEDESIGN']="Se ha borrado con éxito el diseño asociado a la sala.";
+			myResources.content['MESSAGETITLE.SENDINVITATION']="INVITACIÓN ENVIADA";
+			myResources.content['MESSAGE.SENDINVITATION']="La invitación se envió correctamente al usuario.";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -206,9 +220,10 @@ package es.uc3m.coldes.utils.lang
 			
 			resourceManager.addResourceBundle(myResources);
 			
-			/**********/		
-			/**INGLES**/
-			/**********/
+/****************************************************************************************************************/		
+/*******************************************************INGLES***************************************************/
+/****************************************************************************************************************/
+
 			myResources=new ResourceBundle("en_US","myResources");
 			myResources.content['ICON']="assets/lang/us.png";
 			
@@ -220,6 +235,13 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MODULE.USERMANAGEMENT']="User Management";
 			myResources.content['MODULE.ROOMMANAGEMENT']="Room Management";
 			
+			//ROLNAMES
+			myResources.content['ROLNAME.DEFAULT']="Default";
+			myResources.content['ROLNAME.OWNER']="Owner";
+			myResources.content['ROLNAME.MODERATOR']="Moderator";
+			myResources.content['ROLNAME.COLABORATOR']="Colaborator";
+			myResources.content['ROLNAME.GUEST']="Guest";
+			
 			//LOGIN
 			myResources.content['LOGIN.TITLE']="ColDesign Login";
 			myResources.content['LOGIN.USERNAME']="User";
@@ -230,7 +252,7 @@ package es.uc3m.coldes.utils.lang
 			//REGISTER
 			myResources.content['REGISTER.TITLE']="User register";
 			myResources.content['REGISTER.TITLEROOM']="Room register";
-			myResources.content['REGISTER.TITLEDESING']="Room register";
+			myResources.content['REGISTER.TITLEDESING']="Design register";
 			myResources.content['REGISTER.USERNAME']="User";
 			myResources.content['REGISTER.PASSWORD']="Password";
 			myResources.content['REGISTER.PASSWORDCONFIRM']="Confirm Password";
@@ -241,6 +263,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.CANCEL']="Cancel";
 			myResources.content['REGISTER.SUBMIT']="Submit";
 			myResources.content['REGISTER.TITLEUPDATE']="User data";
+			myResources.content['REGISTER.TITLEROOMUPDATE']="Room data";
+			myResources.content['REGISTER.TITLEDESINGUPDATE']="Design data";
 			myResources.content['REGISTER.SUBMITUPDATE']="Update";
 			myResources.content['REGISTER.CHANGEPASSCHECK']="Change Password";
 			myResources.content['REGISTER.ADMIN']="Administrator";
@@ -248,9 +272,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.ACTIVE']="Active";
 			myResources.content['REGISTER.PRIVATE']="Private";
 			myResources.content['REGISTER.PARTICIPATIONTYPE']="Type of Participation";
+			myResources.content['REGISTER.DESCRIPTION']="Description";
 			myResources.content['REGISTER.ONEPAINTING']="One to One";
 			myResources.content['REGISTER.ALLPAITING']="All at Once";
-
+			myResources.content['REGISTER.ROL']="Rol";
+			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Logout";
 			myResources.content['MAINWINDOW.TITLE']="Home";
@@ -378,7 +404,9 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.SAVEDESIGNTOCANVAS']="You have success has been associated with the design to the room ";
 			myResources.content['MESSAGETITLE.REMOVEDESIGN']="REMOVE DESIGN";
 			myResources.content['MESSAGE.REMOVEDESIGN']="You have successfully deleted the associated room-design."
-
+			myResources.content['MESSAGETITLE.SENDINVITATION']="INVITE SENT";
+			myResources.content['MESSAGE.SENDINVITATION']="The invitation was sent correctly to the user."
+			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";
 			myResources.content['ERROR.LOGIN']="The user you are trying to access is wrong, please check the fields.";

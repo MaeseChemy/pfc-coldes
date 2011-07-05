@@ -25,10 +25,22 @@
 			}
 			
 			private function renderMessage(item:Object, col:DataGridColumn):String {
+				var rol:String;
+				if(item.rol == Constants.OWNER_ROL){
+					rol = resourceManager.getString('myResources','ROLNAME.OWNER');
+				}else if(item.rol == Constants.MODERATOR_ROL){
+					rol = resourceManager.getString('myResources','ROLNAME.MODERATOR');
+				}else if(item.rol == Constants.MODERATOR_ROL){
+					rol = resourceManager.getString('myResources','ROLNAME.COLABORATOR');
+				}else if(item.rol == Constants.GUEST_ROL){
+					rol = resourceManager.getString('myResources','ROLNAME.GUEST');
+				}else{
+					rol = resourceManager.getString('myResources','ROLNAME.DEFAULT');
+				}
 				//return "Invitacion para la sala ["+item.roomName+"] del usuario ("+item.ownerUserName+") como \"" +item.rolDescription+"\"";
 				return resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT1') +item.roomName+ 
 				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT2') +item.ownerUserName+ 
-				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT3') +item.rolDescription+"\"";
+				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT3') +rol+"\"";
 			}
 			
 			public function accept(data:UserRoom):void{

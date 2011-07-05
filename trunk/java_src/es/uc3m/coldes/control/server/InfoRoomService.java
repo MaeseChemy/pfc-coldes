@@ -13,6 +13,7 @@ public interface InfoRoomService {
 	public boolean updateRoom(Room room);
 	public int registerUserRoom(User user, Room room);
 	public int deleteUserRoom(UserRoom userRoom);
+	public boolean updateUserRoom(UserRoom userRoom);
 	public List<String> enterInRoom(User user, Room room);
 	public int roomLogout(User user, Room room);
 	public int manageUserRoomRelation(UserRoom userRoom, boolean insert);
@@ -26,6 +27,5 @@ public interface InfoRoomService {
 	/* INVITATIONS */
 	public UserRoom sendRoomInvitation(String username, Room room, int rol);
 	public List<UserRoom> getAllUserRoomInvitation(String username);
-	
 	
 }
