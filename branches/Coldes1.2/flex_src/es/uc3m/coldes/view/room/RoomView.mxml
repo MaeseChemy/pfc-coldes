@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
+	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:chat="es.uc3m.coldes.view.chat.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.view.design.ManageUserDesings;
+			import es.uc3m.coldes.entities.Design;
+			import mx.managers.PopUpManager;
+			import mx.core.Application;
+			import es.uc3m.coldes.view.design.DesingUserFormRegister;
+			import es.uc3m.coldes.business.DesignService;
+			import mx.formatters.DateFormatter;
+			import es.uc3m.coldes.business.PencilService;
+			import es.uc3m.coldes.business.Constants;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import mx.messaging.AbstractConsumer;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.messaging.events.MessageFaultEvent;
+			import mx.messaging.events.MessageEvent;
+			import es.uc3m.coldes.entities.User;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.entities.Room;
+			
+			[Bindable]
+			private var _room:Room;
+			public function get room():Room{
+				return _room;
+			}
+			public function set room(value:Room):void{
+				this._room = value;
+			}
+			
+			[Bindable]
+			private var _user:User;
+			public function get user():User{
+				return _user;
+			}
+			public function set user(value:User):void{
+				this._user = value;
+			}
+			
+			[Bindable]
+			private var hasPencil:Boolean;
+			public var userRol:Number;
+			public function init():void{
+				//Inicializamos el chat
+				generateChatDestination(user,room);
+				generateLienzoDestination(user,room);
+				consumer.subscribe(); 
+				manageRolPermision(userRol);
+				(new RoomService).enterInRoom(user, room, callbackEnterInRoom);
+				(new DesignService).getRoomSaveContent(room, callbackGetContent);
+				manageRoomParticipationType(room);
+			}
+			
+			public function callbackEnterInRoom(usersRoomCallBack:ArrayCollection):void{
+				for each (var userNew:Object in usersRoomCallBack){
+					usersRooms.addItem(userNew as String);
+					roomChat.listOfUsers.addItem(userNew);
+					roomChat.listOfUsers.refresh();
+				}
+				(new RoomService).notifyUserToRoom(user, room, "enter", new Function());
+			}
+			
+			public function callbackGetContent(content:ByteArray):void{
+				paintInCanvas(content);
+			}
+			
+			public function generateChatDestination(user:User, room:Room):void{
+				var chatDestination:String;
+				chatDestination = "chat"+room.id;
+				(new RoomService).createDestination(chatDestination,callbackcreateChatDestination);
+			}
+			
+			public function callbackcreateChatDestination(chatDestination:String):void {
+				roomChat.initDestination(chatDestination);
+			}
+			
+			public function generateLienzoDestination(user:User, room:Room):void{
+				var lienzoDestination:String;
+				lienzoDestination = "lienzo"+room.id;
+				(new RoomService).createDestination(lienzoDestination,callbackcreateLienzoDestination);
+			}
+			
+			public function callbackcreateLienzoDestination(lienzoDestination:String):void {
+				roomCanvas.initDestination(lienzoDestination);
+			}
+			
+			public function disconect():void{
+				roomCanvas.disconect();
+				stopSyncronize.includeInLayout = false;
+				stopSyncronize.visible = false;
+				startSyncronize.includeInLayout = true;
+				startSyncronize.visible = true;
+			}
+			public function conect():void{
+				roomCanvas.conect();
+				startSyncronize.includeInLayout = false;
+				startSyncronize.visible = false;
+				stopSyncronize.includeInLayout = true;
+				stopSyncronize.visible = true;
+			}
+			
+			private function manageRolPermision(userRol:Number):void{
+				switch(userRol){
+ 		 			case Constants.GUEST_ROL:{
+ 		 				paintingButtons.includeInLayout = false;
+ 		 				paintingButtons.visible = false;
+ 		 				paintingPencilOptions.includeInLayout = false;
+ 		 				paintingPencilOptions.visible = false;
+ 		 				paintingAdministrationTools.includeInLayout = false;
+   						paintingAdministrationTools.visible = false;
+   						infoRoomEvents.includeInLayout = false;
+   						infoRoomEvents.visible = false;
+ 						break;
+   					}
+   					case Constants.COLABORATOR_ROL:{
+   						paintingAdministrationTools.includeInLayout = false;
+   						paintingAdministrationTools.visible = false;
+ 						break;
+   					} 
+				}
+			}
+			
+			private function manageRoomParticipationType(room:Room):void{
+				switch(room.participationType){
+ 		 			case Constants.ONE_PAINTING:{
+ 		 				if(userRol != Constants.GUEST_ROL)
+ 		 					(new PencilService).pencilBusy(room, user.username, userRol, callbackPencilBusy);
+ 						break;
+   					}
+   					case Constants.ALL_PAINTING:{ 
+   						hasPencil = true;
+   						paintingPencilOptions.includeInLayout = false;
+   						paintingPencilOptions.visible = false;
+ 						break;
+   					} 
+				}
+			}
+			
+			public function callbackPencilBusy(busy:Boolean):void{
+				if(busy){
+					disablePaintButtons();
+				}else{
+					hasPencil = true;
+				}
+			}
+					
+			/********************************/
+			/** USER CONNECTIONS FUNCTIONS **/
+			/********************************/
+			[Bindable]
+			private var usersRooms:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			private var logInfoRoomEvents:String = "";
+			public function messageHandler(event:MessageEvent):void {
+       			var body:Object = event.message.body;
+       			var formatter:DateFormatter = new DateFormatter();
+       			formatter.formatString = "[DD/MM/YYYY JJ:NN]";
+       			var date:String = formatter.format((new Date()));
+       			if(room.id == body.room.id){
+       				if(body.action == "enter"){
+       					roomChat.log += "<font color='#0101DF'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
+       					logInfoRoomEvents += "<b>" +date+" </b><font color='#0101DF'><b>"+ body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
+       					if(findUser(body.user, usersRooms) < 0){
+       						usersRooms.addItem(body.user);
+       					}
+       					if(findUser(body.user, roomChat.listOfUsers) < 0){
+       						roomChat.listOfUsers.addItem(body.user);
+       					}
+       					
+       				}else if(body.action == "exit"){
+       					roomChat.log += "<font color='#DF0101'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USEREXIT')+"</font>\n";
+       					logInfoRoomEvents +=  "<b>" +date+" </b><font color='#DF0101'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USEREXIT')+"</font>\n";
+       					usersRooms.removeItemAt(findUser(body.user, usersRooms));
+       					roomChat.listOfUsers.removeItemAt(findUser(body.user, roomChat.listOfUsers));
+       				}else if(body.action == "pencilRequest"){
+       					//roomChat.log += "<font color='#868A08'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILREQUEST')+"</font>\n";
+       					logInfoRoomEvents +=  "<b>" +date+" </b><font color='#868A08'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILREQUEST')+"</font>\n";
+       				}else if(body.action == "pencilLeft"){
+       					//roomChat.log += "<font color='#DF0174'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILLEFT')+"</font>\n";
+       					logInfoRoomEvents +=  "<b>" +date+" </b><font color='#DF0174'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILLEFT')+"</font>\n";
+       					disablePaintButtons();
+       				}
+       				roomChat.listOfUsers.refresh();
+       				
+       				//Cambiamos de propietario
+       				if(body.nextPencilOwner != null){
+       					roomChat.log += "<font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
+       					logInfoRoomEvents += "<b>" +date+" </b><font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
+       					if(user.username == body.nextPencilOwner){
+       						hasPencil = true;
+       					}
+       				}
+       			}
+        	}
+        	
+        	private function disablePaintButtons():void{
+        		hasPencil = false;
+        		//Definimos correctamente los booleanos
+				roomCanvas.canvasCont.pintandoCirculo=false;
+				roomCanvas.canvasCont.pintandoLinea=false;
+				roomCanvas.canvasCont.pintandoCuadrado=false;
+				roomCanvas.canvasCont.pintandoRecta=false;
+				btnPencil.emphasized = false;
+				btnCircle.emphasized = false;
+				btnSquare.emphasized = false;
+				btnRect.emphasized = false;
+        	}
+        	
+        	private function findUser(username:String,lista:ArrayCollection):Number{
+        		var pos:Number = 0;
+        		for each(var str:String in lista){
+        			if(str == username){
+        				return pos;
+        			}
+        			pos++;
+        		}
+        		return -1;
+        	}
+        	
+       		public function faultHandler(event:MessageFaultEvent):void{
+       			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
+									   "There was an error performing the operation, contact your application administrator.");
+       		}
+			
+			/**********************/
+			/** PENCIL FUNCTIONS **/
+			/**********************/
+        	public function doRequestPencil():void{
+        		(new PencilService).addPencilRequest(room, user.username, userRol, callbackDoRequestPencil);
+        		requestPencil.enabled = false;
+        	}
+        	
+        	public function callbackDoRequestPencil(result:Boolean):void{
+        		requestPencil.enabled = hasPencil;
+        	}
+        	
+        	public function doLeftPencil():void{
+        		(new PencilService).removePencilRequest(room, user.username, userRol, callbackDoLeftPencil);
+        		leftPencil.enabled = false;
+        	}
+        	
+        	public function callbackDoLeftPencil (result:Boolean):void{
+        		leftPencil.enabled = hasPencil;
+        	}
+        	
+			/*********************/
+			/** PAINT FUNCTIONS **/
+			/*********************/
+			public function selectPencil():void{
+				//Definimos correctamente los booleanos
+				roomCanvas.canvasCont.pintandoCirculo=false;
+				roomCanvas.canvasCont.pintandoCuadrado=false;
+				roomCanvas.canvasCont.pintandoRecta=false;
+				btnCircle.emphasized = false;
+				btnSquare.emphasized = false;
+				btnRect.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(btnPencil.emphasized == true){
+					btnPencil.emphasized = false;
+					roomCanvas.canvasCont.pintandoLinea = false;
+				}else{
+					btnPencil.emphasized = true;
+					roomCanvas.canvasCont.pintandoLinea = true;
+				}
+			}
+			public function selectCircle():void{
+				//Definimos correctamente los booleanos
+				roomCanvas.canvasCont.pintandoLinea=false;
+				roomCanvas.canvasCont.pintandoCuadrado=false;
+				roomCanvas.canvasCont.pintandoRecta=false;
+				btnPencil.emphasized = false;
+				btnSquare.emphasized = false;
+				btnRect.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(btnCircle.emphasized == true){
+					btnCircle.emphasized = false;
+					roomCanvas.canvasCont.pintandoCirculo = false;
+				}else{
+					btnCircle.emphasized = true;
+					roomCanvas.canvasCont.pintandoCirculo = true;
+				}
+			}
+			public function selectSquare():void{
+				//Definimos correctamente los booleanos
+				roomCanvas.canvasCont.pintandoCirculo=false;
+				roomCanvas.canvasCont.pintandoLinea=false;
+				roomCanvas.canvasCont.pintandoRecta=false;
+				btnPencil.emphasized = false;
+				btnCircle.emphasized = false;
+				btnRect.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(btnSquare.emphasized == true){
+					btnSquare.emphasized = false;
+					roomCanvas.canvasCont.pintandoCuadrado = false;
+				}else{
+					btnSquare.emphasized = true;
+					roomCanvas.canvasCont.pintandoCuadrado = true;
+				}
+			}
+			public function selectRect():void{
+				//Definimos correctamente los booleanos
+				roomCanvas.canvasCont.pintandoCirculo=false;
+				roomCanvas.canvasCont.pintandoLinea=false;
+				roomCanvas.canvasCont.pintandoCuadrado=false;
+				btnPencil.emphasized = false;
+				btnCircle.emphasized = false;
+				btnSquare.emphasized = false;
+				//Cambiamos la propiedad de los botones
+				if(btnRect.emphasized == true){
+					btnRect.emphasized = false;
+					roomCanvas.canvasCont.pintandoRecta = false;
+				}else{
+					btnRect.emphasized = true;
+					roomCanvas.canvasCont.pintandoRecta = true;
+				}
+			}
+			
+			/*Cambios de propiedades del lienzo*/
+			
+			public function modifyLineColor():void{
+				roomCanvas.canvasCont.colorLinea = pickerLine.selectedColor;
+			}
+			
+			public function modifyFillColor():void{
+				roomCanvas.canvasCont.colorRelleno = pickerFill.selectedColor;
+			}
+			
+			public function modifyBulk():void{
+				roomCanvas.canvasCont.tamanoLinea = lineBulk.value;
+			}
+			
+			public function modifyFillAv():void{
+				if(fillAv.selected){
+					roomCanvas.canvasCont.tieneRelleno=true;
+				}else{
+					roomCanvas.canvasCont.tieneRelleno=false;
+				}
+			}
+			
+			/*********************/
+			/** DESIGN MANAGE   **/
+			/*********************/
+			public function saveToPc():void{
+				roomCanvas.canvasCont.saveCanvas();
+			}
+			
+			public function uploadFile():void{
+				roomCanvas.canvasCont.uploadToCanvas();
+			}
+			
+			public function undo():void{
+				roomCanvas.canvasCont.deshacer();
+			}
+			
+			public function cleanCanvas():void{
+				this.emptyActionsList();
+				roomCanvas.canvasCont.limpiarLienzo();
+			}
+			
+			private function emptyActionsList():void{
+				roomCanvas.canvasCont.borrarListasDeAcciones();
+			}
+			
+			public function redo():void{
+				roomCanvas.canvasCont.rehacer();
+			}
+			
+			public function playActions():void{
+				roomCanvas.canvasCont.reproducirAcciones();
+			}
+			
+			public function modifyPlaySpeed():void{
+				roomCanvas.canvasCont.velocidad = playSpeed.value*1000;
+			}
+			
+			/**********************/
+			/** DESIGN MANAGE DB **/
+			/**********************/
+			public function saveToUserDB():void{
+				var saveDesign:DesingUserFormRegister=PopUpManager.createPopUp(DisplayObject(Application.application), DesingUserFormRegister, true) as DesingUserFormRegister;
+				saveDesign.userLoged = user;
+				saveDesign.designcontent = roomCanvas.canvasCont.getSnapShot();
+				saveDesign.callBackFunction = doSaveDesignUserDB;
+				PopUpManager.centerPopUp(saveDesign);
+			}
+			
+			public function doSaveDesignUserDB(design:Design):void{
+				(new DesignService()).saveToUserDB(design,calbackSaveToUserDB);
+			}
+			
+			public function calbackSaveToUserDB(result:Boolean):void{
+				if(result){
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','MESSAGE.SAVEDESIGNTOUSER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','ERROR.SAVEDESIGN'));
+				}
+			}
+			
+			public function uploadFromDB():void{
+				var uploadDesign:ManageUserDesings=PopUpManager.createPopUp(DisplayObject(Application.application), ManageUserDesings, true) as ManageUserDesings;
+				uploadDesign.user = user;
+				uploadDesign.uploadToCanvasFunc = paintInCanvas;
+				PopUpManager.centerPopUp(uploadDesign);
+			}
+			
+			public function paintInCanvas(content:ByteArray):void{
+				roomCanvas.canvasCont.pintarDesignAlLienzo(content);
+			}
+			public function saveToCanvasDB():void{
+				(new DesignService).saveToCanvasDB(room, roomCanvas.canvasCont.getSnapShot(), calbackSaveToCanvasDB);
+				saveDesignCanvas.enabled = false;
+			}
+			
+			public function calbackSaveToCanvasDB(result:Boolean):void{
+				if(result){
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','MESSAGE.SAVEDESIGNTOCANVAS'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SAVEDESIGN'),
+									   resourceManager.getString('myResources','ERROR.SAVEDESIGN'));
+				}
+				saveDesignCanvas.enabled = true;
+			}
+			
+			public function removeFromCanvasDB():void{
+				(new DesignService).removeDesingRoom(room, calbackRemoveFromCanvasDB);
+				removeDesignCanvas.enabled = false;
+			}
+			
+			public function calbackRemoveFromCanvasDB(result:Boolean):void{
+				if(result){
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEDESIGN'),
+									   resourceManager.getString('myResources','MESSAGE.REMOVEDESIGN'));
+				}
+				removeDesignCanvas.enabled = true;
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Consumer id="consumer"
+		destination="updateUsersRooms"
+		message="messageHandler(event);"
+		fault="faultHandler(event);"/>
+
+	<mx:HBox width="100%" height="100%" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5" backgroundColor="#00CFE8" backgroundAlpha="0.9">
+		<mx:VBox height="100%">
+			<chat:ChatForm id="roomChat" />
+			
+			<mx:ApplicationControlBar id="paintingButtons" width="100%" enabled="{hasPencil}" paddingBottom="0" paddingTop="0">
+				<mx:VBox width="100%" height="100%">
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button width="30" height="30" id="btnSquare" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SQUARE')}" click="selectSquare()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-rectangle.png')</mx:icon>
+						</mx:Button>
+						<mx:Button width="30" height="30" id="btnCircle" toolTip="{resourceManager.getString('myResources','ROOMVIEW.CIRCLE')}" click="selectCircle()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-ellipse.png')</mx:icon>
+						</mx:Button>
+						<mx:Button width="30" height="30" id="btnRect" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STRAIGHT')}" click="selectRect()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-path.png')</mx:icon>
+						</mx:Button>
+						<mx:Button width="30" height="30" id="btnPencil" toolTip="{resourceManager.getString('myResources','ROOMVIEW.FREEHAND')}" click="selectPencil()" top="10">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-freehand.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center">
+						<mx:HRule width="99%"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="0" paddingBottom="0">
+						<mx:ColorPicker id="pickerLine" change="modifyLineColor()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.COLOR')}"/>
+						<mx:HSlider width="90" id="lineBulk" minimum="1" maximum="50" change="modifyBulk()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.BULK')}"/>
+						<mx:ColorPicker id="pickerFill" change="modifyFillColor()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.FILLCOLOR')}"/>
+						<mx:CheckBox id="fillAv" click="modifyFillAv()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.ACTFILL')}"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center">
+						<mx:HRule width="99%"/>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="0" paddingBottom="5">
+						<mx:Button id="btnClean" width="35" height="35" click="cleanCanvas()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.CLEAN')}">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/edit-clear.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="btnLoad" width="35" height="35" click="uploadFile()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.UPLOADFROMPC')}">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/document-open.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="btnLoadFromDB" width="35" height="35" click="uploadFromDB()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.UPLOADFROMDB')}">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/loadbd.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+				</mx:VBox>
+			</mx:ApplicationControlBar>
+			
+			<mx:ApplicationControlBar id="paintingActionsOptions" width="100%" paddingBottom="0" paddingTop="0">
+				<mx:VBox width="100%" height="100%">
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="0">
+						<mx:Button id="btnUndo" click="undo()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.UNDO')}">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/edit-undo.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="btnPlay" width="76" height="36" click="playActions()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.PLAY')}">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/media-playback-start.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="btnRedo" click="redo()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REDO')}">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/edit-redo.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="0" paddingBottom="5">
+						<mx:HSlider width="76" id="playSpeed" minimum="0.1" maximum="5" snapInterval="0.1" change="modifyPlaySpeed()"/>
+					</mx:HBox>
+				</mx:VBox>
+			</mx:ApplicationControlBar>
+			
+			<mx:ApplicationControlBar id="paintingSaveOptions" width="100%" paddingBottom="0" paddingTop="0">
+				<mx:VBox width="100%" height="100%">
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button id="btnSave" click="saveToPc()"  width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVETOPC')}">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/savepc.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="btnSaveToDB" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVETODB')}"
+							click="saveToUserDB()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/savebd.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="stopSyncronize" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STOPSYNCRONIZE')}"
+							click="disconect()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/pause.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="startSyncronize" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STARTSYNCRONIZE')}" 
+							includeInLayout="false" visible="false"
+							click="conect()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/play.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+				</mx:VBox>	
+			
+			</mx:ApplicationControlBar>
+			
+			<mx:ApplicationControlBar id="paintingPencilOptions" width="100%" paddingBottom="0" paddingTop="0">
+				<mx:VBox width="100%" height="100%">
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button id="requestPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REQUESTPENCIL')}"
+							enabled="{!hasPencil}" click="doRequestPencil()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/pencilrequest.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="leftPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.LEFTPENCIL')}"
+							enabled="{hasPencil}" click="doLeftPencil()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/pencilremove.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+				</mx:VBox>	
+			</mx:ApplicationControlBar>
+			
+			<mx:ApplicationControlBar id="paintingAdministrationTools" width="100%" paddingBottom="0" paddingTop="0">
+				<mx:VBox width="100%" height="100%">
+					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+						<mx:Button id="saveDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVECANVASTOROOM')}"
+							click="saveToCanvasDB()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/savetoroom.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="removeDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REMOVECANVASFROMROOM')}"
+							click="removeFromCanvasDB()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/removefromroom.png')</mx:icon>
+						</mx:Button>
+					</mx:HBox>
+				</mx:VBox>	
+			</mx:ApplicationControlBar>
+			
+			<mx:TextArea id="infoRoomEvents" htmlText="{logInfoRoomEvents}" editable="false" width="100%" height="100%" cornerRadius="5" borderStyle="outset"
+				verticalScrollPolicy="auto" valueCommit="infoRoomEvents.verticalScrollPosition=infoRoomEvents.maxVerticalScrollPosition"/>
+		</mx:VBox>
+		<paint:PaintCanvasComponent id="roomCanvas" width="100%" height="100%" movable="false"/>
+	</mx:HBox>
+	
+</mx:Canvas>

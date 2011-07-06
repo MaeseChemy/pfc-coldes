@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+	creationComplete="init()" 
+	borderStyle="none" borderColor="#000000" xmlns:resize="es.uc3m.coldes.utils.ui.resize.*">
+	
+	<mx:Script>
+	<![CDATA[
+		import flash.utils.setTimeout;
+		import es.uc3m.coldes.utils.popup.UtilPopUp;
+		import mx.rpc.remoting.mxml.RemoteObject;
+		import mx.messaging.channels.AMFChannel;
+		import mx.messaging.ChannelSet;
+		import es.uc3m.coldes.entities.User;
+		import mx.managers.PopUpManager;
+		import mx.controls.Alert;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.managers.CursorManager;
+		import mx.messaging.messages.AsyncMessageExt;
+		import mx.messaging.messages.AbstractMessage;
+		import mx.messaging.messages.AsyncMessage;
+		import mx.messaging.messages.IMessage;
+		
+		import flash.utils.ByteArray;
+	
+		import mx.collections.*;
+		import mx.core.UIComponent;
+		import mx.graphics.codec.PNGEncoder;
+
+
+		/*VARIABLES DE POSICIONAMIENTO*/
+		//Coordenadas para definir el dibujo
+		public var x1:int;
+		public var x2:int;
+		public var y1:int;
+		public var y2:int;
+		//Coordenadas auxiliares;
+		public var xAux:int;
+		public var yAux:int;
+		
+		/*BOOLEANOS*/
+		//Booleano que indica si el raton esta encima del lienzo
+		public var estaEncima:Boolean;
+		//Booleano que indica si se esta pintando
+		public var pintando:Boolean;
+		//Booleanos que indican que queremos pintar
+		public var pintandoLinea:Boolean;
+		public var pintandoCirculo:Boolean;
+		public var pintandoCuadrado:Boolean;
+		public var pintandoRecta:Boolean;
+		
+		/*VARIABLES PARA CONTENEDORES DE FIGURAS*/
+		//Contenedor de figuras temporal
+		public var uiComponentTemporal:UIComponent;
+		//Figuras
+		public var aBox:Shape;
+	
+		/*VARIABLES PARA FORMATO DE LAS FIGURAS*/
+		//Combo para el grosor
+		public var tamanoLinea:int;
+		public var tieneRelleno:Boolean;
+		//Variable en la que se almacena el color con el que se desea pintar
+		public var colorLinea:uint;
+		public var colorRelleno:uint;
+		
+		/*VARIABLES PARA HISTORICOS*/
+		//Lista undo y redo
+		public var listaUndo:ArrayCollection = new ArrayCollection();
+		public var listaRedo:ArrayCollection = new ArrayCollection();
+		
+		/*VARIABLES PARA CARGA DE IMAGENES*/
+		public var myFileReference:FileReference = new FileReference();
+		public var myBitmap:Bitmap;
+		public var loader:Loader = new Loader();
+		
+		/*VARIABLES PARA LA VELOCIDAD DE REPRODUCCION*/
+		public var velocidad:uint;
+		
+		/*Usuario logado*/
+		[Bindable]
+		private var user:User;
+		/* METODOS */
+		
+		/*
+		 * Funcion para inicializar las variables de pintura a la hora
+		 * de cargar el lienzo
+		 */
+		public function init():void {
+			tieneRelleno = false;
+			pintandoLinea = false;
+			pintandoCirculo = false;
+			pintandoCuadrado = false;
+			pintandoRecta = false;
+			pintando = false;
+			estaEncima = false;
+			
+			/*Eventos para la carga de imagenes*/
+			//listening the SELECT event
+			myFileReference.addEventListener(Event.SELECT,_onSelectEvent);
+			//COMPLETE event fires up when data is loaded and available
+			myFileReference.addEventListener(Event.COMPLETE,_onCompleteEvent);
+			user = parentApplication.userLoged;
+		}
+		
+		/*
+		 * Verifica si el raton esta encima del lienzo
+		 */
+		public function encimaLienzo():void {
+			estaEncima = true;
+		}
+		/*
+		 * Verifica si el raton esta fuera del lienzo
+		 */
+		public function fueraLienzo():void {
+			estaEncima = false;
+		}
+
+
+		/*FUNCIONES PARA CONTROLAR LAS FASES DEL DIBUJO (inicio, pintando, finalizado)*/
+		public function empezarDibujo():void {
+			if(algoSeleccionado()){
+				if(!pintando && estaEncima){
+					pintando = true;
+					x1 = lienzo.mouseX;
+					y1 = lienzo.mouseY;
+					xAux = lienzo.mouseX;
+					yAux = lienzo.mouseY;
+					
+					aBox = new Shape();
+					uiComponentTemporal = new UIComponent();
+					lienzo.addChild(uiComponentTemporal);
+					
+					//Guardamos el contenido para el listaUndo
+					salvarPaso();
+				}else{
+					finalizarDibujo();
+				}
+			}
+		}	
+		public function pintar():void {
+			if(algoSeleccionado()){
+				if(pintando && estaEncima){
+					if(pintandoLinea){
+						pintarLinea(false);
+					}else if(pintandoCirculo){
+						pintarCirculo(false);
+					}else if(pintandoCuadrado){
+						pintarCuadrado(false);
+					}else if(pintandoRecta){
+						pintarRecta(false);
+					}
+				}
+			}
+		}
+		public function finalizarDibujo():void {
+			if(algoSeleccionado()){
+				if(pintando && estaEncima){
+					if(pintandoLinea){
+						pintarLinea(true);
+					}else if(pintandoCirculo){
+						pintarCirculo(true);
+					}else if(pintandoCuadrado){
+						pintarCuadrado(true);
+					}else if(pintandoRecta){
+						pintarRecta(true);
+					}
+					//Finalizamos el dibujo	
+					pintando = false;
+					lienzo.removeChild(uiComponentTemporal);
+					//mandamos el canvas al resto :D
+					if(producerConect)
+						setTimeout(this.sendImage,0,obtenerLienzoTemporal());
+				}
+			}
+		}
+		
+		private function algoSeleccionado():Boolean{
+			return pintandoCirculo || pintandoCuadrado || pintandoLinea || pintandoRecta;
+		}
+		/*FUNCIONES PARA PINTAR LAS DISTINTAS FIGURAS*/
+		public function pintarLinea(fin:Boolean):void {
+			x2 = lienzo.mouseX;
+	      	y2 = lienzo.mouseY;
+
+	       	lienzo.graphics.lineStyle(tamanoLinea, colorLinea);
+	        lienzo.graphics.moveTo(x1, y1);
+	        lienzo.graphics.lineTo(x2, y2);
+	        x1 = x2;
+	        y1 = y2;
+	        	
+		}
+		public function pintarCirculo(fin:Boolean):void {
+			var radio:int;
+			var radioAux:int;
+			
+			x2 = lienzo.mouseX;
+	      	y2 = lienzo.mouseY;
+	      	
+	      	radioAux=Math.pow(x2-x1,2)+Math.pow(y2-y1,2)
+	      	radio=Math.sqrt(radioAux);
+	      	
+	      	//Borramos el antiguo
+	      	if(uiComponentTemporal.contains(aBox))
+	      		uiComponentTemporal.removeChild(aBox);
+	      		
+	      	aBox.graphics.clear();
+			if(!fin){
+				if(tieneRelleno){
+					aBox.graphics.lineStyle(tamanoLinea, colorLinea);
+					aBox.graphics.beginFill(colorRelleno, 1);
+					aBox.graphics.drawCircle(x1, y1, radio);
+					aBox.graphics.endFill();
+		      	}else{
+		      		aBox.graphics.lineStyle(tamanoLinea, colorLinea);
+					aBox.graphics.drawCircle(x1, y1, radio);
+		      	}
+				uiComponentTemporal.addChild(aBox);
+			}else{
+				if(tieneRelleno){
+					lienzo.graphics.lineStyle(tamanoLinea, colorLinea);
+					lienzo.graphics.beginFill(colorRelleno, 1);
+					lienzo.graphics.drawCircle(x1, y1, radio);
+					lienzo.graphics.endFill();
+				}else{
+					lienzo.graphics.lineStyle(tamanoLinea, colorLinea);
+					lienzo.graphics.drawCircle(x1, y1, radio);
+				}
+			}
+		}
+		public function pintarCuadrado(fin:Boolean):void {
+	      	var height:int;
+	      	var width:int;
+			
+			x2 = lienzo.mouseX;
+	      	y2 = lienzo.mouseY;
+	      	width=x2-x1;
+	      	height=y2-y1;
+	      	
+	      	//Borramos el antiguo
+	      	
+	      	if(uiComponentTemporal.contains(aBox))
+	      		uiComponentTemporal.removeChild(aBox);
+	      	
+	      	aBox.graphics.clear();
+			if(!fin){		      	
+		      	if(tieneRelleno){
+					aBox.graphics.lineStyle(tamanoLinea, colorLinea);
+					aBox.graphics.beginFill(colorRelleno, 1);
+					aBox.graphics.drawRect(x1, y1, width, height);
+					aBox.graphics.endFill();
+		      	}else{
+		      		aBox.graphics.lineStyle(tamanoLinea, colorLinea);
+					aBox.graphics.drawRect(x1, y1, width, height);
+		      	}
+				uiComponentTemporal.addChild(aBox);
+			}else{
+				if(tieneRelleno){
+					lienzo.graphics.lineStyle(tamanoLinea, colorLinea);
+					lienzo.graphics.beginFill(colorRelleno, 1);
+					lienzo.graphics.drawRect(x1, y1, width, height);
+					lienzo.graphics.endFill();
+				}else{
+					lienzo.graphics.lineStyle(tamanoLinea, colorLinea);
+					lienzo.graphics.drawRect(x1, y1, width, height);
+				}
+			}
+		}
+		public function pintarRecta(fin:Boolean):void {
+			x2 = lienzo.mouseX;
+	      	y2 = lienzo.mouseY;
+
+	      	//Borramos el antiguo
+	      	if(uiComponentTemporal.contains(aBox))
+	      		uiComponentTemporal.removeChild(aBox);
+	      	
+	      	aBox.graphics.clear();
+			if(!fin){
+				aBox.graphics.lineStyle(tamanoLinea, colorLinea);
+				aBox.graphics.moveTo(x1, y1);
+	        	aBox.graphics.lineTo(x2, y2);
+				uiComponentTemporal.addChild(aBox);
+			}else{
+				lienzo.graphics.lineStyle(tamanoLinea, colorLinea);
+				lienzo.graphics.moveTo(x1, y1);
+        		lienzo.graphics.lineTo(x2, y2);
+			}
+		}
+				
+		/*FUNCIONES DE HISTORICO*/
+		private function salvarPaso():void{
+			var contAct:BitmapData = obtenerLienzoTemporal();
+			this.listaUndo.addItem(contAct);
+		}
+		
+		private function obtenerLienzoTemporal():BitmapData{
+			lienzo.resizable = false;
+			var contAct:BitmapData = new BitmapData(lienzo.width,lienzo.height);
+        	contAct.draw(lienzo);
+        	lienzo.resizable = true;
+        	return contAct;
+		}
+		
+		public function deshacer():void {
+			//Obtenemos el contenido actual del lienzo
+			var contAct:BitmapData = obtenerLienzoTemporal();
+
+	        //Cargamos el ultimo elemento de la lista de listaUndo
+	        var contAnt:BitmapData = this.getLast(this.listaUndo);
+	        
+	        if(contAnt != null){
+		        //Lo almacenamos en la lista de listaRedo
+		        this.listaRedo.addItem(contAct);
+		        //Lo pintamos sobre el lienzo borrando lo que habia
+		        this.pintarHistorico(contAnt);
+			}
+		}
+		
+		public function rehacer():void {
+			//Obtenemos el contenido actual del lienzo
+			var contAct:BitmapData = obtenerLienzoTemporal();
+			
+	        //Buscamos el ultimo del listaRedo
+	        var contAnt:BitmapData = this.getLast(this.listaRedo);
+	        
+	        if(contAnt != null){
+	        	//Lo almacenamos en la lista de listaUndo
+	        	this.listaUndo.addItem(contAct);
+	        	//Lo pintamos sobre el lienzo borrando lo que habia
+	        	this.pintarHistorico(contAnt);
+	        }
+		}
+		
+		public function borrarListasDeAcciones():void{
+			this.listaUndo.removeAll();
+			this.listaRedo.removeAll();
+		}
+		
+		private function getLast(lista:ArrayCollection):BitmapData{
+			var ultPos:int = lista.length-1;
+			if(ultPos < 0 ){
+				return null;
+			}else{
+				var lastBM:BitmapData = lista.getItemAt(ultPos) as BitmapData;
+				lista.removeItemAt(ultPos);
+				return lastBM;
+			}
+		}
+	
+		private function pintarHistorico(bitmapData:BitmapData):void{
+			if(bitmapData != null){
+				limpiarLienzo();
+				lienzo.graphics.beginBitmapFill(bitmapData);
+				lienzo.graphics.drawRect(0, 0, bitmapData.width, bitmapData.height);
+				lienzo.graphics.endFill();
+			}
+		}
+		
+		public var loaderContent:Loader = new Loader();
+		public function pintarDesignAlLienzo(contenido:ByteArray):void{
+			if(contenido != null){
+				loaderContent = new Loader();
+				loaderContent.loadBytes(contenido);
+				loaderContent.contentLoaderInfo.addEventListener(Event.COMPLETE,_onLoaderContenidoComplete);
+			}
+		}
+		
+		private function _onLoaderContenidoComplete(e:Event):void {
+			//cast the content property
+			var myBitmap:Bitmap = Bitmap(loaderContent.content);
+			
+			//Guardamos el contenido para el listaUndo
+			salvarPaso();
+			
+			var conversionMyBitmap:BitmapData = myBitmap.bitmapData;
+			lienzo.graphics.beginBitmapFill(conversionMyBitmap);
+			lienzo.graphics.drawRect(0, 0, conversionMyBitmap.width, conversionMyBitmap.height);
+			lienzo.graphics.endFill();
+			lienzo.width = conversionMyBitmap.width;
+			lienzo.height = conversionMyBitmap.height;
+			setTimeout(this.sendImage,0,conversionMyBitmap);
+		}
+		
+		public function limpiarLienzo():void {
+			lienzo.graphics.clear();
+			lienzo.removeAllChildren();
+			//Nos hemos salido del lienzo dejamos de pintar
+			pintando = false;
+		}
+		
+		/* FUNCIONES PARA SALVAR Y CARGAR DE BBDD */
+		
+		public function getSnapShot():ByteArray{
+			var bd:BitmapData = new BitmapData(lienzo.width,lienzo.height);
+			bd.draw(lienzo);
+			var ba:ByteArray = (new PNGEncoder()).encode(bd);
+			return ba;
+		}
+		
+		/*FUNCIONES PARA SALVAR Y CARGAR DE FICHERO*/
+		public function saveCanvas():void {
+			//Abrimos un popup para que seleccione la ruta
+			lienzo.resizable=false;
+			var bd:BitmapData = new BitmapData(lienzo.width,lienzo.height);
+	        bd.draw(lienzo);
+	 		
+	        var ba:ByteArray = (new PNGEncoder()).encode(bd);
+			var fr:FileReference=new FileReference();
+			fr.save(ba, "ContenidoLienzo.png");
+			lienzo.resizable=true;
+		}
+		
+		public function uploadToCanvas():void{
+			//load with fillters
+			// you can create more than 1 filter and use
+			// myFileReference.browse([filter1,filter2,...]);
+			var imageFilter:FileFilter = new FileFilter("Images", "*.jpg;*.gif;*.png");
+			myFileReference.browse([imageFilter]);
+		}
+		
+		/*Eventos para la carga de ficheros*/
+		public function _onSelectEvent(e:Event):void {
+			//once the file is selected, call the load function
+			myFileReference.load();
+		}
+		public function _onCompleteEvent(e:Event):void {
+			loader.loadBytes(myFileReference.data); //ByteArray magic
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE,_onLoaderComplete);
+		}
+		//the Loader finish parsing the data
+		public function _onLoaderComplete(e:Event):void {
+			//cast the content property
+			myBitmap = Bitmap(loader.content);
+			
+			//Guardamos el contenido para el listaUndo
+			salvarPaso();
+			
+			var conversionMyBitmap:BitmapData = myBitmap.bitmapData;
+			lienzo.graphics.beginBitmapFill(conversionMyBitmap);
+			lienzo.graphics.drawRect(0, 0, conversionMyBitmap.width, conversionMyBitmap.height);
+			lienzo.graphics.endFill();
+			lienzo.width = conversionMyBitmap.width;
+			lienzo.height = conversionMyBitmap.height;
+		}
+
+		public function reproducirAcciones():void{
+			CursorManager.setBusyCursor();
+			//parentApplication.desactivarAcciones();
+			playProcessCanvas(1);
+		}
+		
+		private var lastFrame:BitmapData;
+		private function playProcessCanvas(numFrame:int):void{
+			if(numFrame == 1){
+				lastFrame = obtenerLienzoTemporal();
+				this.listaUndo.addItem(lastFrame);
+				//Limpiamos el lienzo
+				limpiarLienzo();
+			}
+			if(numFrame < this.listaUndo.length){
+				var service:RemoteObject=new RemoteObject("ColDesService");
+				service.addEventListener(FaultEvent.FAULT, playProcessFaultHandler);
+				service.addEventListener(ResultEvent.RESULT, playProcessResultHandler);
+				service.playProcess(velocidad, numFrame);
+			}else{
+				this.listaUndo.removeItemAt(this.listaUndo.length-1);
+				//parentApplication.activarAcciones();	
+				CursorManager.removeBusyCursor();
+			}
+			
+		}
+		public function playProcessResultHandler(event:ResultEvent):void {
+			var posImagen:int = event.result as int;
+			var frame:BitmapData = this.listaUndo.getItemAt(posImagen) as BitmapData;
+			pintarHistorico(frame);
+			posImagen+=1;
+			playProcessCanvas(posImagen++);
+		}
+			
+		public function playProcessFaultHandler(event:FaultEvent):void {
+			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
+					   "There was an error performing the operation, contact your application administrator.");
+		}
+		
+		
+		/*--*/
+		/*VARIABLES PARA LOS CONSUMIDORES*/
+		public function configConsumer(destination:String):void{
+			consumer.destination = destination;
+			
+			var channelSet:ChannelSet = new ChannelSet();
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			
+			consumer.channelSet = channelSet;
+			consumer.subscribe();
+		}
+		
+		public function configProducer(destination:String):void{
+			producer.destination = destination;
+			
+			var channelSet:ChannelSet = new ChannelSet();
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			
+			producer.channelSet = channelSet;
+		}
+		
+		private var producerConect:Boolean = true;
+		public function disconect():void{
+			consumer.unsubscribe();
+			producerConect = false;
+		}
+		public function conect():void{
+			consumer.subscribe();
+			producerConect = true;
+		}
+		
+		public var myMessageBitmap:Bitmap;
+		public var loaderMessage:Loader = new Loader();
+		private function sendImage(bitmapData:BitmapData):void{
+			var message:IMessage = new AsyncMessageExt();
+			var ba:ByteArray = (new PNGEncoder()).encode(bitmapData);
+			message.body.imagenCanvas = ba;
+			message.body.username = user.username;
+			producer.send(message);
+		}
+		private function messageCanvasHandler(message:IMessage):void{
+			var username:String = message.body.username as String;
+			if(username != user.username){
+				var ba:ByteArray = message.body.imagenCanvas as ByteArray;
+				loaderMessage = new Loader();
+				loaderMessage.loadBytes(ba);
+				loaderMessage.contentLoaderInfo.addEventListener(Event.COMPLETE,_onLoaderMessageComplete);
+			}
+		}
+		
+		private function _onLoaderMessageComplete(e:Event):void {
+			//cast the content property
+			myMessageBitmap = Bitmap(loaderMessage.content);
+			
+			//Guardamos el contenido para el listaUndo
+			salvarPaso();
+			
+			var conversionMyBitmap:BitmapData = myMessageBitmap.bitmapData;
+			lienzo.graphics.beginBitmapFill(conversionMyBitmap);
+			lienzo.graphics.drawRect(0, 0, conversionMyBitmap.width, conversionMyBitmap.height);
+			lienzo.graphics.endFill();
+			lienzo.width = conversionMyBitmap.width;
+			lienzo.height = conversionMyBitmap.height;
+		}
+	]]>
+	</mx:Script>
+	
+	<mx:Consumer id="consumer" message="messageCanvasHandler(event.message)"/>
+	<mx:Producer id="producer"/>
+
+	<resize:ResizableCanvas borderStyle="none"
+		id="lienzo" 
+		mouseOut="fueraLienzo()" 
+		mouseOver="encimaLienzo()" 
+		mouseDown="empezarDibujo()"
+		mouseUp="finalizarDibujo()" 
+		mouseMove="pintar()" 
+		x="7.1054274E-15" y="-0.05" 
+		borderColor="#000000" 
+		minHeight="100" minWidth="100">
+	</resize:ResizableCanvas>
+	
+
+</mx:Module>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	horizontalAlign="center" verticalAlign="middle" backgroundColor="gray" resizable="false" movable="true" xmlns:paint="es.uc3m.coldes.view.paint.*">
+	<paint:PaintCanvasModule id="canvasCont" x="0" y="0" borderStyle="none" backgroundColor="white">
+	</paint:PaintCanvasModule>
+	
+	<mx:Script>
+		<![CDATA[
+		
+		public function initDestination(destination:String):void{
+			this.canvasCont.configConsumer(destination);
+			this.canvasCont.configProducer(destination);
+		}
+		
+		public function conect():void{
+			this.canvasCont.conect();
+		}
+		public function disconect():void{
+			this.canvasCont.disconect();	
+		}
+	]]>
+	</mx:Script>
+
+</ResizableWindow>

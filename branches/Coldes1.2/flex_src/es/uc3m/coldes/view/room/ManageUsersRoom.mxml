@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
+	creationComplete="init()"
+	close="close()"
+	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*" 
+	width="350" horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import es.uc3m.coldes.utils.popup.InvitationTypePopUp;
+			import es.uc3m.coldes.entities.UserRoom;
+			import mx.controls.Alert;
+			import es.uc3m.coldes.entities.Room;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.business.Constants;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import mx.managers.PopUpManager;
+			import es.uc3m.coldes.view.user.UserDataFormUpdate;
+			import es.uc3m.coldes.business.UserService;
+			import es.uc3m.coldes.entities.User;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var users:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var roomUsers:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var room:Room;
+			[Bindable]
+			private var rolTypes:Array;
+			
+			private function init():void {
+				this.rolTypes = new Array(
+					resourceManager.getString('myResources','ROLNAME.OWNER'),
+					resourceManager.getString('myResources','ROLNAME.MODERATOR'),
+					resourceManager.getString('myResources','ROLNAME.COLABORATOR'),
+					resourceManager.getString('myResources','ROLNAME.GUEST')
+				);
+				new UserService().getColDesUsers(room, callbackColDesUsers);
+				new RoomService().getRoomUsers(room, calbakcRoomUsers);
+			}
+			
+			private function refresh():void{
+				new UserService().getColDesUsers(room, callbackColDesUsers);
+				new RoomService().getRoomUsers(room, calbakcRoomUsers);
+			}
+			
+			private function callbackColDesUsers(users:ArrayCollection):void {
+				this.users=users;
+			}	
+			
+			private function calbakcRoomUsers(roomUsers:ArrayCollection):void {
+				this.roomUsers=roomUsers;
+			}
+			
+			private function close():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private var popUpInvitation:InvitationTypePopUp;
+			private var invitationUser:String;
+			public function sendRoomInvitation(username:String):void {
+				popUpInvitation = UtilPopUp.showInvitationTypePopUP(resourceManager.getString('myResources','MESSAGETITLE.INVITATIONTYPE'),
+																	 resourceManager.getString('myResources','MESSAGE.INVITATIONTYPE'));
+				popUpInvitation.addEventListener(FlexEvent.REMOVE, initSendRoomInvitation);
+				invitationUser = username;
+			}
+			public function initSendRoomInvitation(event:Event):void{
+				if(popUpInvitation.answer >= 0){
+					new RoomService().sendRoomInvitation(invitationUser, room, popUpInvitation.answer, calbakcSendRoomInvitation);
+				}
+			}
+			
+			private function calbakcSendRoomInvitation(result:Number):void {
+				if(result < 0){
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+					       resourceManager.getString('myResources','ERROR.SERVER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.SENDINVITATION'),
+					       resourceManager.getString('myResources','MESSAGE.SENDINVITATION'));
+				}
+			}
+			
+			private var userRoomEdit:UserRoom;
+			public function editUserRelation(data:UserRoom):void{
+				userRoomEdit = data;
+				nameField.text = data.userName;
+				switch(data.rol){
+ 		 			case Constants.OWNER_ROL:{
+ 		 				comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.OWNER');
+ 						break;
+   					}
+   					case Constants.MODERATOR_ROL:{ 
+   						comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.MODERATOR');
+ 						break;
+   					}
+   					case Constants.COLABORATOR_ROL:{ 
+   						comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.COLABORATOR');
+ 						break;
+   					} 
+   					case Constants.GUEST_ROL:{ 
+   						comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.GUEST');
+ 						break;
+   					} 
+   				}
+   				vboxEditUserRoom.includeInLayout = true;
+				vboxEditUserRoom.visible = true;
+			}
+			
+			public function cancelUpdate():void{
+				vboxEditUserRoom.includeInLayout = false;
+				vboxEditUserRoom.visible = false;
+				nameField.text = "";
+				userRoomEdit = null;
+			}
+			
+			public function submitUpdate():void{
+				switch(comboUserRols.selectedItem as String){
+ 		 			case resourceManager.getString('myResources','ROLNAME.OWNER'):{
+ 		 				userRoomEdit.rol = Constants.OWNER_ROL;
+ 						break;
+   					}
+   					case resourceManager.getString('myResources','ROLNAME.MODERATOR'):{
+ 		 				userRoomEdit.rol = Constants.MODERATOR_ROL;
+ 						break;
+   					}
+   					case resourceManager.getString('myResources','ROLNAME.COLABORATOR'):{
+ 		 				userRoomEdit.rol = Constants.COLABORATOR_ROL;
+ 						break;
+   					}
+   					case resourceManager.getString('myResources','ROLNAME.GUEST'):{
+ 		 				userRoomEdit.rol = Constants.GUEST_ROL;
+ 						break;
+   					} 
+   				}
+				(new RoomService()).updateUserRoom(userRoomEdit, calbakcSubmitUpdate);
+			}
+			
+			public function calbakcSubmitUpdate(result:Boolean):void{
+				refresh();
+			}
+			
+			public function removeUser(data:UserRoom):void{
+				(new RoomService()).deleteUserRoom(data, deleteUserRoomCallback);	
+			}
+			
+			public function deleteUserRoomCallback(result:Number):void{
+				refresh();
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Canvas width="100%" height="100%">
+	<mx:VBox id="vbox" width="100%" height="100%" >
+
+		<mx:DataGrid id="gridUserColDesMan" width="100%" height="200" dataProvider="{users}" verticalScrollPolicy="auto"
+			wordWrap="true" variableRowHeight="true">
+			<mx:columns>
+				<mx:DataGridColumn width="30" resizable="false">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:Script>
+									<![CDATA[
+										private function sendRoomInvitation():void{
+											parentDocument.sendRoomInvitation(data as String);
+										}
+									]]>
+								</mx:Script>
+								<mx:Image buttonMode="true" source="assets/images/icos/useradd.png"
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.SENDINVITATION')}" click="sendRoomInvitation()"/>
+							</mx:HBox>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERSOFCOLDES')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{data}" 
+									fontSize="10" fontWeight="bold">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:DataGrid id="gridRoomUserMan" width="100%" dataProvider="{roomUsers}" verticalScrollPolicy="auto" height="250">
+			<mx:columns>
+				<mx:DataGridColumn width="60" resizable="false">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.entities.UserRoom;
+										import es.uc3m.coldes.business.Constants;
+										
+										private function removeUser():void{
+											parentDocument.removeUser(data as UserRoom);
+										}
+										private function editUserRelation():void{
+											parentDocument.editUserRelation(data as UserRoom);
+										}
+									]]>
+								</mx:Script>
+								<mx:Image buttonMode="true" source="assets/images/icos/mydata.png"
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROLEDIT')}" click="editUserRelation()"/>
+								<mx:Image buttonMode="true" source="assets/images/icos/userremove.png"
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.DELETEUSER')}" click="removeUser()" 
+										  includeInLayout="{(data).rol != Constants.OWNER_ROL}" visible="{(data).rol != Constants.OWNER_ROL}"/>
+							</mx:HBox>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERSOFROOM')}" dataField="userName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROL')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).rol == Constants.OWNER_ROL?resourceManager.getString('myResources','ROLNAME.OWNER'):
+										(data).rol == Constants.MODERATOR_ROL?resourceManager.getString('myResources','ROLNAME.MODERATOR'):
+										(data).rol == Constants.COLABORATOR_ROL ?resourceManager.getString('myResources','ROLNAME.COLABORATOR'):
+										(data).rol == Constants.GUEST_ROL?resourceManager.getString('myResources','ROLNAME.GUEST'):
+										resourceManager.getString('myResources','ROLNAME.DEFAULT')}" >
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+	</mx:Canvas>
+	<mx:VBox id="vboxEditUserRoom" width="100%" includeInLayout="false" visible="false">
+		<mx:Form id="registerForm" width="100%" defaultButton="{buttonUpdate}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
+			<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
+				<mx:TextInput id="nameField" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.ROL')}">
+				<mx:ComboBox id="comboUserRols" dataProvider="{rolTypes}"/>
+			</mx:FormItem>
+			<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">
+				<mx:Button id="buttonCancel" x="72" y="5" 
+					label="{resourceManager.getString('myResources','REGISTER.CANCEL')}" 
+					width="85" height="30"
+					click="cancelUpdate()"/>
+				<mx:Button id="buttonUpdate" x="165" y="5" 
+					label="{resourceManager.getString('myResources','REGISTER.SUBMITUPDATE')}" 
+					width="85" height="30"
+					click="submitUpdate()"/>
+			</mx:HBox>
+		</mx:Form>
+	</mx:VBox>
+		
+</ResizableWindow>
