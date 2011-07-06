@@ -71,7 +71,8 @@
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','CHAT.USERS')}"/>
 			</mx:columns>
 		</mx:DataGrid>
-		<mx:TextArea htmlText="{log}" width="100%" height="100%" editable="false" verticalScrollPolicy="auto"/>
+		<mx:TextArea id="logCont" htmlText="{log}" width="100%" height="100%" editable="false" 
+			verticalScrollPolicy="auto" valueCommit="logCont.verticalScrollPosition=logCont.maxVerticalScrollPosition" />
 	</mx:HBox>
 	<mx:ControlBar>
 		<mx:TextInput id="msg" width="100%" enter="send()"/>

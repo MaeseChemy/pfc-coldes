@@ -6,6 +6,8 @@
 	width="350" horizontalAlign="center" verticalAlign="middle">
 	<mx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import es.uc3m.coldes.utils.popup.InvitationTypePopUp;
 			import es.uc3m.coldes.entities.UserRoom;
 			import mx.controls.Alert;
 			import es.uc3m.coldes.entities.Room;
@@ -55,8 +57,18 @@
 				PopUpManager.removePopUp(this);
 			}
 			
-			public function sendRoomInvitation(username:String):void{
-				new RoomService().sendRoomInvitation(username, room, Constants.GUEST_ROL, calbakcSendRoomInvitation);
+			private var popUpInvitation:InvitationTypePopUp;
+			private var invitationUser:String;
+			public function sendRoomInvitation(username:String):void {
+				popUpInvitation = UtilPopUp.showInvitationTypePopUP(resourceManager.getString('myResources','MESSAGETITLE.INVITATIONTYPE'),
+																	 resourceManager.getString('myResources','MESSAGE.INVITATIONTYPE'));
+				popUpInvitation.addEventListener(FlexEvent.REMOVE, initSendRoomInvitation);
+				invitationUser = username;
+			}
+			public function initSendRoomInvitation(event:Event):void{
+				if(popUpInvitation.answer >= 0){
+					new RoomService().sendRoomInvitation(invitationUser, room, popUpInvitation.answer, calbakcSendRoomInvitation);
+				}
 			}
 			
 			private function calbakcSendRoomInvitation(result:Number):void {

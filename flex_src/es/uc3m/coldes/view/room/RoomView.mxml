@@ -127,7 +127,8 @@
 			private function manageRoomParticipationType(room:Room):void{
 				switch(room.participationType){
  		 			case Constants.ONE_PAINTING:{
- 		 				(new PencilService).pencilBusy(room, user.username, userRol, callbackPencilBusy);
+ 		 				if(userRol != Constants.GUEST_ROL)
+ 		 					(new PencilService).pencilBusy(room, user.username, userRol, callbackPencilBusy);
  						break;
    					}
    					case Constants.ALL_PAINTING:{ 
@@ -231,18 +232,20 @@
 			/**********************/
         	public function doRequestPencil():void{
         		(new PencilService).addPencilRequest(room, user.username, userRol, callbackDoRequestPencil);
+        		requestPencil.enabled = false;
         	}
         	
         	public function callbackDoRequestPencil(result:Boolean):void{
-        		
+        		requestPencil.enabled = hasPencil;
         	}
         	
         	public function doLeftPencil():void{
         		(new PencilService).removePencilRequest(room, user.username, userRol, callbackDoLeftPencil);
+        		leftPencil.enabled = false;
         	}
         	
         	public function callbackDoLeftPencil (result:Boolean):void{
-        		
+        		leftPencil.enabled = hasPencil;
         	}
         	
 			/*********************/
@@ -412,6 +415,7 @@
 			}
 			public function saveToCanvasDB():void{
 				(new DesignService).saveToCanvasDB(room, roomCanvas.canvasCont.getSnapShot(), calbackSaveToCanvasDB);
+				saveDesignCanvas.enabled = false;
 			}
 			
 			public function calbackSaveToCanvasDB(result:Boolean):void{
@@ -422,10 +426,12 @@
 					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SAVEDESIGN'),
 									   resourceManager.getString('myResources','ERROR.SAVEDESIGN'));
 				}
+				saveDesignCanvas.enabled = true;
 			}
 			
 			public function removeFromCanvasDB():void{
 				(new DesignService).removeDesingRoom(room, calbackRemoveFromCanvasDB);
+				removeDesignCanvas.enabled = false;
 			}
 			
 			public function calbackRemoveFromCanvasDB(result:Boolean):void{
@@ -433,6 +439,7 @@
 					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEDESIGN'),
 									   resourceManager.getString('myResources','MESSAGE.REMOVEDESIGN'));
 				}
+				removeDesignCanvas.enabled = true;
 			}
 			
 		]]>
@@ -535,11 +542,11 @@
 				<mx:VBox width="100%" height="100%">
 					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
 						<mx:Button id="requestPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REQUESTPENCIL')}"
-							enabled="{hasPencil == false}" click="doRequestPencil()">
+							enabled="{!hasPencil}" click="doRequestPencil()">
 							<mx:icon>@Embed(source='../../../../../assets/canvas/pencilrequest.png')</mx:icon>
 						</mx:Button>
 						<mx:Button id="leftPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.LEFTPENCIL')}"
-							enabled="{hasPencil == true}" click="doLeftPencil()">
+							enabled="{hasPencil}" click="doLeftPencil()">
 							<mx:icon>@Embed(source='../../../../../assets/canvas/pencilremove.png')</mx:icon>
 						</mx:Button>
 					</mx:HBox>
@@ -553,7 +560,7 @@
 							click="saveToCanvasDB()">
 							<mx:icon>@Embed(source='../../../../../assets/canvas/savetoroom.png')</mx:icon>
 						</mx:Button>
-						<mx:Button id="removeDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVECANVASTOROOM')}"
+						<mx:Button id="removeDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REMOVECANVASFROMROOM')}"
 							click="removeFromCanvasDB()">
 							<mx:icon>@Embed(source='../../../../../assets/canvas/removefromroom.png')</mx:icon>
 						</mx:Button>
@@ -562,7 +569,7 @@
 			</mx:ApplicationControlBar>
 			
 			<mx:TextArea id="infoRoomEvents" htmlText="{logInfoRoomEvents}" editable="false" width="100%" height="100%" cornerRadius="5" borderStyle="outset"
-				verticalScrollPolicy="auto"/>
+				verticalScrollPolicy="auto" valueCommit="infoRoomEvents.verticalScrollPosition=infoRoomEvents.maxVerticalScrollPosition"/>
 		</mx:VBox>
 		<paint:PaintCanvasComponent id="roomCanvas" width="100%" height="100%" movable="false"/>
 	</mx:HBox>
