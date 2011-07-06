@@ -146,7 +146,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.REQUESTPENCIL']="Solicitar pincel";
 			myResources.content['ROOMVIEW.LEFTPENCIL']="Dejar pincel";
 			myResources.content['ROOMVIEW.SAVECANVASTOROOM']="Asociar diseño a la sala";
-			
+			myResources.content['ROOMVIEW.REMOVECANVASFROMROOM']="Eliminar diseño de la sala";
 			
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Enviar Invitación";
@@ -198,6 +198,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.REMOVEDESIGN']="Se ha borrado con éxito el diseño asociado a la sala.";
 			myResources.content['MESSAGETITLE.SENDINVITATION']="INVITACIÓN ENVIADA";
 			myResources.content['MESSAGE.SENDINVITATION']="La invitación se envió correctamente al usuario.";
+			myResources.content['MESSAGETITLE.INVITATIONTYPE']="TIPO DE INVITACIÓN";
+			myResources.content['MESSAGE.INVITATIONTYPE']="¿Con que rol quiere invitar al usuario?";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -355,6 +357,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.REQUESTPENCIL']="Request pencil";
 			myResources.content['ROOMVIEW.LEFTPENCIL']="Leave pencil";
 			myResources.content['ROOMVIEW.SAVECANVASTOROOM']="Link design to the room";
+			myResources.content['ROOMVIEW.REMOVECANVASFROMROOM']="Remove design from room";
 			
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Send Invitation";
@@ -406,7 +409,9 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.REMOVEDESIGN']="You have successfully deleted the associated room-design."
 			myResources.content['MESSAGETITLE.SENDINVITATION']="INVITE SENT";
 			myResources.content['MESSAGE.SENDINVITATION']="The invitation was sent correctly to the user."
-			
+			myResources.content['MESSAGETITLE.INVITATIONTYPE']="INVITE TYPE";
+			myResources.content['MESSAGE.INVITATIONTYPE']="With what role wants to invite the user? "
+
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";
 			myResources.content['ERROR.LOGIN']="The user you are trying to access is wrong, please check the fields.";

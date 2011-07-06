@@ -44,5 +44,14 @@ package es.uc3m.coldes.utils.popup {
 			return popUp;
 		}
 		
+		public static function showInvitationTypePopUP(title:String, message:String):InvitationTypePopUp {
+			var popUp:InvitationTypePopUp=PopUpManager.createPopUp(DisplayObject(Application.application), InvitationTypePopUp,
+				true) as InvitationTypePopUp;
+			popUp.data=message;
+			popUp.title=title;
+			PopUpManager.centerPopUp(popUp);
+			return popUp;
+		}
+		
 	}
 }

@@ -321,6 +321,8 @@
 				manageMessages.messages = userInvitationMessage;
 				manageMessages.title = "Mensajes del usuario \"" + userLoged.username +"\"";
 				PopUpManager.centerPopUp(manageMessages);
+				imgNewMessage.includeInLayout = false;
+				imgNewMessage.visible = false;
 			}
 			
 		]]>

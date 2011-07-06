@@ -377,6 +377,7 @@
 			lienzo.graphics.endFill();
 			lienzo.width = conversionMyBitmap.width;
 			lienzo.height = conversionMyBitmap.height;
+			setTimeout(this.sendImage,0,conversionMyBitmap);
 		}
 		
 		public function limpiarLienzo():void {
