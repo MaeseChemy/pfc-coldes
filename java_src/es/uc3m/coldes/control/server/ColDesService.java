@@ -180,9 +180,9 @@ public class ColDesService implements Serializable{
 		return this.roomService.getRoomUsers(room);
 	}
 	
-	public int sendRoomInvitation(String username, Room room, int rol) throws SessionTimeoutException{
+	public int sendRoomInvitation(String username, Room room, int userfunction) throws SessionTimeoutException{
 		checkIsLogIn();
-		UserRoom userroom = this.roomService.sendRoomInvitation(username, room, rol);
+		UserRoom userroom = this.roomService.sendRoomInvitation(username, room, userfunction);
 		if(userroom != null){
 			notifyInvitationToUser(userroom);
 			return 0;
@@ -198,18 +198,18 @@ public class ColDesService implements Serializable{
 	/*************/
 	/** PENCILS **/
 	/*************/
-	public boolean pencilBusy(Room room, String username, int userrol)throws SessionTimeoutException{
+	public boolean pencilBusy(Room room, String username, int userfunction)throws SessionTimeoutException{
 		checkIsLogIn();
-		boolean result = this.pencilService.pencilBusy(room, username, userrol);
+		boolean result = this.pencilService.pencilBusy(room, username, userfunction);
 		if(!result){
 			this.notifyUserToRoom(username,room,"pencilRequest",username);
 		}
 		return result;
 	}
 	
-	public boolean addPencilRequest(Room room, String username, int userrol)throws SessionTimeoutException{
+	public boolean addPencilRequest(Room room, String username, int userfunction)throws SessionTimeoutException{
 		checkIsLogIn();
-		boolean result = this.pencilService.addPencilRequest(room, username, userrol);
+		boolean result = this.pencilService.addPencilRequest(room, username, userfunction);
 		if(result){
 			if(this.pencilService.isUserPencilOwner(room, username)){
 				this.notifyUserToRoom(username,room,"pencilRequest",username);
@@ -220,7 +220,7 @@ public class ColDesService implements Serializable{
 		return result;
 	}
 	
-	public String removePencilRequest(Room room, String username, int userrol)throws SessionTimeoutException{
+	public String removePencilRequest(Room room, String username, int userfunction)throws SessionTimeoutException{
 		checkIsLogIn();
 		String nextUser = this.pencilService.deleteUserPencilRequestRoom(username, room);
 		this.notifyUserToRoom(username, room, "pencilLeft", nextUser);

@@ -22,11 +22,11 @@
 
 	<mx:Image buttonMode="true" source="assets/images/icos/mydata.png"
 			  toolTip="{resourceManager.getString('myResources','MYROOMS.EDITROOM')}" click="edit()" 
-			  includeInLayout="{data.rol == Constants.OWNER_ROL}" visible="{data.rol == Constants.OWNER_ROL}"/>
+			  includeInLayout="{data.userfunction == Constants.OWNER_FUNCTION}" visible="{data.userfunction == Constants.OWNER_FUNCTION}"/>
 	<mx:Image buttonMode="true" source="assets/images/icos/users.png"
 			  toolTip="{resourceManager.getString('myResources','MYROOMS.USERS')}" click="manageUsersRoom()" 
-			  includeInLayout="{data.rol == Constants.OWNER_ROL || data.rol == Constants.MODERATOR_ROL}"
-			  visible="{data.rol == Constants.OWNER_ROL || data.rol == Constants.MODERATOR_ROL}"/>
+			  includeInLayout="{data.userfunction == Constants.OWNER_FUNCTION || data.userfunction == Constants.MODERATOR_FUNCTION}"
+			  visible="{data.userfunction == Constants.OWNER_FUNCTION || data.userfunction == Constants.MODERATOR_FUNCTION}"/>
 	<mx:Image buttonMode="true" source="assets/images/icos/btnlogout.png"
 			  toolTip="{resourceManager.getString('myResources','MYROOMS.REMOVE')}" click="checkDelete()"/>
 </mx:HBox>

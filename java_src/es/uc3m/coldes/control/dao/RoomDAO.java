@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,8 +36,8 @@ public class RoomDAO extends BBDD{
 		if(!this.existRoom(room.getName(), room.getOwner())){
 			logger.info("[RoomDAO-addRoom]: Adding new room [" + room.getName() + "]...");
 			
-			String sqlAddRoom = "insert into room (roomname, roomdescription, owner, private, participationtype) " +
-					"values (?,?,?,?,?)";
+			String sqlAddRoom = "insert into room (roomname, roomdescription, owner, private, participationtype, status, creationDate, modificationDate) " +
+					"values (?,?,?,?,?,?,?,?)";
 			try {
 	
 				conn = getConnection();
@@ -45,6 +47,9 @@ public class RoomDAO extends BBDD{
 				st.setString(3, room.getOwner());
 				st.setBoolean(4, room.getPrivateRoom());
 				st.setInt(5, room.getParticipationType());
+				st.setInt(6, Constants.ROOM_OPEN);
+				st.setTimestamp(7, new Timestamp(new Date().getTime()));
+				st.setTimestamp(8, new Timestamp(new Date().getTime()));
 				int i = st.executeUpdate();
 				if (i != 1){
 					logger.info("[RoomDAO-addRoom]: The room can`t be create");
@@ -60,13 +65,13 @@ public class RoomDAO extends BBDD{
 				while (resultados.next()) {
 					idRoom = resultados.getInt("id");
 					room.setId(idRoom);
-					String sqlInserUserRoom = "insert into roomuser (id_room, username, rol) " +
+					String sqlInserUserRoom = "insert into roomuser (id_room, username, userfunction) " +
 					"values (?,?,?)";
 					conn = getConnection();
 					PreparedStatement st1 = conn.prepareStatement(sqlInserUserRoom);
 					st1.setInt(1, room.getId());
 					st1.setString(2, room.getOwner());
-					st1.setInt(3, Constants.OWNER_ROL);
+					st1.setInt(3, Constants.OWNER_FUNCTION);
 					i = st1.executeUpdate();
 					if (i != 1){
 						logger.info("[RoomDAO-addRoom]: Error creating user-room relation");
@@ -160,20 +165,20 @@ public class RoomDAO extends BBDD{
 	}
 	
 	public int registerUserRoom(User user, Room room) {
-		return this.registerUserRoom(user.getUsername(), room, Constants.COLABORATOR_ROL);
+		return this.registerUserRoom(user.getUsername(), room, Constants.COLABORATOR_FUNCTION);
 	}
 	
-	private int registerUserRoom(String username, Room room, int rol) {
+	private int registerUserRoom(String username, Room room, int userfunction) {
 		int idRoom = -1;
 		logger.info("[RoomDAO-addRoom]: Adding new user-room relation ...");
-		String sqlInserUserRoom = "insert into roomuser (id_room, username, rol) " +
+		String sqlInserUserRoom = "insert into roomuser (id_room, username, userfunction) " +
 		"values (?,?,?)";
 		try {
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlInserUserRoom);
 			st.setInt(1, room.getId());
 			st.setString(2, username);
-			st.setInt(3, rol);
+			st.setInt(3, userfunction);
 
 			int i = st.executeUpdate();
 			if (i != 1){
@@ -202,7 +207,7 @@ public class RoomDAO extends BBDD{
 	public List<UserRoom> getUserRooms(User user){
 		List<UserRoom> results = new ArrayList<UserRoom>();
 		logger.info("[RoomDAO-getUserRooms]: Searching rooms of user ["+user.getUsername()+"]..");
-		String sqlSelectUserSala = "select id_room, username, rol " +
+		String sqlSelectUserSala = "select id_room, username, userfunction " +
 		"from roomuser where username=?";
 		try {
 			conn = getConnection();
@@ -219,20 +224,20 @@ public class RoomDAO extends BBDD{
 					newUserRoom.setRoomName(room.getName());
 					newUserRoom.setOwnerUserName(room.getOwner());
 					newUserRoom.setUserName(user.getUsername());
-					newUserRoom.setRol(resultados.getInt("rol"));
-					int tipoRol = resultados.getInt("rol");
-					switch (tipoRol) {
-						case Constants.OWNER_ROL:
-							newUserRoom.setRolDescription("Owner");
+					newUserRoom.setUserfunction(resultados.getInt("userfunction"));
+					int tipoUserFunction = resultados.getInt("userfunction");
+					switch (tipoUserFunction) {
+						case Constants.OWNER_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Owner");
 							break;
-						case Constants.MODERATOR_ROL:
-							newUserRoom.setRolDescription("Moderator");
+						case Constants.MODERATOR_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Moderator");
 							break;
-						case Constants.COLABORATOR_ROL:
-							newUserRoom.setRolDescription("Colaborator");
+						case Constants.COLABORATOR_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Colaborator");
 							break;
-						case Constants.GUEST_ROL:
-							newUserRoom.setRolDescription("Guest");
+						case Constants.GUEST_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Guest");
 							break;
 					}
 					results.add(newUserRoom);
@@ -295,7 +300,7 @@ public class RoomDAO extends BBDD{
 	public List<Room> getColDesRooms() {
 		List<Room> results = new ArrayList<Room>();
 		logger.info("[RoomDAO-getColDesRooms]: Searching rooms of ColDes...");
-		String sqlSelectUserSala = "select id, roomname, roomdescription, owner, private, participationtype " +
+		String sqlSelectUserSala = "select id, roomname, roomdescription, owner, private, participationtype, status, creationDate, modificationDate " +
 		"from room";
 		try {
 			conn = getConnection();
@@ -312,7 +317,9 @@ public class RoomDAO extends BBDD{
 				room.setOwner(resultados.getString("owner"));
 				room.setPrivateRoom(resultados.getBoolean("private"));
 				room.setParticipationType(resultados.getInt("participationtype"));
-				
+				room.setStatus(resultados.getInt("status"));
+				room.setCreationDate(resultados.getTimestamp("creationDate"));
+				room.setModificationDate(resultados.getTimestamp("modificationDate"));
 				results.add(room);	
 			}
 
@@ -334,7 +341,7 @@ public class RoomDAO extends BBDD{
 	public List<Room> getColDesPublicRooms() {
 		List<Room> results = new ArrayList<Room>();
 		logger.info("[RoomDAO-getColDesPublicRooms]: Searching rooms of ColDes...");
-		String sqlSelectUserSala = "select id, roomname, roomdescription, owner, private, participationtype " +
+		String sqlSelectUserSala = "select id, roomname, roomdescription, owner, private, participationtype, status, creationDate, modificationDate " +
 		"from room where private=0";
 		try {
 			conn = getConnection();
@@ -351,6 +358,9 @@ public class RoomDAO extends BBDD{
 				room.setOwner(resultados.getString("owner"));	
 				room.setPrivateRoom(resultados.getBoolean("private"));
 				room.setParticipationType(resultados.getInt("participationtype"));
+				room.setStatus(resultados.getInt("status"));
+				room.setCreationDate(resultados.getTimestamp("creationDate"));
+				room.setModificationDate(resultados.getTimestamp("modificationDate"));
 				
 				results.add(room);	
 			}
@@ -478,7 +488,7 @@ public class RoomDAO extends BBDD{
 	public List<UserRoom> getRoomUsers(Room room) {
 		List<UserRoom> results = new ArrayList<UserRoom>();
 		logger.info("[RoomDAO-getUserRooms]: Searching users of room ["+room.getId()+"]..");
-		String sqlSelectUserSala = "select id_room, username, rol " +
+		String sqlSelectUserSala = "select id_room, username, userfunction " +
 		"from roomuser where id_room=?";
 		try {
 			conn = getConnection();
@@ -495,20 +505,20 @@ public class RoomDAO extends BBDD{
 					newUserRoom.setRoomName(roomAux.getName());
 					newUserRoom.setOwnerUserName(roomAux.getOwner());
 					newUserRoom.setUserName(resultados.getString("username"));
-					newUserRoom.setRol(resultados.getInt("rol"));
-					int tipoRol = resultados.getInt("rol");
-					switch (tipoRol) {
-						case Constants.OWNER_ROL:
-							newUserRoom.setRolDescription("Owner");
+					newUserRoom.setUserfunction(resultados.getInt("userfunction"));
+					int tipoUserFunction = resultados.getInt("userfunction");
+					switch (tipoUserFunction) {
+						case Constants.OWNER_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Owner");
 							break;
-						case Constants.MODERATOR_ROL:
-							newUserRoom.setRolDescription("Moderator");
+						case Constants.MODERATOR_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Moderator");
 							break;
-						case Constants.COLABORATOR_ROL:
-							newUserRoom.setRolDescription("Colaborator");
+						case Constants.COLABORATOR_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Colaborator");
 							break;
-						case Constants.GUEST_ROL:
-							newUserRoom.setRolDescription("Guest");
+						case Constants.GUEST_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Guest");
 							break;
 					}
 					results.add(newUserRoom);
@@ -531,17 +541,17 @@ public class RoomDAO extends BBDD{
 		return results;
 	}
 
-	public UserRoom sendRoomInvitation(String username, Room room, int rol) {
+	public UserRoom sendRoomInvitation(String username, Room room, int userfunction) {
 		UserRoom result = null;
 		logger.info("[RoomDAO-sendRoomInvitation]: New room invitation...");
-		String sqlInserRoomInvitation = "insert into roomuserinvitation (username, id_room, rol) " +
+		String sqlInserRoomInvitation = "insert into roomuserinvitation (username, id_room, userfunction) " +
 		"values (?,?,?)";
 		try {
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlInserRoomInvitation);
 			st.setString(1, username);
 			st.setInt(2, room.getId());
-			st.setInt(3, rol);
+			st.setInt(3, userfunction);
 
 			int i = st.executeUpdate();
 			if (i != 1){
@@ -552,19 +562,19 @@ public class RoomDAO extends BBDD{
 				result.setRoomName(room.getName());
 				result.setOwnerUserName(room.getOwner());
 				result.setUserName(username);
-				result.setRol(rol);
-				switch (rol) {
-					case Constants.OWNER_ROL:
-						result.setRolDescription("Owner");
+				result.setUserfunction(userfunction);
+				switch (userfunction) {
+					case Constants.OWNER_FUNCTION:
+						result.setUserfunctionDescription("Owner");
 						break;
-					case Constants.MODERATOR_ROL:
-						result.setRolDescription("Moderator");
+					case Constants.MODERATOR_FUNCTION:
+						result.setUserfunctionDescription("Moderator");
 						break;
-					case Constants.COLABORATOR_ROL:
-						result.setRolDescription("Colaborator");
+					case Constants.COLABORATOR_FUNCTION:
+						result.setUserfunctionDescription("Colaborator");
 						break;
-					case Constants.GUEST_ROL:
-						result.setRolDescription("Guest");
+					case Constants.GUEST_FUNCTION:
+						result.setUserfunctionDescription("Guest");
 						break;
 				}
 			}
@@ -621,7 +631,7 @@ public class RoomDAO extends BBDD{
 	public List<UserRoom> getAllUserRoomInvitation(String username) {
 		List<UserRoom> results = new ArrayList<UserRoom>();
 		logger.info("[RoomDAO-getAllUserRoomInvitation]: Searching invitations of user ["+username+"]..");
-		String sqlSelectUserInvitation = "select username, id_room, rol " +
+		String sqlSelectUserInvitation = "select username, id_room, userfunction " +
 		"from roomuserinvitation where username=?";
 		try {
 			conn = getConnection();
@@ -638,20 +648,20 @@ public class RoomDAO extends BBDD{
 					newUserRoom.setRoomName(roomAux.getName());
 					newUserRoom.setOwnerUserName(roomAux.getOwner());
 					newUserRoom.setUserName(resultados.getString("username"));
-					newUserRoom.setRol(resultados.getInt("rol"));
-					int tipoRol = resultados.getInt("rol");
-					switch (tipoRol) {
-						case Constants.OWNER_ROL:
-							newUserRoom.setRolDescription("Owner");
+					newUserRoom.setUserfunction(resultados.getInt("userfunction"));
+					int tipoUserFunction = resultados.getInt("userfunction");
+					switch (tipoUserFunction) {
+						case Constants.OWNER_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Owner");
 							break;
-						case Constants.MODERATOR_ROL:
-							newUserRoom.setRolDescription("Moderator");
+						case Constants.MODERATOR_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Moderator");
 							break;
-						case Constants.COLABORATOR_ROL:
-							newUserRoom.setRolDescription("Colaborator");
+						case Constants.COLABORATOR_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Colaborator");
 							break;
-						case Constants.GUEST_ROL:
-							newUserRoom.setRolDescription("Guest");
+						case Constants.GUEST_FUNCTION:
+							newUserRoom.setUserfunctionDescription("Guest");
 							break;
 					}
 					results.add(newUserRoom);
@@ -682,7 +692,7 @@ public class RoomDAO extends BBDD{
 		}else{
 			if(insert){
 				logger.error("[RoomDAO-manageUserRoomRelation]: Insert new roomuser relation...");
-				return this.registerUserRoom(userRoom.getUserName(), userRoom.getRoom(), userRoom.getRol());
+				return this.registerUserRoom(userRoom.getUserName(), userRoom.getRoom(), userRoom.getUserfunction());
 			}else{
 				return 0;
 			}
@@ -691,7 +701,7 @@ public class RoomDAO extends BBDD{
 
 	public boolean updateRoom(Room room) {
 		logger.info("[RoomDAO-updateRoom]: Update room ...");
-		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, participationtype=? where id=?";
+		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, participationtype=?, modificationDate=? where id=?";
 		try {
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlDeleteUserRoom);
@@ -700,7 +710,8 @@ public class RoomDAO extends BBDD{
 			st.setString(3, room.getOwner());
 			st.setBoolean(4, room.getPrivateRoom());
 			st.setInt(5, room.getParticipationType());
-			st.setInt(6, room.getId());
+			st.setTimestamp(6, new Timestamp(new Date().getTime()));
+			st.setInt(7, room.getId());
 			
 			int i = st.executeUpdate();
 			if (i != 1){
@@ -729,11 +740,11 @@ public class RoomDAO extends BBDD{
 
 	public boolean updateUserRoom(UserRoom userRoom){
 		logger.info("[RoomDAO-updateUserRoom]: Update room-user ...");
-		String sqlDeleteUserRoom = "update roomuser set rol=? where id_room=? and username=?";
+		String sqlDeleteUserRoom = "update roomuser set userfunction=? where id_room=? and username=?";
 		try {
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlDeleteUserRoom);
-			st.setInt(1, userRoom.getRol());
+			st.setInt(1, userRoom.getUserfunction());
 			st.setInt(2, userRoom.getRoom().getId());
 			st.setString(3, userRoom.getUserName());
 
@@ -765,10 +776,10 @@ public class RoomDAO extends BBDD{
 	public boolean changeUserOwner(int idRoom, String newOwner, String oldOwner) {
 		logger.info("[RoomDAO-changeUserOwner]: Change user owner of user room relation ...");
 		try {
-			String sqlChangeOwnerRoom = "update roomuser set rol=? where id_room=? and username=?";
+			String sqlChangeOwnerRoom = "update roomuser set userfunction=? where id_room=? and username=?";
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlChangeOwnerRoom);
-			st.setInt(1, Constants.OWNER_ROL);
+			st.setInt(1, Constants.OWNER_FUNCTION);
 			st.setInt(2, idRoom);
 			st.setString(3, newOwner);
 
@@ -778,7 +789,7 @@ public class RoomDAO extends BBDD{
 				return false;
 			}else{
 				st = conn.prepareStatement(sqlChangeOwnerRoom);
-				st.setInt(1, Constants.MODERATOR_ROL);
+				st.setInt(1, Constants.MODERATOR_FUNCTION);
 				st.setInt(2, idRoom);
 				st.setString(3, oldOwner);
 				i = st.executeUpdate();

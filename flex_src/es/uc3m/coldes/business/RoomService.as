@@ -185,12 +185,12 @@ package es.uc3m.coldes.business
 			callback(roomUsers);	
 		}
 		
-		public function sendRoomInvitation(username:String, room:Room, rol:Number, callback:Function):void{
+		public function sendRoomInvitation(username:String, room:Room, userfunction:Number, callback:Function):void{
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
 			service.addEventListener(ResultEvent.RESULT, resultSendRoomInvitation);
 			this.callback = callback;
-			service.sendRoomInvitation(username, room, rol);
+			service.sendRoomInvitation(username, room, userfunction);
 		}
 		
 		private function resultSendRoomInvitation(event:ResultEvent):void {

@@ -1,5 +1,7 @@
 package es.uc3m.coldes.model;
 
+import java.util.Date;
+
 public class Room {
 	private int id;
 	private String name;
@@ -7,11 +9,16 @@ public class Room {
 	private String owner;
 	private boolean privateRoom;
 	private int participationType;
+	private int status;
+	private Date creationDate;
+	private Date modificationDate;
+
 	
 	public Room() {
 	}
 
-	public Room(int id, String name, String description, String owner, boolean privateRoom, int participationType) {
+	public Room(int id, String name, String description, String owner, boolean privateRoom, int participationType, 
+			int status, Date creationDate, Date modificationDate) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -19,6 +26,9 @@ public class Room {
 		this.owner = owner;
 		this.privateRoom = privateRoom;
 		this.participationType = participationType;
+		this.status = status;
+		this.creationDate = creationDate;
+		this.modificationDate = modificationDate;
 	}
 
 	public int getId() {
@@ -67,6 +77,30 @@ public class Room {
 
 	public void setParticipationType(int participationType) {
 		this.participationType = participationType;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public Date getModificationDate() {
+		return modificationDate;
+	}
+
+	public void setModificationDate(Date modificationDate) {
+		this.modificationDate = modificationDate;
 	}
 	
 }

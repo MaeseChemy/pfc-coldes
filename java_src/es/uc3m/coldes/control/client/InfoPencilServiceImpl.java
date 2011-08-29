@@ -17,10 +17,10 @@ public class InfoPencilServiceImpl implements InfoPencilService {
 		this.pencilDAO = new PencilDAO();
 	}
 
-	public boolean pencilBusy(Room room, String username, int userrol) {
+	public boolean pencilBusy(Room room, String username, int userfunction) {
 		boolean result = this.pencilDAO.pencilBusy(room);
 		if(!result){
-			this.pencilDAO.addPencilRequest(room, username, userrol, true);
+			this.pencilDAO.addPencilRequest(room, username, userfunction, true);
 		}
 		return result;
 	}
@@ -30,12 +30,12 @@ public class InfoPencilServiceImpl implements InfoPencilService {
 		return result;
 	}
 	
-	public boolean addPencilRequest(Room room, String username, int userrol) {
+	public boolean addPencilRequest(Room room, String username, int userfunction) {
 		boolean result = this.pencilDAO.pencilBusy(room);
 		if(!result){
-			return this.pencilDAO.addPencilRequest(room, username, userrol, true);
+			return this.pencilDAO.addPencilRequest(room, username, userfunction, true);
 		}else{
-			return this.pencilDAO.addPencilRequest(room, username, userrol, false);
+			return this.pencilDAO.addPencilRequest(room, username, userfunction, false);
 		}
 	}
 

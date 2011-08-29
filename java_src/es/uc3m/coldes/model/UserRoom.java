@@ -6,21 +6,21 @@ public class UserRoom {
 	private String roomName;
 	private String ownerUserName;
 	private String userName;
-	private int rol;
-	private String rolDescription;
+	private int userfunction;
+	private String userfunctionDescription;
 	
 	public UserRoom() {
 	}
 
 	public UserRoom(Room room, String roomName, String ownerUserName,
-			String userName, int rol, String rolDescription) {
+			String userName, int userfunction, String userfunctionDescription) {
 		super();
 		this.room = room;
 		this.roomName = roomName;
 		this.ownerUserName = ownerUserName;
 		this.userName = userName;
-		this.rol = rol;
-		this.rolDescription = rolDescription;
+		this.userfunction = userfunction;
+		this.userfunctionDescription = userfunctionDescription;
 	}
 
 	public Room getRoom() {
@@ -55,20 +55,20 @@ public class UserRoom {
 		this.userName = userName;
 	}
 
-	public int getRol() {
-		return rol;
+	public int getUserfunction() {
+		return userfunction;
 	}
 
-	public void setRol(int rol) {
-		this.rol = rol;
+	public void setUserfunction(int userfunction) {
+		this.userfunction = userfunction;
 	}
 
-	public String getRolDescription() {
-		return rolDescription;
+	public String getUserfunctionDescription() {
+		return userfunctionDescription;
 	}
 
-	public void setRolDescription(String rolDescription) {
-		this.rolDescription = rolDescription;
+	public void setUserfunctionDescription(String userfunctionDescription) {
+		this.userfunctionDescription = userfunctionDescription;
 	}
 
 }

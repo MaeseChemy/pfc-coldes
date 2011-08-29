@@ -112,7 +112,7 @@
 					roomNew = new RoomView();
 					roomNew.room = userRoom.room;
 					roomNew.user = userLoged;
-					roomNew.userRol = userRoom.rol;
+					roomNew.userfunction = userRoom.userfunction;
 					roomNew.label = userRoom.roomName;
 					roomNew.icon = roomIcon;
 					parentApplication.tabs.addChild(roomNew);
@@ -163,7 +163,7 @@
 			public var userRoomRelation:UserRoom;
 			public function deleteUserRoom(data:UserRoom):void{
 				userRoomRelation = data;
-				if(data.rol == Constants.OWNER_ROL){
+				if(data.userfunction == Constants.OWNER_FUNCTION){
 					//The user is de owner of the room, delete room
 					condDelete = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEUSERRELATIONOWNER'), 
 					resourceManager.getString('myResources','MESSAGE.REMOVEUSERRELATIONOWNER'));
@@ -215,14 +215,14 @@
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="ownerUserName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="userName"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROL')}">
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERFUNCTION')}">
 					<mx:itemRenderer>
 						<mx:Component >
-							<mx:Text text="{(data).rol == Constants.OWNER_ROL?resourceManager.getString('myResources','ROLNAME.OWNER'):
-										(data).rol == Constants.MODERATOR_ROL?resourceManager.getString('myResources','ROLNAME.MODERATOR'):
-										(data).rol == Constants.COLABORATOR_ROL ?resourceManager.getString('myResources','ROLNAME.COLABORATOR'):
-										(data).rol == Constants.GUEST_ROL?resourceManager.getString('myResources','ROLNAME.GUEST'):
-										resourceManager.getString('myResources','ROLNAME.DEFAULT')}" >
+							<mx:Text text="{(data).userfunction == Constants.OWNER_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.OWNER'):
+										(data).userfunction == Constants.MODERATOR_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR'):
+										(data).userfunction == Constants.COLABORATOR_FUNCTION ?resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR'):
+										(data).userfunction == Constants.GUEST_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST'):
+										resourceManager.getString('myResources','USERFUNCTIONNAME.DEFAULT')}" >
 								<mx:Script>
 									<![CDATA[
 										import es.uc3m.coldes.business.Constants;
