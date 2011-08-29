@@ -78,7 +78,6 @@ public class BBDD {
 		try {
 			// Intentamos conectarnos a la base de Datos
 			logger.info("[BBDD]: Connecting to the database of ColDes");
-
 			conn = DriverManager.getConnection("jdbc:mysql://" + url + ":"
 					+ port + "/" + schema, username, password);
 

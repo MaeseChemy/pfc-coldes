@@ -149,6 +149,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.LEFTPENCIL']="Dejar pincel";
 			myResources.content['ROOMVIEW.SAVECANVASTOROOM']="Asociar diseño a la sala";
 			myResources.content['ROOMVIEW.REMOVECANVASFROMROOM']="Eliminar diseño de la sala";
+			myResources.content['ROOMVIEW.ASK']="Lanzar encuesta";
 			
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Enviar Invitación";
@@ -173,7 +174,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ANSWERS.ENTERANDREGISTER']="Agregar y Entrar";
 			myResources.content['ANSWERS.ONLYREGISTER']="Agregar solo";
 			myResources.content['ANSWERS.CANCEL']="Cancelar";
-			
+			myResources.content['ANSWERS.ASKSAVE']="Salvar Diseño";
+			myResources.content['ANSWERS.ASKREMOVE']="Eliminar Diseño?";
 			
 			//MESSAGE's
 			myResources.content['MESSAGETITLE.LOGOUT']="SALIR";
@@ -202,6 +204,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.SENDINVITATION']="La invitación se envió correctamente al usuario.";
 			myResources.content['MESSAGETITLE.INVITATIONTYPE']="TIPO DE INVITACIÓN";
 			myResources.content['MESSAGE.INVITATIONTYPE']="¿Con que función quiere invitar al usuario?";
+			myResources.content['MESSAGETITLE.SURVEY']="LANZAR ENCUESTA";
+			myResources.content['MESSAGE.SURVEY']="¿Sobre que desea realizar la encuesta?";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -362,6 +366,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.LEFTPENCIL']="Leave pencil";
 			myResources.content['ROOMVIEW.SAVECANVASTOROOM']="Link design to the room";
 			myResources.content['ROOMVIEW.REMOVECANVASFROMROOM']="Remove design from room";
+			myResources.content['ROOMVIEW.ASK']="Do Survey";
 			
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Send Invitation";
@@ -386,6 +391,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ANSWERS.ENTERANDREGISTER']="Add and Enter";
 			myResources.content['ANSWERS.ONLYREGISTER']="Add only";
 			myResources.content['ANSWERS.CANCEL']="Cancel";
+			myResources.content['ANSWERS.ASKSAVE']="Save Design?";
+			myResources.content['ANSWERS.ASKREMOVE']="Remove Design?";
 			
 			
 			//MESSAGE's
@@ -415,7 +422,9 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.SENDINVITATION']="The invitation was sent correctly to the user."
 			myResources.content['MESSAGETITLE.INVITATIONTYPE']="INVITE TYPE";
 			myResources.content['MESSAGE.INVITATIONTYPE']="With what function wants to invite the user? "
-
+			myResources.content['MESSAGETITLE.SURVEY']="DO SURVEY";
+			myResources.content['MESSAGE.SURVEY']="On what you want to do the survey?";
+			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";
 			myResources.content['ERROR.LOGIN']="The user you are trying to access is wrong, please check the fields.";
