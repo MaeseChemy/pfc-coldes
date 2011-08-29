@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
-	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:chat="es.uc3m.coldes.view.chat.*">
+	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:chat="es.uc3m.coldes.view.chat.*"
+	icon="{hasPencil?roomPencilOwnerIcon:roomIcon}">
 	
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.entities.UserResponse;
+			import mx.messaging.messages.AsyncMessage;
+			import mx.messaging.messages.IMessage;
+			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
+			import mx.events.FlexEvent;
+			import es.uc3m.coldes.utils.popup.SurveyPopUp;
 			import es.uc3m.coldes.view.design.ManageUserDesings;
 			import es.uc3m.coldes.entities.Design;
 			import mx.managers.PopUpManager;
@@ -22,6 +29,11 @@
 			import es.uc3m.coldes.entities.User;
 			import es.uc3m.coldes.business.RoomService;
 			import es.uc3m.coldes.entities.Room;
+			
+			[Embed('/assets/images/icos/room.png')]
+			public const roomIcon:Class;
+			[Embed('/assets/images/icos/roomPencilOwner.png')]
+			public const roomPencilOwnerIcon:Class;
 			
 			[Bindable]
 			private var _room:Room;
@@ -157,10 +169,33 @@
 			[Bindable]
 			private var logInfoRoomEvents:String = "";
 			
-			[Embed('/assets/images/icos/room.png')]
-			public static const roomIcon:Class;
-			[Embed('/assets/images/icos/roomPencilOwner.png')]
-			public static const roomPencilOwnerIcon:Class;
+			
+			
+			private var popUpConditional:ConditionalPopUp;
+			
+			private function disablePaintButtons():void{
+        		hasPencil = false;
+        		//Definimos correctamente los booleanos
+				roomCanvas.canvasCont.pintandoCirculo=false;
+				roomCanvas.canvasCont.pintandoLinea=false;
+				roomCanvas.canvasCont.pintandoCuadrado=false;
+				roomCanvas.canvasCont.pintandoRecta=false;
+				btnPencil.emphasized = false;
+				btnCircle.emphasized = false;
+				btnSquare.emphasized = false;
+				btnRect.emphasized = false;
+        	}
+        	
+        	private function findUser(username:String,lista:ArrayCollection):Number{
+        		var pos:Number = 0;
+        		for each(var str:String in lista){
+        			if(str == username){
+        				return pos;
+        			}
+        			pos++;
+        		}
+        		return -1;
+        	}
 			
 			public function messageHandler(event:MessageEvent):void {
        			var body:Object = event.message.body;
@@ -190,6 +225,16 @@
        					//roomChat.log += "<font color='#DF0174'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILLEFT')+"</font>\n";
        					logInfoRoomEvents +=  "<b>" +date+" </b><font color='#DF0174'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILLEFT')+"</font>\n";
        					disablePaintButtons();
+       				}else if(body.action == "doSurvey"){
+       					if(body.surveyType == Constants.SAVE_DESIGN_SURVEY){
+       						popUpConditional = UtilPopUp.showConditionalPopUP("ASOCIAR A LA SALA",
+							"Esta de acuerdo para asociar el diseño a la sala?");
+							popUpConditional.addEventListener(FlexEvent.REMOVE, surveyResponseUserSave);
+       					}else if(body.surveyType == Constants.REMOVE_DESIGN_SURVEY){
+       						popUpConditional = UtilPopUp.showConditionalPopUP("ELIMINAR DE LA SALA",
+							"Esta de acuerdo para eliminar el diseño de la sala?");
+							popUpConditional.addEventListener(FlexEvent.REMOVE, surveyResponseUserRemove);
+       					}
        				}
        				roomChat.listOfUsers.refresh();
        				
@@ -199,44 +244,49 @@
        					logInfoRoomEvents += "<b>" +date+" </b><font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
        					if(user.username == body.nextPencilOwner){
        						hasPencil = true;
-       						//Marcamos como propietario al usuario
-       						this.icon = roomPencilOwnerIcon;
-       					}else{
-       						this.icon = roomIcon;
        					}
        				}
        			}
         	}
         	
-        	private function disablePaintButtons():void{
-        		hasPencil = false;
-        		//Definimos correctamente los booleanos
-				roomCanvas.canvasCont.pintandoCirculo=false;
-				roomCanvas.canvasCont.pintandoLinea=false;
-				roomCanvas.canvasCont.pintandoCuadrado=false;
-				roomCanvas.canvasCont.pintandoRecta=false;
-				btnPencil.emphasized = false;
-				btnCircle.emphasized = false;
-				btnSquare.emphasized = false;
-				btnRect.emphasized = false;
-        	}
         	
-        	private function findUser(username:String,lista:ArrayCollection):Number{
-        		var pos:Number = 0;
-        		for each(var str:String in lista){
-        			if(str == username){
-        				return pos;
-        			}
-        			pos++;
-        		}
-        		return -1;
-        	}
         	
        		public function faultHandler(event:MessageFaultEvent):void{
        			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
 									   "There was an error performing the operation, contact your application administrator.");
        		}
+        	
+        	private function surveyResponseUserSave(event:Event):void{
+        		var message:IMessage = new AsyncMessage();
+       			
+       			message.body.action = "surveyResponse";
+       			message.body.room = room;
+       			message.body.username = user.username;
+       			message.body.surveyType = Constants.SAVE_DESIGN_SURVEY;
+				if(popUpConditional.answer){
+					message.body.response = Constants.OK;
+				}else{
+					message.body.response = Constants.NOK;
+				}	
 			
+				producer.send(message);	
+			}
+			
+			private function surveyResponseUserRemove(event:Event):void{
+				var message:IMessage = new AsyncMessage();
+       			
+       			message.body.action = "surveyResponse";
+       			message.body.room = room;
+       			message.body.username = user.username;
+       			message.body.surveyType = Constants.REMOVE_DESIGN_SURVEY;
+				if(popUpConditional.answer){
+					message.body.response = Constants.OK;
+				}else{
+					message.body.response = Constants.NOK;
+				}	
+			
+				producer.send(message);
+			}
 			/**********************/
 			/** PENCIL FUNCTIONS **/
 			/**********************/
@@ -256,7 +306,6 @@
         	
         	public function callbackDoLeftPencil (result:Boolean):void{
         		leftPencil.enabled = hasPencil;
-        		this.icon = roomIcon;
         	}
         	
 			/*********************/
@@ -453,13 +502,48 @@
 				removeDesignCanvas.enabled = true;
 			}
 			
+			private var popUpSurvey:SurveyPopUp;
+			private function launchSurvey():void{
+				popUpSurvey = UtilPopUp.showSurveyPopUP(resourceManager.getString('myResources','MESSAGETITLE.SURVEY'),
+				resourceManager.getString('myResources','MESSAGE.SURVEY'));
+				popUpSurvey.addEventListener(FlexEvent.REMOVE, doSurvey);
+			}
+			
+			private function doSurvey(event:Event):void{
+				var userResponses:UserResponses=PopUpManager.createPopUp(DisplayObject(Application.application), UserResponses, true) as UserResponses;
+				var listUserResp:ArrayCollection = new ArrayCollection();
+				for each(var userAux:String in usersRooms){
+					var userRes:UserResponse = new UserResponse();
+					userRes.response = Constants.UNDEFINED;
+					userRes.username = userAux;
+					listUserResp.addItem(userRes);
+				}
+				userResponses.users = listUserResp;
+				userResponses.title = "Respuestas de los usuarios de la sala";
+				userResponses.room = room;
+				PopUpManager.centerPopUp(userResponses);
+
+				var message:IMessage = new AsyncMessage();
+       			
+       			message.body.action = "doSurvey"
+       			message.body.room = room;
+       			message.body.username = user.username;
+				message.body.surveyType = popUpSurvey.answer;		
+			
+				producer.send(message);
+			}
+			
+			
 		]]>
 	</mx:Script>
 	<mx:Consumer id="consumer"
 		destination="updateUsersRooms"
 		message="messageHandler(event);"
 		fault="faultHandler(event);"/>
-
+	
+	<mx:Producer id="producer"
+		destination="updateUsersRooms"/>
+		
 	<mx:HBox width="100%" height="100%" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5" backgroundColor="#00CFE8" backgroundAlpha="0.9">
 		<mx:VBox height="100%">
 			<chat:ChatForm id="roomChat" />
@@ -574,6 +658,10 @@
 						<mx:Button id="removeDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REMOVECANVASFROMROOM')}"
 							click="removeFromCanvasDB()">
 							<mx:icon>@Embed(source='../../../../../assets/canvas/removefromroom.png')</mx:icon>
+						</mx:Button>
+						<mx:Button id="askButton" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.ASK')}"
+							click="launchSurvey()">
+							<mx:icon>@Embed(source='../../../../../assets/canvas/ask.png')</mx:icon>
 						</mx:Button>
 					</mx:HBox>
 				</mx:VBox>	

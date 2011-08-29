@@ -53,5 +53,14 @@ package es.uc3m.coldes.utils.popup {
 			return popUp;
 		}
 		
+		public static function showSurveyPopUP(title:String, message:String):SurveyPopUp {
+			var popUp:SurveyPopUp=PopUpManager.createPopUp(DisplayObject(Application.application), SurveyPopUp,
+				true) as SurveyPopUp;
+			popUp.data=message;
+			popUp.title=title;
+			PopUpManager.centerPopUp(popUp);
+			return popUp;
+		}
+		
 	}
 }

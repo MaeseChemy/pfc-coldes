@@ -21,7 +21,7 @@
 			consumer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			consumer.channelSet = channelSet;
 			consumer.subscribe();
@@ -31,7 +31,7 @@
 			producer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://pcjmbg:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
 			
 			producer.channelSet = channelSet;
 		}
@@ -71,8 +71,7 @@
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','CHAT.USERS')}"/>
 			</mx:columns>
 		</mx:DataGrid>
-		<mx:TextArea id="logCont" htmlText="{log}" width="100%" height="100%" editable="false" 
-			verticalScrollPolicy="auto" valueCommit="logCont.verticalScrollPosition=logCont.maxVerticalScrollPosition" />
+		<mx:TextArea htmlText="{log}" width="100%" height="100%" editable="false" verticalScrollPolicy="auto"/>
 	</mx:HBox>
 	<mx:ControlBar>
 		<mx:TextInput id="msg" width="100%" enter="send()"/>
