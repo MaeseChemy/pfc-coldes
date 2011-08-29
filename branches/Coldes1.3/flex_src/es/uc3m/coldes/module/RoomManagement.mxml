@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" height="100%"
+		   paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"
+		   creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.view.room.RoomDataFormUpdate;
+			import mx.core.Application;
+			import es.uc3m.coldes.view.room.ManageUsersRoom;
+			import mx.events.FlexEvent;
+			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
+			import es.uc3m.coldes.business.Constants;
+			import es.uc3m.coldes.view.room.RoomView;
+			import mx.controls.Alert;
+			import es.uc3m.coldes.entities.UserRoom;
+			import es.uc3m.coldes.view.room.RoomDataFormRegister;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.entities.Room;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import mx.managers.PopUpManager;
+			import es.uc3m.coldes.view.user.UserDataFormUpdate;
+			import es.uc3m.coldes.business.UserService;
+			import es.uc3m.coldes.entities.User;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var colDesRooms:ArrayCollection = new ArrayCollection();
+			
+			private var userLoged:User;
+			private function init():void {
+				userLoged = parentApplication.userLoged;
+				new RoomService().getColDesRooms(callbackUsersRooms);
+			}
+
+			private function callbackUsersRooms(roomsGet:ArrayCollection):void {
+				colDesRooms=roomsGet;
+				colDesRooms.refresh();
+			}
+
+			/* Funcion de filtrado */
+			private function roomFilter(obj:Object):Boolean {
+				var result:Boolean = false;
+				var room:Room = obj as Room;
+				if (searchText.text.length > 0 ) {
+					if ((room.name != null && room.name.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) ||
+						(room.owner != null && room.owner.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) 
+						)
+					{
+						result = true;
+					}
+				}
+				return result;
+			}
+
+			private function filter(event:Event=null):void {
+				colDesRooms.filterFunction=roomFilter;
+				colDesRooms.refresh();
+			}
+
+			public function restart():void {
+				refresh();
+			}
+			
+			private function refresh():void{
+				new RoomService().getColDesRooms(callbackUsersRooms);
+				searchText.text = "";
+			}
+			
+			/***************************/
+			
+			public function editRoom(data:Room):void{
+				var updateRoom:RoomDataFormUpdate=PopUpManager.createPopUp(DisplayObject(Application.application), RoomDataFormUpdate, true) as RoomDataFormUpdate;
+				updateRoom.room = data;
+				updateRoom.callBackFunction = doUpdateRoom;
+				PopUpManager.centerPopUp(updateRoom);
+			}
+			
+			public function doUpdateRoom(room:Room):void{
+				(new RoomService()).updateRoom(room, doUpdateRoomCallback);
+			}
+			
+			public function doUpdateRoomCallback(result:Boolean):void{
+				if(result){
+					//Internal error
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.UPDATERROOM'),
+										       resourceManager.getString('myResources','MESSAGE.UPDATERROOM'));
+					refresh();
+				}
+			}
+			
+			public function manageUsersRoom(data:Room):void{
+				var manageUsers:ManageUsersRoom=PopUpManager.createPopUp(DisplayObject(Application.application), ManageUsersRoom, true) as ManageUsersRoom;
+				manageUsers.room = data;
+				manageUsers.title = "Sala \"" + data.name +"\"";
+				PopUpManager.centerPopUp(manageUsers);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Canvas width="100%" height="100%">
+	<mx:VBox id="vbox" width="100%" height="100%" >
+		<mx:HBox width="100%">
+			<mx:FormItem label="{resourceManager.getString('myResources','MYROOMS.SEARCH')}:">
+				<mx:TextInput id="searchText" enter="filter()"/>
+			</mx:FormItem>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.SEARCHBTN')}" click="filter()"/>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
+			<mx:Button click="refresh()">
+				<mx:icon>@Embed(source='../../../../assets/images/refresh.png')</mx:icon>
+			</mx:Button>
+		</mx:HBox>
+
+		<mx:DataGrid id="gridRoomManagement" width="100%" height="100%" dataProvider="{colDesRooms}" verticalScrollPolicy="auto">
+			<mx:columns>
+				<mx:DataGridColumn width="70" resizable="false" itemRenderer="es.uc3m.coldes.view.room.RoomManagementAcctions"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="name"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="owner"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="description"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+	</mx:Canvas>
+</mx:Module>
