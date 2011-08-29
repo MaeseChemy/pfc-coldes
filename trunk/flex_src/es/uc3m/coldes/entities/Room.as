@@ -15,6 +15,9 @@ package es.uc3m.coldes.entities
 		public var owner:String;
 		public var privateRoom:Boolean;
 		public var participationType:Number;
+		public var status:Number;
+		public var creationDate:Date;
+		public var modificationDate:Date;
 				
 	}
 }

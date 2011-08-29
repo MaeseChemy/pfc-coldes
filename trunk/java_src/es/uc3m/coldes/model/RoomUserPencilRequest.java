@@ -5,7 +5,7 @@ import java.util.Date;
 public class RoomUserPencilRequest {
 	private int idRoom;
 	private String username;
-	private int userrol;
+	private int userfunction;
 	private Date requestTime;
 	private boolean pencilowner;
 	
@@ -13,12 +13,12 @@ public class RoomUserPencilRequest {
 		super();
 	}
 	
-	public RoomUserPencilRequest(int idRoom, String username, int userrol,
+	public RoomUserPencilRequest(int idRoom, String username, int userfunction,
 			Date requestTime, boolean pencilowner) {
 		super();
 		this.idRoom = idRoom;
 		this.username = username;
-		this.userrol = userrol;
+		this.userfunction = userfunction;
 		this.requestTime = requestTime;
 		this.pencilowner = pencilowner;
 	}
@@ -39,12 +39,12 @@ public class RoomUserPencilRequest {
 		this.username = username;
 	}
 
-	public int getUserrol() {
-		return userrol;
+	public int getUserfunction() {
+		return userfunction;
 	}
 
-	public void setUserrol(int userrol) {
-		this.userrol = userrol;
+	public void setUserfunction(int userfunction) {
+		this.userfunction = userfunction;
 	}
 
 	public Date getRequestTime() {

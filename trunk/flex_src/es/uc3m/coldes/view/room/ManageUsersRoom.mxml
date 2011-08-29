@@ -27,14 +27,14 @@
 			[Bindable]
 			public var room:Room;
 			[Bindable]
-			private var rolTypes:Array;
+			private var functionTypes:Array;
 			
 			private function init():void {
-				this.rolTypes = new Array(
-					resourceManager.getString('myResources','ROLNAME.OWNER'),
-					resourceManager.getString('myResources','ROLNAME.MODERATOR'),
-					resourceManager.getString('myResources','ROLNAME.COLABORATOR'),
-					resourceManager.getString('myResources','ROLNAME.GUEST')
+				this.functionTypes = new Array(
+					resourceManager.getString('myResources','USERFUNCTIONNAME.OWNER'),
+					resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR'),
+					resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR'),
+					resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST')
 				);
 				new UserService().getColDesUsers(room, callbackColDesUsers);
 				new RoomService().getRoomUsers(room, calbakcRoomUsers);
@@ -85,21 +85,21 @@
 			public function editUserRelation(data:UserRoom):void{
 				userRoomEdit = data;
 				nameField.text = data.userName;
-				switch(data.rol){
- 		 			case Constants.OWNER_ROL:{
- 		 				comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.OWNER');
+				switch(data.userfunction){
+ 		 			case Constants.OWNER_FUNCTION:{
+ 		 				comboUserFunctions.selectedItem = resourceManager.getString('myResources','USERFUNCTIONNAME.OWNER');
  						break;
    					}
-   					case Constants.MODERATOR_ROL:{ 
-   						comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.MODERATOR');
+   					case Constants.MODERATOR_FUNCTION:{ 
+   						comboUserFunctions.selectedItem = resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR');
  						break;
    					}
-   					case Constants.COLABORATOR_ROL:{ 
-   						comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.COLABORATOR');
+   					case Constants.COLABORATOR_FUNCTION:{ 
+   						comboUserFunctions.selectedItem = resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR');
  						break;
    					} 
-   					case Constants.GUEST_ROL:{ 
-   						comboUserRols.selectedItem = resourceManager.getString('myResources','ROLNAME.GUEST');
+   					case Constants.GUEST_FUNCTION:{ 
+   						comboUserFunctions.selectedItem = resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST');
  						break;
    					} 
    				}
@@ -115,21 +115,21 @@
 			}
 			
 			public function submitUpdate():void{
-				switch(comboUserRols.selectedItem as String){
- 		 			case resourceManager.getString('myResources','ROLNAME.OWNER'):{
- 		 				userRoomEdit.rol = Constants.OWNER_ROL;
+				switch(comboUserFunctions.selectedItem as String){
+ 		 			case resourceManager.getString('myResources','USERFUNCTIONNAME.OWNER'):{
+ 		 				userRoomEdit.userfunction = Constants.OWNER_FUNCTION;
  						break;
    					}
-   					case resourceManager.getString('myResources','ROLNAME.MODERATOR'):{
- 		 				userRoomEdit.rol = Constants.MODERATOR_ROL;
+   					case resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR'):{
+ 		 				userRoomEdit.userfunction = Constants.MODERATOR_FUNCTION;
  						break;
    					}
-   					case resourceManager.getString('myResources','ROLNAME.COLABORATOR'):{
- 		 				userRoomEdit.rol = Constants.COLABORATOR_ROL;
+   					case resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR'):{
+ 		 				userRoomEdit.userfunction = Constants.COLABORATOR_FUNCTION;
  						break;
    					}
-   					case resourceManager.getString('myResources','ROLNAME.GUEST'):{
- 		 				userRoomEdit.rol = Constants.GUEST_ROL;
+   					case resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST'):{
+ 		 				userRoomEdit.userfunction = Constants.GUEST_FUNCTION;
  						break;
    					} 
    				}
@@ -210,23 +210,23 @@
 									]]>
 								</mx:Script>
 								<mx:Image buttonMode="true" source="assets/images/icos/mydata.png"
-										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROLEDIT')}" click="editUserRelation()"/>
+										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERFUNCTIONEDIT')}" click="editUserRelation()"/>
 								<mx:Image buttonMode="true" source="assets/images/icos/userremove.png"
 										  toolTip="{resourceManager.getString('myResources','MANAGEUSERROOMS.DELETEUSER')}" click="removeUser()" 
-										  includeInLayout="{(data).rol != Constants.OWNER_ROL}" visible="{(data).rol != Constants.OWNER_ROL}"/>
+										  includeInLayout="{(data).userfunction != Constants.OWNER_FUNCTION}" visible="{(data).userfunction != Constants.OWNER_FUNCTION}"/>
 							</mx:HBox>
 						</mx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERSOFROOM')}" dataField="userName"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.ROL')}">
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERFUNCTION')}">
 					<mx:itemRenderer>
 						<mx:Component >
-							<mx:Text text="{(data).rol == Constants.OWNER_ROL?resourceManager.getString('myResources','ROLNAME.OWNER'):
-										(data).rol == Constants.MODERATOR_ROL?resourceManager.getString('myResources','ROLNAME.MODERATOR'):
-										(data).rol == Constants.COLABORATOR_ROL ?resourceManager.getString('myResources','ROLNAME.COLABORATOR'):
-										(data).rol == Constants.GUEST_ROL?resourceManager.getString('myResources','ROLNAME.GUEST'):
-										resourceManager.getString('myResources','ROLNAME.DEFAULT')}" >
+							<mx:Text text="{(data).userfunction == Constants.OWNER_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.OWNER'):
+										(data).userfunction == Constants.MODERATOR_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR'):
+										(data).userfunction == Constants.COLABORATOR_FUNCTION ?resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR'):
+										(data).userfunction == Constants.GUEST_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST'):
+										resourceManager.getString('myResources','USERFUNCTIONNAME.DEFAULT')}" >
 								<mx:Script>
 									<![CDATA[
 										import es.uc3m.coldes.business.Constants;
@@ -245,8 +245,8 @@
 			<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
 				<mx:TextInput id="nameField" editable="false"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.ROL')}">
-				<mx:ComboBox id="comboUserRols" dataProvider="{rolTypes}"/>
+			<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.USERFUNCTION')}">
+				<mx:ComboBox id="comboUserFunctions" dataProvider="{functionTypes}"/>
 			</mx:FormItem>
 			<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">
 				<mx:Button id="buttonCancel" x="72" y="5" 

@@ -43,13 +43,13 @@
 			
 			[Bindable]
 			private var hasPencil:Boolean;
-			public var userRol:Number;
+			public var userfunction:Number;
 			public function init():void{
 				//Inicializamos el chat
 				generateChatDestination(user,room);
 				generateLienzoDestination(user,room);
 				consumer.subscribe(); 
-				manageRolPermision(userRol);
+				manageUserFunctionPermision(userfunction);
 				(new RoomService).enterInRoom(user, room, callbackEnterInRoom);
 				(new DesignService).getRoomSaveContent(room, callbackGetContent);
 				manageRoomParticipationType(room);
@@ -103,9 +103,9 @@
 				stopSyncronize.visible = true;
 			}
 			
-			private function manageRolPermision(userRol:Number):void{
-				switch(userRol){
- 		 			case Constants.GUEST_ROL:{
+			private function manageUserFunctionPermision(userfunction:Number):void{
+				switch(userfunction){
+ 		 			case Constants.GUEST_FUNCTION:{
  		 				paintingButtons.includeInLayout = false;
  		 				paintingButtons.visible = false;
  		 				paintingPencilOptions.includeInLayout = false;
@@ -116,7 +116,7 @@
    						infoRoomEvents.visible = false;
  						break;
    					}
-   					case Constants.COLABORATOR_ROL:{
+   					case Constants.COLABORATOR_FUNCTION:{
    						paintingAdministrationTools.includeInLayout = false;
    						paintingAdministrationTools.visible = false;
  						break;
@@ -127,8 +127,8 @@
 			private function manageRoomParticipationType(room:Room):void{
 				switch(room.participationType){
  		 			case Constants.ONE_PAINTING:{
- 		 				if(userRol != Constants.GUEST_ROL)
- 		 					(new PencilService).pencilBusy(room, user.username, userRol, callbackPencilBusy);
+ 		 				if(userfunction != Constants.GUEST_FUNCTION)
+ 		 					(new PencilService).pencilBusy(room, user.username, userfunction, callbackPencilBusy);
  						break;
    					}
    					case Constants.ALL_PAINTING:{ 
@@ -156,6 +156,12 @@
 			
 			[Bindable]
 			private var logInfoRoomEvents:String = "";
+			
+			[Embed('/assets/images/icos/room.png')]
+			public static const roomIcon:Class;
+			[Embed('/assets/images/icos/roomPencilOwner.png')]
+			public static const roomPencilOwnerIcon:Class;
+			
 			public function messageHandler(event:MessageEvent):void {
        			var body:Object = event.message.body;
        			var formatter:DateFormatter = new DateFormatter();
@@ -193,6 +199,10 @@
        					logInfoRoomEvents += "<b>" +date+" </b><font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
        					if(user.username == body.nextPencilOwner){
        						hasPencil = true;
+       						//Marcamos como propietario al usuario
+       						this.icon = roomPencilOwnerIcon;
+       					}else{
+       						this.icon = roomIcon;
        					}
        				}
        			}
@@ -231,7 +241,7 @@
 			/** PENCIL FUNCTIONS **/
 			/**********************/
         	public function doRequestPencil():void{
-        		(new PencilService).addPencilRequest(room, user.username, userRol, callbackDoRequestPencil);
+        		(new PencilService).addPencilRequest(room, user.username, userfunction, callbackDoRequestPencil);
         		requestPencil.enabled = false;
         	}
         	
@@ -240,12 +250,13 @@
         	}
         	
         	public function doLeftPencil():void{
-        		(new PencilService).removePencilRequest(room, user.username, userRol, callbackDoLeftPencil);
+        		(new PencilService).removePencilRequest(room, user.username, userfunction, callbackDoLeftPencil);
         		leftPencil.enabled = false;
         	}
         	
         	public function callbackDoLeftPencil (result:Boolean):void{
         		leftPencil.enabled = hasPencil;
+        		this.icon = roomIcon;
         	}
         	
 			/*********************/

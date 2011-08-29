@@ -27,11 +27,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MODULE.ROOMMANAGEMENT']="Gestión de salas";
 			
 			//ROLNAMES
-			myResources.content['ROLNAME.DEFAULT']="Defecto";
-			myResources.content['ROLNAME.OWNER']="Propietario";
-			myResources.content['ROLNAME.MODERATOR']="Moderador";
-			myResources.content['ROLNAME.COLABORATOR']="Colaborador";
-			myResources.content['ROLNAME.GUEST']="Invitado";
+			myResources.content['USERFUNCTIONNAME.DEFAULT']="Defecto";
+			myResources.content['USERFUNCTIONNAME.OWNER']="Propietario";
+			myResources.content['USERFUNCTIONNAME.MODERATOR']="Moderador";
+			myResources.content['USERFUNCTIONNAME.COLABORATOR']="Colaborador";
+			myResources.content['USERFUNCTIONNAME.GUEST']="Invitado";
 			
 			//LOGIN
 			myResources.content['LOGIN.TITLE']="Acceder a ColDes";
@@ -66,7 +66,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.DESCRIPTION']="Descripción";
 			myResources.content['REGISTER.ONEPAINTING']="Uno a Uno";
 			myResources.content['REGISTER.ALLPAITING']="Todos a la Vez";
-			myResources.content['REGISTER.ROL']="Rol";
+			myResources.content['REGISTER.USERFUNCTION']="Función en Sala";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Salir";
@@ -91,12 +91,14 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.ROOM']="Sala";
 			myResources.content['MYROOMS.USER']="Usuario";
 			myResources.content['MYROOMS.USERS']="Usuarios";
-			myResources.content['MYROOMS.ROL']="Rol";
+			myResources.content['MYROOMS.USERFUNCTION']="Función en Sala";
 			myResources.content['MYROOMS.EDITROOM']="Editar Sala";
 			myResources.content['MYROOMS.REMOVE']="Eliminar relación";
 			
 			//SEARCH ROOMS
 			myResources.content['SEARCHROOM.DESCRIPTION']="Descripción";
+			myResources.content['SEARCHROOM.CREATIONDATE']="Fecha de creación";
+			myResources.content['SEARCHROOM.MODIFICATIONDATE']="Última modificación";
 			
 			//USER MANAGEMENT
 			myResources.content['USERMANAGEMENT.SEARCH']="Búsqueda";
@@ -151,10 +153,10 @@ package es.uc3m.coldes.utils.lang
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Enviar Invitación";
 			myResources.content['MANAGEUSERROOMS.USERSOFCOLDES']="Usuarios de ColDes";
-			myResources.content['MANAGEUSERROOMS.ROLEDIT']="Editar Rol";
+			myResources.content['MANAGEUSERROOMS.USERFUNCTIONEDIT']="Editar Función";
 			myResources.content['MANAGEUSERROOMS.DELETEUSER']="Eliminar Usuario";
 			myResources.content['MANAGEUSERROOMS.USERSOFROOM']="Usuarios de la Sala";
-			myResources.content['MANAGEUSERROOMS.ROL']="Rol";
+			myResources.content['MANAGEUSERROOMS.USERFUNCTION']="Función del usuario";
 
 			//MANAGE USER MESSAGES
 			myResources.content['MESSAGESMANAGEMENT.ACCEPT']="Aceptar";
@@ -199,7 +201,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGETITLE.SENDINVITATION']="INVITACIÓN ENVIADA";
 			myResources.content['MESSAGE.SENDINVITATION']="La invitación se envió correctamente al usuario.";
 			myResources.content['MESSAGETITLE.INVITATIONTYPE']="TIPO DE INVITACIÓN";
-			myResources.content['MESSAGE.INVITATIONTYPE']="¿Con que rol quiere invitar al usuario?";
+			myResources.content['MESSAGE.INVITATIONTYPE']="¿Con que función quiere invitar al usuario?";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -238,11 +240,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MODULE.ROOMMANAGEMENT']="Room Management";
 			
 			//ROLNAMES
-			myResources.content['ROLNAME.DEFAULT']="Default";
-			myResources.content['ROLNAME.OWNER']="Owner";
-			myResources.content['ROLNAME.MODERATOR']="Moderator";
-			myResources.content['ROLNAME.COLABORATOR']="Colaborator";
-			myResources.content['ROLNAME.GUEST']="Guest";
+			myResources.content['USERFUNCTIONNAME.DEFAULT']="Default";
+			myResources.content['USERFUNCTIONNAME.OWNER']="Owner";
+			myResources.content['USERFUNCTIONNAME.MODERATOR']="Moderator";
+			myResources.content['USERFUNCTIONNAME.COLABORATOR']="Colaborator";
+			myResources.content['USERFUNCTIONNAME.GUEST']="Guest";
 			
 			//LOGIN
 			myResources.content['LOGIN.TITLE']="ColDesign Login";
@@ -277,7 +279,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.DESCRIPTION']="Description";
 			myResources.content['REGISTER.ONEPAINTING']="One to One";
 			myResources.content['REGISTER.ALLPAITING']="All at Once";
-			myResources.content['REGISTER.ROL']="Rol";
+			myResources.content['REGISTER.USERFUNCTION']="User Function";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Logout";
@@ -302,12 +304,14 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MYROOMS.ROOM']="Room";
 			myResources.content['MYROOMS.USER']="Username";
 			myResources.content['MYROOMS.USERS']="Users";
-			myResources.content['MYROOMS.ROL']="Rol";
+			myResources.content['MYROOMS.USERFUNCTION']="User Function";
 			myResources.content['MYROOMS.EDITROOM']="Edit room";
 			myResources.content['MYROOMS.REMOVE']="Delete room relation";
 			
 			//SEARCH ROOMS
 			myResources.content['SEARCHROOM.DESCRIPTION']="Description";
+			myResources.content['SEARCHROOM.CREATIONDATE']="Creation Date";
+			myResources.content['SEARCHROOM.MODIFICATIONDATE']="Last Modification";
 			
 			//USER MANAGEMENT
 			myResources.content['USERMANAGEMENT.SEARCH']="Search";
@@ -362,10 +366,10 @@ package es.uc3m.coldes.utils.lang
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Send Invitation";
 			myResources.content['MANAGEUSERROOMS.USERSOFCOLDES']="ColDes Users";
-			myResources.content['MANAGEUSERROOMS.ROLEDIT']="Edit Rol";
+			myResources.content['MANAGEUSERROOMS.USERFUNCTIONEDIT']="Edit Function";
 			myResources.content['MANAGEUSERROOMS.DELETEUSER']="Delete User";
 			myResources.content['MANAGEUSERROOMS.USERSOFROOM']="Room Users";
-			myResources.content['MANAGEUSERROOMS.ROL']="Rol";
+			myResources.content['MANAGEUSERROOMS.USERFUNCTION']="User Function";
 			
 			//MANAGE USER MESSAGES
 			myResources.content['MESSAGESMANAGEMENT.ACCEPT']="Accept";
@@ -410,7 +414,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGETITLE.SENDINVITATION']="INVITE SENT";
 			myResources.content['MESSAGE.SENDINVITATION']="The invitation was sent correctly to the user."
 			myResources.content['MESSAGETITLE.INVITATIONTYPE']="INVITE TYPE";
-			myResources.content['MESSAGE.INVITATIONTYPE']="With what role wants to invite the user? "
+			myResources.content['MESSAGE.INVITATIONTYPE']="With what function wants to invite the user? "
 
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";

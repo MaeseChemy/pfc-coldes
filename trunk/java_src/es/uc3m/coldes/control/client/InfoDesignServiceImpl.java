@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import es.uc3m.coldes.control.dao.DesignDAO;
+import es.uc3m.coldes.control.dao.RoomDAO;
 import es.uc3m.coldes.control.server.InfoDesignService;
 import es.uc3m.coldes.model.Design;
 import es.uc3m.coldes.model.Room;
@@ -16,13 +17,18 @@ public class InfoDesignServiceImpl implements InfoDesignService {
 	static Logger logger = Logger.getLogger(InfoDesignServiceImpl.class.getName());
 
 	private DesignDAO designDAO;
+	private RoomDAO roomDAO;
 	
 	public InfoDesignServiceImpl(){
 		this.designDAO = new DesignDAO();
+		this.roomDAO = new RoomDAO();
 	}
 	
 	public boolean saveDesignToCanvas(Room room, byte[] content){
 		boolean result = this.designDAO.saveDesignToCanvas(room, content);
+		if(result){
+			result = this.roomDAO.updateRoom(room);
+		}
 		return result;
 	}
 	

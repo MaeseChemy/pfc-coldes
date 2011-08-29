@@ -25,7 +25,7 @@ public interface InfoRoomService {
 	public List<UserRoom> getRoomUsers(Room room);
 	
 	/* INVITATIONS */
-	public UserRoom sendRoomInvitation(String username, Room room, int rol);
+	public UserRoom sendRoomInvitation(String username, Room room, int userfunction);
 	public List<UserRoom> getAllUserRoomInvitation(String username);
 	
 }

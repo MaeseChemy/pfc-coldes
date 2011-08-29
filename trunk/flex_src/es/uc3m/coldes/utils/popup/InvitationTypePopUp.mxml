@@ -17,17 +17,17 @@
 			}
 			
 			private function invitationAsGuest():void {
-				answer = Constants.GUEST_ROL;
+				answer = Constants.GUEST_FUNCTION;
 				PopUpManager.removePopUp(this);
 			}
 			
 			private function invitationAsColaborator():void {
-				answer = Constants.COLABORATOR_ROL;
+				answer = Constants.COLABORATOR_FUNCTION;
 				PopUpManager.removePopUp(this);
 			}
 			
 			private function invitationAsModerator():void {
-				answer = Constants.MODERATOR_ROL;
+				answer = Constants.MODERATOR_FUNCTION;
 				PopUpManager.removePopUp(this);
 			}
 
@@ -45,9 +45,9 @@
 	<mx:VBox width="100%">
 		<mx:HBox horizontalAlign="center" paddingTop="10" paddingRight="10" paddingBottom="10" 
 			width="100%" horizontalGap="10" >
-			<mx:Button id="btnInviteGuest" label="{resourceManager.getString('myResources','ROLNAME.GUEST')}" click="invitationAsGuest()"/>
-			<mx:Button id="btnInviteColaborator" label="{resourceManager.getString('myResources','ROLNAME.COLABORATOR')}" click="invitationAsColaborator()"/>
-			<mx:Button id="btnInviteModerator" label="{resourceManager.getString('myResources','ROLNAME.MODERATOR')}" click="invitationAsModerator()"/>
+			<mx:Button id="btnInviteGuest" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST')}" click="invitationAsGuest()"/>
+			<mx:Button id="btnInviteColaborator" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR')}" click="invitationAsColaborator()"/>
+			<mx:Button id="btnInviteModerator" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR')}" click="invitationAsModerator()"/>
 		</mx:HBox>
 		<mx:HBox horizontalAlign="center" paddingTop="10" paddingRight="10" paddingBottom="10" 
 			width="100%" horizontalGap="10" >

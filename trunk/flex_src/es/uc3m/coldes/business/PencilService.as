@@ -18,12 +18,12 @@ package es.uc3m.coldes.business
 		{
 		}
 
-		public function pencilBusy(room:Room, username:String, userrol:Number, callback:Function):void {
+		public function pencilBusy(room:Room, username:String, userfunction:Number, callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
 			service.addEventListener(ResultEvent.RESULT, resultPencilBusy);
 			this.callback = callback;
-			service.pencilBusy(room,username,userrol);
+			service.pencilBusy(room,username,userfunction);
 		}
 		
 		private function resultPencilBusy(event:ResultEvent):void {
@@ -31,12 +31,12 @@ package es.uc3m.coldes.business
 			callback(pencilBusy);	
 		}
 		
-		public function addPencilRequest(room:Room, username:String, userrol:Number, callback:Function):void {
+		public function addPencilRequest(room:Room, username:String, userfunction:Number, callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
 			service.addEventListener(ResultEvent.RESULT, resultAddPencilRequest);
 			this.callback = callback;
-			service.addPencilRequest(room,username,userrol);
+			service.addPencilRequest(room,username,userfunction);
 		}
 		
 		private function resultAddPencilRequest(event:ResultEvent):void {
@@ -44,12 +44,12 @@ package es.uc3m.coldes.business
 			callback(pencilBusy);	
 		}
 		
-		public function removePencilRequest(room:Room, username:String, userrol:Number, callback:Function):void {
+		public function removePencilRequest(room:Room, username:String, userfunction:Number, callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
 			service.addEventListener(ResultEvent.RESULT, resultRemovePencilRequest);
 			this.callback = callback;
-			service.removePencilRequest(room,username,userrol);
+			service.removePencilRequest(room,username,userfunction);
 		}
 		
 		private function resultRemovePencilRequest(event:ResultEvent):void {

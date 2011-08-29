@@ -39,7 +39,7 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 	
 	public int deleteUserRoom(UserRoom userRoom) {
 		int result;
-		if(userRoom.getRol() == Constants.OWNER_ROL){
+		if(userRoom.getUserfunction() == Constants.OWNER_FUNCTION){
 			logger.info("[InfoRoom-deleteUserRoom]: The user ["+userRoom.getUserName()+"] is de owner of the room [" + userRoom.getRoom().getName() + "]...");
 			result = this.roomDAO.deleteRoom(userRoom.getRoom());
 		}else{
@@ -50,7 +50,7 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 	}
 
 	public boolean updateUserRoom(UserRoom userRoom) {
-		if(userRoom.getRol() == Constants.OWNER_ROL){			
+		if(userRoom.getUserfunction() == Constants.OWNER_FUNCTION){			
 			logger.info("[InfoRoom-updateUserRoom]: The user ["+userRoom.getUserName()+"] is the new owner of the room [" + userRoom.getRoom().getName() + "]...");
 			//Update owner user relation
 
@@ -107,8 +107,8 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 	}
 
 	/* INVITATIONS */
-	public UserRoom sendRoomInvitation(String username, Room room, int rol){
-		UserRoom result = this.roomDAO.sendRoomInvitation(username, room, rol);
+	public UserRoom sendRoomInvitation(String username, Room room, int userfunction){
+		UserRoom result = this.roomDAO.sendRoomInvitation(username, room, userfunction);
 		return result;
 	}
 

@@ -25,22 +25,22 @@
 			}
 			
 			private function renderMessage(item:Object, col:DataGridColumn):String {
-				var rol:String;
-				if(item.rol == Constants.OWNER_ROL){
-					rol = resourceManager.getString('myResources','ROLNAME.OWNER');
-				}else if(item.rol == Constants.MODERATOR_ROL){
-					rol = resourceManager.getString('myResources','ROLNAME.MODERATOR');
-				}else if(item.rol == Constants.MODERATOR_ROL){
-					rol = resourceManager.getString('myResources','ROLNAME.COLABORATOR');
-				}else if(item.rol == Constants.GUEST_ROL){
-					rol = resourceManager.getString('myResources','ROLNAME.GUEST');
+				var userfunction:String;
+				if(item.userfunction == Constants.OWNER_FUNCTION){
+					userfunction = resourceManager.getString('myResources','USERFUNCTIONNAME.OWNER');
+				}else if(item.userfunction == Constants.MODERATOR_FUNCTION){
+					userfunction = resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR');
+				}else if(item.userfunction == Constants.COLABORATOR_FUNCTION){
+					userfunction = resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR');
+				}else if(item.userfunction == Constants.GUEST_FUNCTION){
+					userfunction = resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST');
 				}else{
-					rol = resourceManager.getString('myResources','ROLNAME.DEFAULT');
+					userfunction = resourceManager.getString('myResources','USERFUNCTIONNAME.DEFAULT');
 				}
-				//return "Invitacion para la sala ["+item.roomName+"] del usuario ("+item.ownerUserName+") como \"" +item.rolDescription+"\"";
+				//return "Invitacion para la sala ["+item.roomName+"] del usuario ("+item.ownerUserName+") como \"" +item.userfunctionDescription+"\"";
 				return resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT1') +item.roomName+ 
 				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT2') +item.ownerUserName+ 
-				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT3') +rol+"\"";
+				resourceManager.getString('myResources','MESSAGESMANAGEMENT.INVITATIONTEXT3') +userfunction+"\"";
 			}
 			
 			public function accept(data:UserRoom):void{

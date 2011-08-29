@@ -13,7 +13,7 @@ package es.uc3m.coldes.entities
 		public var roomName:String;
 		public var ownerUserName:String;
 		public var userName:String;
-		public var rol:Number;
-		public var rolDescription:String;	
+		public var userfunction:Number;
+		public var userfunctionDescription:String;	
 	}
 }
