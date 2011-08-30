@@ -5,6 +5,7 @@
 	
 	<mx:Script>
 	<![CDATA[
+		import es.uc3m.coldes.entities.Room;
 		import flash.utils.setTimeout;
 		import es.uc3m.coldes.utils.popup.UtilPopUp;
 		import mx.rpc.remoting.mxml.RemoteObject;
@@ -27,7 +28,7 @@
 		import mx.core.UIComponent;
 		import mx.graphics.codec.PNGEncoder;
 
-
+		public var lienzoRoom:Room;
 		/*VARIABLES DE POSICIONAMIENTO*/
 		//Coordenadas para definir el dibujo
 		public var x1:int;
@@ -488,7 +489,7 @@
 			consumer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://205.186.166.42:8400/ColDes/messagebroker/amfpolling"));
 			
 			consumer.channelSet = channelSet;
 			consumer.subscribe();
@@ -498,7 +499,7 @@
 			producer.destination = destination;
 			
 			var channelSet:ChannelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://localhost:8400/ColDes/messagebroker/amfpolling"));
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://205.186.166.42:8400/ColDes/messagebroker/amfpolling"));
 			
 			producer.channelSet = channelSet;
 		}
@@ -518,13 +519,14 @@
 		private function sendImage(bitmapData:BitmapData):void{
 			var message:IMessage = new AsyncMessageExt();
 			var ba:ByteArray = (new PNGEncoder()).encode(bitmapData);
+			message.body.roomid = lienzoRoom.id;
 			message.body.imagenCanvas = ba;
 			message.body.username = user.username;
 			producer.send(message);
 		}
 		private function messageCanvasHandler(message:IMessage):void{
 			var username:String = message.body.username as String;
-			if(username != user.username){
+			if((username != user.username) && (message.body.roomid == lienzoRoom.id)){
 				var ba:ByteArray = message.body.imagenCanvas as ByteArray;
 				loaderMessage = new Loader();
 				loaderMessage.loadBytes(ba);
@@ -549,8 +551,8 @@
 	]]>
 	</mx:Script>
 	
-	<mx:Consumer id="consumer" message="messageCanvasHandler(event.message)"/>
-	<mx:Producer id="producer"/>
+	<mx:Consumer id="consumer" destination="lienzo" message="messageCanvasHandler(event.message)"/>
+	<mx:Producer id="producer" destination="lienzo"/>
 
 	<resize:ResizableCanvas borderStyle="none"
 		id="lienzo" 

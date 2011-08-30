@@ -87,7 +87,7 @@
 			}
 			
 			public function callbackcreateChatDestination(chatDestination:String):void {
-				roomChat.initDestination(chatDestination);
+				roomChat.initDestination(chatDestination, room);
 			}
 			
 			public function generateLienzoDestination(user:User, room:Room):void{
@@ -97,7 +97,7 @@
 			}
 			
 			public function callbackcreateLienzoDestination(lienzoDestination:String):void {
-				roomCanvas.initDestination(lienzoDestination);
+				roomCanvas.initDestination(lienzoDestination, room);
 			}
 			
 			public function disconect():void{

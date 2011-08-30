@@ -6,10 +6,13 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import es.uc3m.coldes.entities.Room;
 		
-		public function initDestination(destination:String):void{
-			this.canvasCont.configConsumer(destination);
-			this.canvasCont.configProducer(destination);
+		public function initDestination(destination:String, room:Room):void{
+			//this.canvasCont.configConsumer(destination);
+			//this.canvasCont.configProducer(destination);
+			this.canvasCont.lienzoRoom = room;
+			this.canvasCont.consumer.subscribe();
 		}
 		
 		public function conect():void{
