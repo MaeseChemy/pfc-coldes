@@ -17,6 +17,12 @@
 	<destination id="message">
 	</destination> 
 	
+	<destination id="chat">
+	</destination>
+	
+	<destination id="lienzo">
+	</destination> 
+	
 	<destination id="pencil">
 	</destination> 
 

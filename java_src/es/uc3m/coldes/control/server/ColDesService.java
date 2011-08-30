@@ -275,12 +275,21 @@ public class ColDesService implements Serializable{
 		
 		MessageBroker broker = MessageBroker.getMessageBroker(null);
 		MessageService service = (MessageService) broker.getService("message-service");
+		MessageDestination destination;
 		if(service.getDestination(destinationStringValue) == null){
-			MessageDestination destination = (MessageDestination) service.createDestination(destinationStringValue);
-
-			if (service.isStarted()) {
-			    destination.start();
-			}
+			logger.info("[ColDesManager-createChatDestination]: El canal no ha sido creado, lo creamos...");
+			destination = (MessageDestination) service.createDestination(destinationStringValue);
+		}else{
+			logger.info("[ColDesManager-createChatDestination]: El canal ya se habia creado, lo obtenemos...");
+			destination = (MessageDestination) service.getDestination(destinationStringValue);
+		}
+		if (service.isStarted()) {
+			logger.info("[ColDesManager-createChatDestination]: El servicio esta inicializado...");
+		    destination.start();
+		}else{
+			destination.stop();
+			destination.start();
+			logger.info("[ColDesManager-createChatDestination]: El servicio no esta inicializado...");
 		}
 
 		return destinationStringValue;
