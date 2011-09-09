@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="300" height="300" title="Chat">
+	
+	<mx:Script>
+	<![CDATA[
+		import es.uc3m.coldes.entities.ChatUser;
+		import es.uc3m.coldes.entities.Room;
+		import mx.formatters.DateFormatter;
+		import mx.messaging.channels.AMFChannel;
+		import mx.messaging.ChannelSet;
+		import mx.collections.ArrayCollection;
+		import mx.messaging.messages.AsyncMessage;
+		import mx.messaging.messages.IMessage;
+
+		private var chatRoom:Room;
+		public function initDestination(destination:String, room:Room):void{
+			//this.configConsumer(destination);
+			//this.configProducer(destination);
+			this.chatRoom = room;
+			consumer.subscribe();
+		}
+
+		public function configConsumer(destination:String):void{
+			consumer.destination = destination;
+			
+			var channelSet:ChannelSet = new ChannelSet();
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://205.186.166.42:8400/ColDes/messagebroker/amfpolling"));
+			
+			consumer.channelSet = channelSet;
+			consumer.subscribe();
+		}
+		
+		public function configProducer(destination:String):void{
+			producer.destination = destination;
+			
+			var channelSet:ChannelSet = new ChannelSet();
+			channelSet.addChannel(new AMFChannel("my-polling-amf", "http://205.186.166.42:8400/ColDes/messagebroker/amfpolling"));
+			
+			producer.channelSet = channelSet;
+		}
+		
+		private function send():void{
+			var message:IMessage = new AsyncMessage();
+       		
+       		if(msg.text != ""){
+       			message.body.roomid = chatRoom.id;
+				message.body.username = parentApplication.userLoged.username;
+				message.body.text = msg.text;
+				
+				log += "<u><b>"+message.body.username+"</b></u>:" + message.body.text + "\n";
+				producer.send(message);
+				msg.text = "";
+       		}
+		}
+		private function messageHandler(message:IMessage):void{
+			if((message.body.username != parentApplication.userLoged.username) &&
+					(message.body.roomid == chatRoom.id)){ 
+				log += "<u><b>"+message.body.username+"</b></u>:" + message.body.text + "\n";
+			}
+		}
+		
+		[Bindable]
+		public var listOfUsers:ArrayCollection = new ArrayCollection();
+		
+		[Bindable]
+		public var log:String = "";
+		
+		[Bindable]
+		public var listOfChatUsers:ArrayCollection = new ArrayCollection();
+		public function addUser(username:String):void{
+			this.listOfUsers.addItem(username);
+			
+			//Creamos el chatUser
+			var addUser:ChatUser = new ChatUser();
+			addUser.username = username;
+			addUser.havePencil = false;
+			this.listOfChatUsers.addItem(addUser);
+
+			this.refreshList();
+		}
+		
+		public function removeUser(position:Number):void{
+			this.listOfUsers.removeItemAt(position);
+			this.listOfChatUsers.removeItemAt(position);
+			
+			this.refreshList();
+		}
+		
+		public function refreshList():void{
+			this.listOfUsers.refresh();
+			this.listOfChatUsers.refresh();
+		}
+		
+		public function changePencilOwner(username:String):void{
+			for each (var userChat:ChatUser in listOfChatUsers){
+				if(userChat.username == username){
+					userChat.havePencil = true;
+				}else{
+					userChat.havePencil = false;
+				}
+			}
+			this.refreshList();	
+		}
+	]]>
+	
+	</mx:Script>
+	
+	<mx:Consumer id="consumer" destination="chat" message="messageHandler(event.message)"/>
+	<mx:Producer id="producer" destination="chat"/>
+	
+	<!--
+	<mx:Consumer id="consumer" message="messageHandler(event.message)"/>
+	<mx:Producer id="producer" />
+	-->
+	<mx:HBox width="100%" height="100%">
+		<mx:DataGrid dataProvider="{listOfChatUsers}" height="100%" width="70" wordWrap="true" variableRowHeight="true">
+			<mx:columns>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','CHAT.USERS')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).username}" 
+									color="{(data).havePencil?0xff0000:0x000000}">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>	
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:TextArea htmlText="{log}" width="100%" height="100%" editable="false" verticalScrollPolicy="auto"/>
+	</mx:HBox>
+	<mx:ControlBar>
+		<mx:TextInput id="msg" width="100%" enter="send()"/>
+		<mx:Button label="{resourceManager.getString('myResources','CHAT.SEND')}" click="send()"/>
+	</mx:ControlBar>
+</mx:TitleWindow>
