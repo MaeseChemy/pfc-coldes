@@ -5,6 +5,7 @@
 	
 	<mx:Script>
 	<![CDATA[
+		import es.uc3m.coldes.entities.ChatUser;
 		import es.uc3m.coldes.entities.Room;
 		import mx.formatters.DateFormatter;
 		import mx.messaging.channels.AMFChannel;
@@ -65,6 +66,43 @@
 		
 		[Bindable]
 		public var log:String = "";
+		
+		[Bindable]
+		public var listOfChatUsers:ArrayCollection = new ArrayCollection();
+		public function addUser(username:String):void{
+			this.listOfUsers.addItem(username);
+			
+			//Creamos el chatUser
+			var addUser:ChatUser = new ChatUser();
+			addUser.username = username;
+			addUser.havePencil = false;
+			this.listOfChatUsers.addItem(addUser);
+
+			this.refreshList();
+		}
+		
+		public function removeUser(position:Number):void{
+			this.listOfUsers.removeItemAt(position);
+			this.listOfChatUsers.removeItemAt(position);
+			
+			this.refreshList();
+		}
+		
+		public function refreshList():void{
+			this.listOfUsers.refresh();
+			this.listOfChatUsers.refresh();
+		}
+		
+		public function changePencilOwner(username:String):void{
+			for each (var userChat:ChatUser in listOfChatUsers){
+				if(userChat.username == username){
+					userChat.havePencil = true;
+				}else{
+					userChat.havePencil = false;
+				}
+			}
+			this.refreshList();	
+		}
 	]]>
 	
 	</mx:Script>
@@ -77,9 +115,22 @@
 	<mx:Producer id="producer" />
 	-->
 	<mx:HBox width="100%" height="100%">
-		<mx:DataGrid dataProvider="{listOfUsers}" height="100%" width="70" wordWrap="true" variableRowHeight="true">
+		<mx:DataGrid dataProvider="{listOfChatUsers}" height="100%" width="70" wordWrap="true" variableRowHeight="true">
 			<mx:columns>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','CHAT.USERS')}"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','CHAT.USERS')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).username}" 
+									color="{(data).havePencil?0xff0000:0x000000}">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>	
 			</mx:columns>
 		</mx:DataGrid>
 		<mx:TextArea htmlText="{log}" width="100%" height="100%" editable="false" verticalScrollPolicy="auto"/>

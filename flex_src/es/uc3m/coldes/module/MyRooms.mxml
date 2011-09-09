@@ -79,7 +79,27 @@
 				roomReg.callBackFunction = submitRoomRegister;
 			}
 			
+			private var popUpSalirConditional:ConditionalPopUp;
+			private var auxRoom:Room;
 			public function submitRoomRegister(room:Room):void{
+				if(room.participationType == Constants.ALL_PAINTING){
+					auxRoom = room;
+					popUpSalirConditional = UtilPopUp.showConditionalPopUP("ADVERTENCIA",
+					"Crear una sala en la que la participación es todos a la vez puede conllevar problemas de sincronismo, ¿Está seguro?");
+					popUpSalirConditional.addEventListener(FlexEvent.REMOVE, createRoomResponse);	
+				}else{
+					this.doRoomRegisterSubmit(room);
+				}
+				
+			}
+			
+			private function createRoomResponse(event:Event):void{
+				if(popUpSalirConditional.answer){
+					this.doRoomRegisterSubmit(auxRoom);
+				}
+			}
+			
+			public function doRoomRegisterSubmit(room:Room):void{
 				(new RoomService()).addRoom(room, userRegisterCallback);
 			}
 			

@@ -70,8 +70,9 @@
 			public function callbackEnterInRoom(usersRoomCallBack:ArrayCollection):void{
 				for each (var userNew:Object in usersRoomCallBack){
 					usersRooms.addItem(userNew as String);
-					roomChat.listOfUsers.addItem(userNew);
-					roomChat.listOfUsers.refresh();
+					//roomChat.listOfUsers.addItem(userNew);
+					//roomChat.listOfUsers.refresh();
+					roomChat.addUser(userNew as String);
 				}
 				(new RoomService).notifyUserToRoom(user, room, "enter", new Function());
 			}
@@ -175,6 +176,7 @@
 			
 			private function disablePaintButtons():void{
         		hasPencil = false;
+        		roomChat.changePencilOwner("");
         		//Definimos correctamente los booleanos
 				roomCanvas.canvasCont.pintandoCirculo=false;
 				roomCanvas.canvasCont.pintandoLinea=false;
@@ -204,25 +206,23 @@
        			var date:String = formatter.format((new Date()));
        			if(room.id == body.room.id){
        				if(body.action == "enter"){
-       					roomChat.log += "<font color='#0101DF'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
        					logInfoRoomEvents += "<b>" +date+" </b><font color='#0101DF'><b>"+ body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USERENTER')+"</font>\n";
        					if(findUser(body.user, usersRooms) < 0){
        						usersRooms.addItem(body.user);
        					}
        					if(findUser(body.user, roomChat.listOfUsers) < 0){
-       						roomChat.listOfUsers.addItem(body.user);
+       						//roomChat.listOfUsers.addItem(body.user);
+       						roomChat.addUser(body.user as String);
        					}
        					
        				}else if(body.action == "exit"){
-       					roomChat.log += "<font color='#DF0101'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USEREXIT')+"</font>\n";
        					logInfoRoomEvents +=  "<b>" +date+" </b><font color='#DF0101'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.USEREXIT')+"</font>\n";
        					usersRooms.removeItemAt(findUser(body.user, usersRooms));
-       					roomChat.listOfUsers.removeItemAt(findUser(body.user, roomChat.listOfUsers));
+       					//roomChat.listOfUsers.removeItemAt(findUser(body.user, roomChat.listOfUsers));
+       					roomChat.removeUser(findUser(body.user, roomChat.listOfUsers));
        				}else if(body.action == "pencilRequest"){
-       					//roomChat.log += "<font color='#868A08'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILREQUEST')+"</font>\n";
        					logInfoRoomEvents +=  "<b>" +date+" </b><font color='#868A08'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILREQUEST')+"</font>\n";
        				}else if(body.action == "pencilLeft"){
-       					//roomChat.log += "<font color='#DF0174'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILLEFT')+"</font>\n";
        					logInfoRoomEvents +=  "<b>" +date+" </b><font color='#DF0174'><b>" + body.user + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILLEFT')+"</font>\n";
        					disablePaintButtons();
        				}else if(body.action == "doSurvey"){
@@ -236,11 +236,16 @@
 							popUpConditional.addEventListener(FlexEvent.REMOVE, surveyResponseUserRemove);
        					}
        				}
-       				roomChat.listOfUsers.refresh();
+       				
+       				if(hasPencil){
+       					roomChat.changePencilOwner(user.username);
+       				}
+       				//roomChat.listOfUsers.refresh();
+       				roomChat.refreshList();
        				
        				//Cambiamos de propietario
        				if(body.nextPencilOwner != null){
-       					roomChat.log += "<font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
+       					roomChat.changePencilOwner(body.nextPencilOwner as String);
        					logInfoRoomEvents += "<b>" +date+" </b><font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
        					if(user.username == body.nextPencilOwner){
        						hasPencil = true;
