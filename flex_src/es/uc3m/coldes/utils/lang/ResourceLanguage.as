@@ -151,6 +151,12 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.REMOVECANVASFROMROOM']="Eliminar diseño de la sala";
 			myResources.content['ROOMVIEW.ASK']="Lanzar encuesta";
 			
+			//ROOM SURVEY
+			myResources.content['SAVEUSERDESIGN.TITLESAVE']="ASOCIAR A LA SALA";
+			myResources.content['SAVEUSERDESIGN.QUESTIONSAVE']="¿Esta de acuerdo en asociar el diseño a la sala?";
+			myResources.content['SAVEUSERDESIGN.TITLEREMOVE']="ELIMINAR DE LA SALA";
+			myResources.content['SAVEUSERDESIGN.QUESTIONREMOVE']="¿Esta de acuerdo en eliminar el diseño de la sala?";
+
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Enviar Invitación";
 			myResources.content['MANAGEUSERROOMS.USERSOFCOLDES']="Usuarios de ColDes";
@@ -175,7 +181,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ANSWERS.ONLYREGISTER']="Agregar solo";
 			myResources.content['ANSWERS.CANCEL']="Cancelar";
 			myResources.content['ANSWERS.ASKSAVE']="Salvar Diseño";
-			myResources.content['ANSWERS.ASKREMOVE']="Eliminar Diseño?";
+			myResources.content['ANSWERS.ASKREMOVE']="Eliminar Diseño";
 			
 			//MESSAGE's
 			myResources.content['MESSAGETITLE.LOGOUT']="SALIR";
@@ -206,6 +212,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.INVITATIONTYPE']="¿Con que función quiere invitar al usuario?";
 			myResources.content['MESSAGETITLE.SURVEY']="LANZAR ENCUESTA";
 			myResources.content['MESSAGE.SURVEY']="¿Sobre que desea realizar la encuesta?";
+			myResources.content['MESSAGETITLE.SURVEYRESPONSE']="Respuestas de los usuarios";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -368,6 +375,12 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ROOMVIEW.REMOVECANVASFROMROOM']="Remove design from room";
 			myResources.content['ROOMVIEW.ASK']="Do Survey";
 			
+			//ROOM SURVEY
+			myResources.content['SAVEUSERDESIGN.TITLESAVE']="LINK TO ROOM";
+			myResources.content['SAVEUSERDESIGN.QUESTIONSAVE']="Do you want link this design to the room?";
+			myResources.content['SAVEUSERDESIGN.TITLEREMOVE']="REMOVE FROM ROOM";
+			myResources.content['SAVEUSERDESIGN.QUESTIONREMOVE']="Do you want remove this design from the room?";
+			
 			//MANAGE USERS ROOM
 			myResources.content['MANAGEUSERROOMS.SENDINVITATION']="Send Invitation";
 			myResources.content['MANAGEUSERROOMS.USERSOFCOLDES']="ColDes Users";
@@ -391,8 +404,8 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['ANSWERS.ENTERANDREGISTER']="Add and Enter";
 			myResources.content['ANSWERS.ONLYREGISTER']="Add only";
 			myResources.content['ANSWERS.CANCEL']="Cancel";
-			myResources.content['ANSWERS.ASKSAVE']="Save Design?";
-			myResources.content['ANSWERS.ASKREMOVE']="Remove Design?";
+			myResources.content['ANSWERS.ASKSAVE']="Save Design";
+			myResources.content['ANSWERS.ASKREMOVE']="Remove Design";
 			
 			
 			//MESSAGE's
@@ -424,6 +437,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.INVITATIONTYPE']="With what function wants to invite the user? "
 			myResources.content['MESSAGETITLE.SURVEY']="DO SURVEY";
 			myResources.content['MESSAGE.SURVEY']="On what you want to do the survey?";
+			myResources.content['MESSAGETITLE.SURVEYRESPONSE']="Users anwsers";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";

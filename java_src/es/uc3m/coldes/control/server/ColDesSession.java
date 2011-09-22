@@ -54,7 +54,9 @@ public class ColDesSession {
 		this.colDesProperties = new Properties();
 		try {
 			logger.info("Loading ColDes properties...");
-			InputStream in = ClassLoader.getSystemResourceAsStream("coldes.properties");
+			//InputStream in = ClassLoader.getSystemResourceAsStream("coldes.properties");
+			InputStream in = this.getClass().getClassLoader().getResource("coldes.properties").openStream();
+
 			this.colDesProperties.load(in);
 			in.close();
 		} catch (FileNotFoundException e) {
