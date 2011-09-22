@@ -227,25 +227,20 @@
        					disablePaintButtons();
        				}else if(body.action == "doSurvey"){
        					if(body.surveyType == Constants.SAVE_DESIGN_SURVEY){
-       						popUpConditional = UtilPopUp.showConditionalPopUP("ASOCIAR A LA SALA",
-							"Esta de acuerdo para asociar el diseño a la sala?");
+       						popUpConditional = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','SAVEUSERDESIGN.TITLESAVE'),
+							resourceManager.getString('myResources','SAVEUSERDESIGN.QUESTIONSAVE'));
 							popUpConditional.addEventListener(FlexEvent.REMOVE, surveyResponseUserSave);
        					}else if(body.surveyType == Constants.REMOVE_DESIGN_SURVEY){
-       						popUpConditional = UtilPopUp.showConditionalPopUP("ELIMINAR DE LA SALA",
-							"Esta de acuerdo para eliminar el diseño de la sala?");
+       						popUpConditional = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','SAVEUSERDESIGN.TITLEREMOVE'),
+							resourceManager.getString('myResources','SAVEUSERDESIGN.QUESTIONREMOVE'));
 							popUpConditional.addEventListener(FlexEvent.REMOVE, surveyResponseUserRemove);
        					}
        				}
-       				
-       				if(hasPencil){
-       					roomChat.changePencilOwner(user.username);
-       				}
-       				//roomChat.listOfUsers.refresh();
-       				roomChat.refreshList();
+       				roomChat.listOfUsers.refresh();
        				
        				//Cambiamos de propietario
        				if(body.nextPencilOwner != null){
-       					roomChat.changePencilOwner(body.nextPencilOwner as String);
+       					roomChat.log += "<font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
        					logInfoRoomEvents += "<b>" +date+" </b><font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
        					if(user.username == body.nextPencilOwner){
        						hasPencil = true;
@@ -257,8 +252,8 @@
         	
         	
        		public function faultHandler(event:MessageFaultEvent):void{
-       			UtilPopUp.showMessagePopUP("INTERNAL ERROR",
-									   "There was an error performing the operation, contact your application administrator.");
+       			UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+							resourceManager.getString('myResources','ERROR.SERVER'));
        		}
         	
         	private function surveyResponseUserSave(event:Event):void{
@@ -524,7 +519,7 @@
 					listUserResp.addItem(userRes);
 				}
 				userResponses.users = listUserResp;
-				userResponses.title = "Respuestas de los usuarios de la sala";
+				userResponses.title = resourceManager.getString('myResources','MESSAGETITLE.SURVEYRESPONSE');
 				userResponses.room = room;
 				PopUpManager.centerPopUp(userResponses);
 
