@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
-	title="{resourceManager.getString('myResources','REGISTER.TITLEUPDATE')}" 
+	title="{resourceManager.getString('myResources','REGISTER.TITLEROOMUPDATE')}" 
 	close="cancelRegister()"
 	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*"
 	creationComplete="init()">

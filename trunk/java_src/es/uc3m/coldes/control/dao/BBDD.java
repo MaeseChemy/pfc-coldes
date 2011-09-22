@@ -26,7 +26,8 @@ public class BBDD {
 		try {
 			// Cargamos el archivo de propiedades de ColDes
 			logger.info("[BBDD]: Loading ColDes properties ...");
-			InputStream in = ClassLoader.getSystemResourceAsStream("coldes.properties");
+			//InputStream in = ClassLoader.getSystemResourceAsStream("coldes.properties");
+			InputStream in = this.getClass().getClassLoader().getResource("coldes.properties").openStream();
 			colDesPropierties.load(in);
 			in.close();
 
