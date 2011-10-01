@@ -17,20 +17,50 @@ import es.uc3m.coldes.model.Room;
 import es.uc3m.coldes.model.User;
 import es.uc3m.coldes.util.Constants;
 
+/**
+ * Mediante este DAO se obtienen las operaciones fundamentales
+ * para trabajar con los distintos usuarios del sistema.
+ * 
+ * @author Jose Miguel Blanco García
+ *
+ */
 public class UserDAO extends BBDD{
 
 	static Logger logger = Logger.getLogger(UserDAO.class.getName());
-
+	
+	/**
+	 * Conexión a la base de datos.
+	 */
 	private Connection conn = null;
-
+	
+	/**
+	 * Constructor por defecto que invoca a la clase padre BBDD.
+	 */
 	public UserDAO() {
 		super();
 	}
-
+	/**
+	 * Constructor que forma el DAO a partir de unas propiedades
+	 * mediante el constructor de la clase padre BBDD.
+	 * 
+	 * @param coldesignProperties Propiedades
+	 */
 	public UserDAO(Properties coldesignProperties) {
 		super(coldesignProperties);
 	}
 	
+	/**
+	 * Verifica si el nombre de usuario y la password usados para intentar acceder
+	 * a la aplicación son correctos. Esta función diferencia mayusculas de 
+	 * minusculas a la hora de hacer la comprobación.
+	 * Para verificar la password del usuario se le aplica una función hash, que
+	 * se compara con lo almacenado en la base de datos.
+	 * 
+	 * @param username Nombre de usuario.
+	 * @param password Password del usuario.
+	 * @return Usuario asociado al username y a la password o null en caso
+	 * de no existir.
+	 */
 	public User doLogin(String username, String password) {
 		logger.info("[UserDAO-getUser]: Searching user [" + username + "]...");
 		SHA1 sha = new SHA1();
@@ -79,6 +109,14 @@ public class UserDAO extends BBDD{
 		}
 	}
 	
+	/**
+	 * Añade un nuevo usuario al sistema. Todos los datos del usuario se almacenan
+	 * en claro en la base de datos salvo la contraseña, a la cual se le aplica
+	 * una función hash y se almacena el resultado de esta operación.
+	 * 
+	 * @param user Nuevo usuario a registrar.
+	 * @return Valor del nombre de usuario nuevo registrado.
+	 */
 	public String addUser(User user) {
 		String username = null;
 		if(!this.existUser(user.getUsername())){
@@ -138,6 +176,14 @@ public class UserDAO extends BBDD{
 		return username;
 	}
 	
+	/**
+	 * Verifica si un usuario dado existe mediante el nombre de usuario, campo que
+	 * es usado como clave en la tabla de usuarios, por lo que no puede haber dos 
+	 * usuarios con el mismo nombre de usuario.
+	 * 
+	 * @param username Nombre de usuario a verificar.
+	 * @return Boolean que indica si el nombre de usuario existe o no.
+	 */
 	private boolean existUser(String username){
 		logger.info("[UserDAO-existUser]: Searchin user [" + username + "]...");
 		String sqlSelectUsuario = "select name, surname1, surname2, email, username, password, admin, designer, active "
@@ -170,6 +216,11 @@ public class UserDAO extends BBDD{
 		}
 	}
 
+	/**
+	 * Obtiene todos los usuarios registrados en el sistema.
+	 * 
+	 * @return Lista con los datos de todos los usuarios del sistema.
+	 */
 	public List<User> getAllUsers() {
 		logger.info("[UserDAO-getAllUsers]: Searching all users...");
 
@@ -211,7 +262,18 @@ public class UserDAO extends BBDD{
 		}
 	}
 	
-
+	/**
+	 * Obtiene los usuarios del sistema que no se encuentran registrados en 
+	 * una sala dada.
+	 * Este método es usado para saber cuales son los usuarios a los cuales
+	 * se les puede mandar una invitación puesto que no están registrados
+	 * en la sala.
+	 * 
+	 * @param room Sala mediante la cual se obtienen los usuarios del sistema
+	 * que no están registrados en ella.
+	 * @return Lista con el nombre de usuario de los distintos usuarios que no
+	 * están registrados en la sala.
+	 */
 	public List<String> getColDesUsers(Room room) {
 		logger.info("[UserDAO-getColDesUsers]: Searching all users...");
 
@@ -243,7 +305,15 @@ public class UserDAO extends BBDD{
 			}
 		}
 	}
-
+	
+	/**
+	 * Actualiza los datos personales de un usuario, a excepción del nombre de usuario.
+	 * 
+	 * @param user Usuario con las modificaciónes.
+	 * @param passChange Boolean que índica si el usuario ademas ha modificado la
+	 * vieja contraseña.
+	 * @return Boolean que indica si la actualización fue correcta o no.
+	 */
 	public boolean updateUser(User user, boolean passChange) {
 		boolean update = false;
 
@@ -302,7 +372,13 @@ public class UserDAO extends BBDD{
 	/**************************/
 	/**   SESSION FUNCTIONS  **/
 	/**************************/
-	
+	/**
+	 * Función que valida la sesión de un usuario, actualizando el id de sesion,
+	 * la fecha de última conexión y la de última operación.
+	 * 
+	 * @param username Nombre de usuario del usuario del cual se valida la sesión.
+	 * @param sessionID Nuevo id de sesión para el usuario.
+	 */
 	public void validate(String username, String sessionID) {
 		logger.info("[UserDAO-validate]: Validating session of user " + username);
 		// Generamos la query
@@ -332,11 +408,15 @@ public class UserDAO extends BBDD{
 		}
 	}
 	
+	/**
+	 * Invalida la sesión de un usuario dado poniendo a null el valor actual
+	 * de su id de sesión.
+	 * 
+	 * @param username Nombre de usuario del usuario del cual se intenta
+	 * invalidar la sesión.
+	 */
 	public void invalidate(String username) {
 		logger.info("[UserDAO-invalidate]: Invalidating session of user " + username);
-
-		// Generamos evento de seguridad de salida
-		//this.generateLogoutEvent(username);
 
 		// Generamos la query
 		String sql = "update user set sessionId=null where username=?";
@@ -363,11 +443,20 @@ public class UserDAO extends BBDD{
 		}
 	}
 	
+	/**
+	 * Función encargada de verificar si la sesión de un usuario es válida en el 
+	 * momento actual.
+	 * 
+	 * @param username Nombre de usuario del usuario sobre el cual se intenta
+	 * verificar la sesion.
+	 * @param sessionLength Tiempo máximo definido para la duración de una 
+	 * sesión.
+	 * @return Boolean que índica si la sesión del usuario ha caducado o no.
+	 */
 	public boolean checkUser(String username, int sessionLength) {
 
 		return this.checkUser(username, null, sessionLength);
 	}
-
 	public boolean checkUser(String username, String sessionId, int sessionLength) {
 
 		logger.info("[UserDAO-checkUser]: Checking validity of the session of user "+ username);
@@ -444,7 +533,10 @@ public class UserDAO extends BBDD{
 			}
 		}
 	}
-
+	
+	/**
+	 * Función encargada de finalizar la conexión del DAO con la base de datos.
+	 */
 	public void finalize() {
 
 		try {
