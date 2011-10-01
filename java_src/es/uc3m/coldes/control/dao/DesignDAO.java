@@ -14,19 +14,52 @@ import es.uc3m.coldes.model.Design;
 import es.uc3m.coldes.model.Room;
 import es.uc3m.coldes.model.User;
 
+/**
+ * Mediante este DAO se obtienen las operaciones fundamentales
+ * para trabajar con los distintos diseños del sistema.
+ * 
+ * @author Jose Miguel Blanco García
+ *
+ */
 public class DesignDAO extends BBDD{
 
 	static Logger logger = Logger.getLogger(UserDAO.class.getName());
-
+	
+	/**
+	 * Conexión a la base de datos.
+	 */
 	private Connection conn = null;
+	
+	/**
+	 * Constructor por defecto que invoca a la clase padre BBDD.
+	 */
 	public DesignDAO() {
 		super();
 	}
-
+	/**
+	 * Constructor que forma el DAO a partir de unas propiedades
+	 * mediante el constructor de la clase padre BBDD.
+	 * 
+	 * @param coldesignProperties Propiedades
+	 */
 	public DesignDAO(Properties coldesignProperties) {
 		super(coldesignProperties);
 	}
-
+	
+	/**
+	 * Asigna el contenido del lienzo de una sala. Cada sala adminte por el
+	 * momento un único diseño a lo largo del tiempo, por ello, se busca si
+	 * la sala tiene algún diseño asociado, en caso afirmativo, se actualiza
+	 * el valor del contenido, y en caso contrario se inserta un nuevo registro.
+	 * 
+	 * MEJORA: Que una sala pueda tener guardados varios diseños, por ello
+	 * se deja esta implementación aunque a priori pueda resultar redundante.
+	 * 
+	 * @param room Sala a la que se quiere asociar el contenido.
+	 * @param content Contenido del lienzo.
+	 * @return Boolean que indica si la operación se realizo correctamente 
+	 * o no.
+	 */
 	public boolean saveDesignToCanvas(Room room, byte[] content) {
 		logger.info("[DesignDAO-saveDesignToCanvas]: Saving content canvas to room [" + room.getId() + "]");
 		String sql;
@@ -67,6 +100,14 @@ public class DesignDAO extends BBDD{
 		}
 	}
 	
+	/**
+	 * Desvincula el diseño perteneciente a una sala. Para ello borra el vinculo
+	 * que se crea al asociar un diseño a una sala.
+	 * 
+	 * @param room Sala de la cual se quiere desvincular el actual diseño de
+	 * la misma.
+	 * @return Boolean que indica el resultado de la operación.
+	 */
 	public boolean removeDesingRoom(Room room) {
 		logger.info("[DesignDAO-removeDesingRoom]: Removing content canvas to room [" + room.getId() + "]");
 		String sql;
@@ -102,6 +143,13 @@ public class DesignDAO extends BBDD{
 		}
 	}
 	
+	/**
+	 * Obtiene el diseño asociado a una sala dada.
+	 * 
+	 * @param room Sala de la que se quiere obtener el diseño actual.
+	 * @return Array de bytes que representa el contenido del lienzo
+	 * de la sala.
+	 */
 	public byte[] getRoomSaveContent(Room room) {
 		logger.info("[DesignDAO-getRoomSaveContent]: Searching if pencil is busy in room [" + room.getId() + "]");
 		String sqlSelectPencilRoom = "select designcontent "
@@ -132,7 +180,14 @@ public class DesignDAO extends BBDD{
 		}
 		return designContent;
 	}
-
+	
+	/**
+	 * Asocia un diseño a un usuario que ha decidido guardarlo. El
+	 * propio objecto Design contiene el nombre de usuario.
+	 * 
+	 * @param design Diseño que se asocia.
+	 * @return Boolean que indica el resultado de la operación.
+	 */
 	public boolean saveDesignToUser(Design design) {
 		logger.info("[DesignDAO-saveDesignToUser]: Saving content canvas to user [" + design.getUsername() + "]");
 		String sql;
@@ -171,6 +226,12 @@ public class DesignDAO extends BBDD{
 		}
 	}
 	
+	/**
+	 * Obtiene todos los diseños que ha guardado un usuario dado.
+	 * 
+	 * @param user Usuario del que se quieren obtener los diseños.
+	 * @return Lista de diseños del usuario.
+	 */
 	public List<Design> getUserDesigns(User user){
 		List<Design> results = new ArrayList<Design>();
 		logger.info("[DesignDAO-getUserDesigns]: Searching rooms of user ["+user.getUsername()+"]..");
@@ -205,7 +266,15 @@ public class DesignDAO extends BBDD{
 		}
 		return results;
 	}
-
+	
+	/**
+	 * Desvincula un diseño de un usuario dado. Para ello borra el vinculo
+	 * que se crea entre el diseño y el usuario en el momento de su
+	 * vinculación.
+	 * 
+	 * @param design Diseño que se quiere borrar.
+	 * @return Boolean que indica el resultado de la operacion.
+	 */
 	public boolean removeUserDesign(Design design) {
 		logger.info("[DesignDAO-removeUserDesign]: Saving content canvas to user [" + design.getUsername() + "]");
 		String sql;

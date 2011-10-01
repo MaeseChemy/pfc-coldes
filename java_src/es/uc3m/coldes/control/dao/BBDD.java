@@ -10,16 +10,42 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Clase base encargada de modelar la conexión a base de datos.
+ * Los DAO`s usados por la parte servidora extenderan de esta clase.
+ * 
+ * @author Jose Miguel Blanco García.
+ *
+ */
 public class BBDD {
 
 	static Logger logger = Logger.getLogger(BBDD.class.getName());
-
+	
+	/**
+	 * URL de la base de datos.
+	 */
 	private String url;
+	/**
+	 * Puerto en el que se encuentra escuchando la base de datos.
+	 */
 	private String port;
+	/**
+	 * Schema que contiene los datos de la aplicación.
+	 */
 	private String schema;
+	/**
+	 * Nombre de usuario para conectarse a la base de datos del sistema.
+	 */
 	private String username;
+	/**
+	 * Password del usuario de la base de datos.
+	 */
 	private String password;
-
+	
+	/**
+	 * Constructor por defecto en el que se leen las propiedades de la base de
+	 * datos del fichero de propiedades coldes.properties.
+	 */
 	public BBDD() {
 		Properties colDesPropierties = new Properties();
 
@@ -54,7 +80,13 @@ public class BBDD {
 		}
 
 	}
-
+	
+	/**
+	 * Constructr que recibe ya las distintas propiedades de la conexión
+	 * a base de datos.
+	 * 
+	 * @param samProperties Propiedades de la base de datos.
+	 */
 	public BBDD(Properties samProperties) {
 		try {
 			// Leemos las propiedades relativas a la conexión con la BBDD
@@ -74,6 +106,12 @@ public class BBDD {
 
 	}
 
+	/**
+	 * Función mediante la cual se obtiene una conexión a la base de datos
+	 * del sistema.
+	 * 
+	 * @return Conexión a la base de datos.
+	 */
 	public Connection getConnection() {
 		Connection conn = null;
 		try {

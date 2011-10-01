@@ -17,20 +17,46 @@ import es.uc3m.coldes.model.User;
 import es.uc3m.coldes.model.UserRoom;
 import es.uc3m.coldes.util.Constants;
 
+/**
+ * Mediante este DAO se obtienen las operaciones fundamentales
+ * para trabajar con las distintas salas del sistema.
+ * 
+ * @author Jose Miguel Blanco García
+ *
+ */
 public class RoomDAO extends BBDD{
 
 	static Logger logger = Logger.getLogger(UserDAO.class.getName());
 
+	/**
+	 * Conexión a la base de datos.
+	 */
 	private Connection conn = null;
-
+	
+	/**
+	 * Constructor por defecto que invoca a la clase padre BBDD.
+	 */
 	public RoomDAO() {
 		super();
 	}
-
+	/**
+	 * Constructor que forma el DAO a partir de unas propiedades
+	 * mediante el constructor de la clase padre BBDD.
+	 * 
+	 * @param coldesignProperties Propiedades
+	 */
 	public RoomDAO(Properties coldesignProperties) {
 		super(coldesignProperties);
 	}
 	
+	/**
+	 * Añade una nueva sala al sistema, y crea la realacion usuario sala
+	 * para el creador de la sala, propietario de la misma.
+	 * 
+	 * @param room Nueva sala del sistema.
+	 * @return Int que reprensenta el id de la sala creada, o -1 en
+	 * caso de cualquier error a la hora de crear la sala.
+	 */
 	public int addRoom(Room room) {
 		int idRoom = -1;
 		if(!this.existRoom(room.getName(), room.getOwner())){
@@ -97,6 +123,17 @@ public class RoomDAO extends BBDD{
 		return idRoom;
 	}
 	
+	/**
+	 * Borra una sala del sistema. El borrado de la sala conlleva también
+	 * el borrado de todos los elementos que hacen referencia a esta sala.
+	 * El borrado se controla en base de datos de tal forma de que al borrar
+	 * una sala se borra o actualiza en cascada todos aquellos elementos que
+	 * tengan el id de la sala como clave foranea.
+	 * 
+	 * @param room Sala a borrar
+	 * @return Devuelve 0 en caso de que la operación se realice con éxito
+	 * y -1 en caso contrario.
+	 */
 	public int deleteRoom(Room room) {
 		int result = 0;
 	
@@ -131,6 +168,14 @@ public class RoomDAO extends BBDD{
 		return result;
 	}
 	
+	/**
+	 * Verifica si para un usuario existe alguna sala suya que tenga un
+	 * nombre especifico.
+	 * 
+	 * @param name Nombre de la sala.
+	 * @param owner Nombre de usuario del propietario.
+	 * @return Boolean que indica el resultado de la verificación.
+	 */
 	private boolean existRoom(String name, String owner) {
 		logger.info("[RoomDAO-existRoom]: Searching room [" + name + "] of user [" + owner + "]...");
 		String sqlSelectRoom = "select id, roomname, roomdescription, owner "
@@ -164,10 +209,32 @@ public class RoomDAO extends BBDD{
 		}
 	}
 	
+	/**
+	 * Funcion mediante la cual se registra a un usuario en una sala como
+	 * colaborador. Esta función se usa cuando un usuario se registra directamente
+	 * en una sala.
+	 * 
+	 * @param user Usuario que se registra en la sala.
+	 * @param room Sala a la cual se registra el usuario.
+	 * @return Integer que representa el resultado del registro, -1 en caso de error
+	 * y 0 en caso de que todo fuese correctamente.
+	 */
 	public int registerUserRoom(User user, Room room) {
 		return this.registerUserRoom(user.getUsername(), room, Constants.COLABORATOR_FUNCTION);
 	}
 	
+	/**
+	 * Funcion mediante la cual se registra a un usuario en una sala con una
+	 * función especifica. Este método se usa cuando algún usuario del sistema
+	 * es invitado a participar en una sala.
+	 * 
+	 * @param username Usuario que se registra en la sala.
+	 * @param room Sala a la cual se registra el usuario.
+	 * @param userfunction Función que el nuevo usuario registrado en la sala
+	 * desempeñara en la misma.
+	 * @return Integer que representa el resultado del registro, -1 en caso de error
+	 * y 0 en caso de que todo fuese correctamente.
+	 */
 	private int registerUserRoom(String username, Room room, int userfunction) {
 		int idRoom = -1;
 		logger.info("[RoomDAO-addRoom]: Adding new user-room relation ...");
@@ -204,6 +271,15 @@ public class RoomDAO extends BBDD{
 		return idRoom;
 	}
 	
+	/**
+	 * Obtiene todas las salas en las cuales esta participando un usuario dado
+	 * sea cual sea la función que este desempeña dentro de la misma.
+	 * 
+	 * @param user Usuario del cual se quieren saber las distintas salas
+	 * en las que participa.
+	 * @return Listado con el conjunto de relaciones usuario-sala en las cuales
+	 * esta participando el usuario que se pasa como parametro.
+	 */
 	public List<UserRoom> getUserRooms(User user){
 		List<UserRoom> results = new ArrayList<UserRoom>();
 		logger.info("[RoomDAO-getUserRooms]: Searching rooms of user ["+user.getUsername()+"]..");
@@ -259,7 +335,13 @@ public class RoomDAO extends BBDD{
 		}
 		return results;
 	}
-
+	
+	/**
+	 * Busca una sala del sistema a partir de su id.
+	 * 
+	 * @param id Id de la sala que se busca.
+	 * @return Sala a la cual pertenece el id pasado como parametro.
+	 */
 	private Room findRoomById(int id){
 		Room room = null;
 		logger.info("[RoomDAO-findRoomById]: Searching room by id...");
@@ -296,7 +378,12 @@ public class RoomDAO extends BBDD{
 		}
 		return room;
 	}
-
+	
+	/**
+	 * Obtiene todas las salas que estan registradas en el sistema.
+	 * 
+	 * @return Lista con todas las salas del sistema.
+	 */
 	public List<Room> getColDesRooms() {
 		List<Room> results = new ArrayList<Room>();
 		logger.info("[RoomDAO-getColDesRooms]: Searching rooms of ColDes...");
@@ -338,6 +425,14 @@ public class RoomDAO extends BBDD{
 		return results;
 	}
 	
+	/**
+	 * Obtiene todas las salas del sistema que son de caracter publico.
+	 * Una sala de caracter publico es visible para todos los usuarios,
+	 * mientras las salas privadas son visibles unicamente para las personas
+	 * que participan en dichas salas.
+	 * 
+	 * @return Lista de salas del sistema que son publicas.
+	 */
 	public List<Room> getColDesPublicRooms() {
 		List<Room> results = new ArrayList<Room>();
 		logger.info("[RoomDAO-getColDesPublicRooms]: Searching rooms of ColDes...");
@@ -380,7 +475,18 @@ public class RoomDAO extends BBDD{
 		return results;
 	}
 	
-
+	/**
+	 * Metodo al cual se recurre para saber que usuarios se encuentran en el momento
+	 * actual participando dentro de la sala cuando un determinado usuario entra en
+	 * la sala.
+	 * Adicionalmente actualiza la relación entre el usuario y la sala, marcando el flag
+	 * online a 1, para indicar que el usuario esta participando en este momento en la sala.
+	 * 
+	 * @param user Usuario que entra en la sala.
+	 * @param room Sala a la cual entra el usuario.
+	 * @return Lista con los distintos nombres de usuario de los distintos usuarios que
+	 * se encuentran actualmente participando dentro de la sala.
+	 */
 	public List<String> enterInRoom(User user, Room room) {
 		logger.info("[RoomDAO-enterInRoom]: Searching roomusers ...");
 		String sqlSelectUserRoom = "select username from roomuser where id_room=? and online=1";
@@ -419,7 +525,14 @@ public class RoomDAO extends BBDD{
 
 		return resultsUsernames;
 	}
-
+	
+	/**
+	 * Borra una relación entre un usuario y una sala.
+	 * 
+	 * @param userRoom Relación que se va a borrar.
+	 * @return Integer que representa el resultado de la operación, 0 en caso
+	 * de todo correcto, -1 en caso de error.
+	 */
 	public int deleteUserRoom(UserRoom userRoom) {
 		int result = 0;
 		logger.info("[RoomDAO-deleteUserRoom]: Removing user-room relation ...");
@@ -451,7 +564,17 @@ public class RoomDAO extends BBDD{
 
 		return result;
 	}
-
+	
+	/**
+	 * Función mediante la cual se controla la salida de un usuario de
+	 * una determinada sala.
+	 * Actualiza el flag online de la relación usuario-sala a 0.
+	 * 
+	 * @param user Usuario que sale de la sala.
+	 * @param room Sala de la cual sale el usuario.
+	 * @return Integer que representa el resultado de la operación, 0 en caso
+	 * de todo correcto, -1 en caso de error.
+	 */
 	public int roomLogout(User user, Room room) {
 		int result = 0;
 		logger.info("[RoomDAO-roomLogout]: Logout from room ...");
@@ -484,7 +607,14 @@ public class RoomDAO extends BBDD{
 
 		return result;
 	}
-
+	
+	/**
+	 * Obtiene todas las relaciones usuario-sala de una determinada sala.
+	 * 
+	 * @param room Sala de la cual se quieren saber las relaciones.
+	 * @return Listado con las distintas relaciones de la sala con los usuarios
+	 * del sistema.
+	 */
 	public List<UserRoom> getRoomUsers(Room room) {
 		List<UserRoom> results = new ArrayList<UserRoom>();
 		logger.info("[RoomDAO-getUserRooms]: Searching users of room ["+room.getId()+"]..");
@@ -540,7 +670,16 @@ public class RoomDAO extends BBDD{
 		}
 		return results;
 	}
-
+	
+	/**
+	 * Envia una invitación a un usuario para participar en una determinada sala con
+	 * una función establecida.
+	 * 
+	 * @param username Nombre de usuario del usuario al que se quiere invitar.
+	 * @param room Sala a la cual se quiere invitar al usuario.
+	 * @param userfunction Función que desempeñara el usuario dentro de la sala.
+	 * @return Relación usuario-sala o null en caso de error.
+	 */
 	public UserRoom sendRoomInvitation(String username, Room room, int userfunction) {
 		UserRoom result = null;
 		logger.info("[RoomDAO-sendRoomInvitation]: New room invitation...");
@@ -595,6 +734,14 @@ public class RoomDAO extends BBDD{
 		return result;
 	}
 	
+	/**
+	 * Borra una invitación de un usuario.
+	 * 
+	 * @param userRoom Relacion usuario-sala asociada a la invitación del usuario
+	 * que desea borrar.
+	 * @return Integer que representa el resultado de la operación, 0 en caso
+	 * de todo correcto, -1 en caso de error.
+	 */
 	public int removeUserInvitation(UserRoom userRoom) {
 		int result = -1;
 		logger.info("[RoomDAO-removeUserInvitation]: Remove user invitation...");
@@ -627,7 +774,15 @@ public class RoomDAO extends BBDD{
 		}
 		return result;
 	}
-
+	
+	/**
+	 * Obtiene todas las invitaciones de un usuario determinado.
+	 * 
+	 * @param username Nombre de usuario del usuario del cual se quieren obtener
+	 * las invitaciones.
+	 * @return Listado con las distintas relaciones usuario-sala a las cuales hacen
+	 * referencia las distintas invitaciones de un usuario.
+	 */
 	public List<UserRoom> getAllUserRoomInvitation(String username) {
 		List<UserRoom> results = new ArrayList<UserRoom>();
 		logger.info("[RoomDAO-getAllUserRoomInvitation]: Searching invitations of user ["+username+"]..");
@@ -683,7 +838,19 @@ public class RoomDAO extends BBDD{
 		}
 		return results;
 	}
-
+	
+	/**
+	 * Función mediante la cual se gestionan las distintas acciones que un usuario
+	 * puede realizar con las invitaciones que recibe.
+	 * Primero borra la invitación que se esta manejando, y posteriormente, si el 
+	 * usuario ha aceptado la invitación, se realiza el registro del usuario a la
+	 * sala.
+	 * 
+	 * @param userRoom Relación usuario-sala a la que hace referencia la invitación.
+	 * @param insert Indica si el usuario ha aceptado o no la invitación.
+	 * @return Integer que representa el resultado de la operación, 0 en caso
+	 * de todo correcto, -1 en caso de error.
+	 */
 	public int manageUserRoomRelation(UserRoom userRoom, boolean insert) {
 		logger.info("[RoomDAO-manageUserRoomRelation]: Deleting room invitation...");
 		if(this.removeUserInvitation(userRoom) < 0){
@@ -698,7 +865,13 @@ public class RoomDAO extends BBDD{
 			}
 		}
 	}
-
+	
+	/**
+	 * Acutaliza los datos de una determinada sala.
+	 * 
+	 * @param room Sala que se actualiza con los cambios de la misma.
+	 * @return Boolean que indica el resultado de la operación.
+	 */
 	public boolean updateRoom(Room room) {
 		logger.info("[RoomDAO-updateRoom]: Update room ...");
 		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, participationtype=?, modificationDate=? where id=?";
@@ -737,7 +910,14 @@ public class RoomDAO extends BBDD{
 		}
 
 	}
-
+	
+	/**
+	 * Actualiza una relación usuario-sala determinada.
+	 * 
+	 * @param userRoom Relación usuario-sala con las nuevas
+	 * modifaciones.
+	 * @return Boolean que indica el resultado de la operación.
+	 */
 	public boolean updateUserRoom(UserRoom userRoom){
 		logger.info("[RoomDAO-updateUserRoom]: Update room-user ...");
 		String sqlDeleteUserRoom = "update roomuser set userfunction=? where id_room=? and username=?";
@@ -773,6 +953,16 @@ public class RoomDAO extends BBDD{
 
 	}
 	
+	/**
+	 * Cambia el propietario de una determinada sala. Para ello actualiza la función que 
+	 * desempeñaba el nuevo propietario a propietario y cambia la funcion del propietario
+	 * a moderador.
+	 * 
+	 * @param idRoom Id de la sala que cambia de dueño.
+	 * @param newOwner Nombre de usuario del nuevo propietario de la sala.
+	 * @param oldOwner Nombre de usuario del viejo propietario de la sala.
+	 * @return Boolean que indica el resultado de la operación.
+	 */
 	public boolean changeUserOwner(int idRoom, String newOwner, String oldOwner) {
 		logger.info("[RoomDAO-changeUserOwner]: Change user owner of user room relation ...");
 		try {
@@ -818,7 +1008,5 @@ public class RoomDAO extends BBDD{
 		}
 		
 	}
-
-
 
 }
