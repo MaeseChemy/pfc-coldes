@@ -1,0 +1,68 @@
+Application {
+	backgroundColor: #F0F0F0;
+	themeColor: #878B8D;
+	fontFamily: Arial;
+	font-size:11;
+	backgroundGradientAlphas: 0.2, 0.8;
+	backgroundGradientColors: #05AAFF, #0592FF;
+}
+ApplicationControlBar
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #05A9F6, #05A9F6;
+}
+
+Button.HomeButton {
+	color: #000000;
+	textRollOverColor: #000000;
+	textSelectedColor: #000000;
+	horizontalGap: 5;
+	textAlign: center;
+	fontSize: 15;
+	fontFamily: Arial;
+	fontWeight: bold;
+	paddingRight: 10;
+	paddingBottom: 2;
+	paddingLeft: 10;
+	paddingTop: 2;
+}
+
+Button.HomeButtonSec{
+	color: #000000;
+	textRollOverColor: #000000;
+	textSelectedColor: #000000;
+	horizontalGap: 5;
+	textAlign: left;
+	fontSize: 15;
+	fontFamily: Arial;
+	fontWeight: normal;
+	paddingLeft: 5;
+	paddingRight: 5;
+	paddingBottom: 0;
+}
+
+HRule.MainHRule{
+	strokeColor: #0173CB;
+	strokeWidth: 2;
+	shadowColor: #099EFC;
+}
+
+.LabelLoginFormItem {
+	color: #FFFFFF;
+	fontWeightXXX: bold;
+}
+
+SuperTabNavigator {
+	horizontalGap: 2;
+	paddingLeft:0;
+	paddingRight:0;
+	paddingTop:0;
+	color: #000000;
+	tabOffset: 1;
+	tabStyleName: tabBarTab;
+	backgroundColor:#F0F0F0;
+}
+
+SuperTabBar {
+	paddingTop: 2;
+}
