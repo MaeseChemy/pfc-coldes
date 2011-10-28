@@ -175,7 +175,7 @@ public class ColDesSession {
 	 * <li>El atributo sessionID no es null</li>
 	 * <li>El valor del atributo sessionID es igual al valor almacenado en BBDD para este user</li>
 	 * <li>El tiempo transcurrido desde el último movimiento hasta el momento actual es menor al 
-	 * indicado por la propiedad samSessionLength</li>
+	 * indicado por la propiedad colDesSessionLength</li>
 	 * </ul>
 	 * Si se cumplen todas las condiciones, se actualizará en BBDD la fecha y hora del último movimiento
 	 * usando la fecha y hora actual, y se devolverá true.

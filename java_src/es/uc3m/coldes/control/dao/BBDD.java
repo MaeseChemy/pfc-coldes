@@ -85,17 +85,17 @@ public class BBDD {
 	 * Constructr que recibe ya las distintas propiedades de la conexión
 	 * a base de datos.
 	 * 
-	 * @param samProperties Propiedades de la base de datos.
+	 * @param colDesPropierties Propiedades de la base de datos.
 	 */
-	public BBDD(Properties samProperties) {
+	public BBDD(Properties colDesPropierties) {
 		try {
 			// Leemos las propiedades relativas a la conexión con la BBDD
 			logger.info("[BBDD]: Reading propierties ...");
-			url = samProperties.getProperty("db.url");
-			port = samProperties.getProperty("db.port");
-			schema = samProperties.getProperty("db.schema");
-			username = samProperties.getProperty("db.username");
-			password = samProperties.getProperty("db.password");
+			url = colDesPropierties.getProperty("db.url");
+			port = colDesPropierties.getProperty("db.port");
+			schema = colDesPropierties.getProperty("db.schema");
+			username = colDesPropierties.getProperty("db.username");
+			password = colDesPropierties.getProperty("db.password");
 
 			// Cargamos el driver JDBC
 			logger.info("[BBDD]: Opening MySQL connector...");
