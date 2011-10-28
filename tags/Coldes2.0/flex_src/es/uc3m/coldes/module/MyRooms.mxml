@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="100%" height="100%"
+		   paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"
+		   creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.view.room.RoomDataFormUpdate;
+			import mx.core.Application;
+			import es.uc3m.coldes.view.room.ManageUsersRoom;
+			import mx.events.FlexEvent;
+			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
+			import es.uc3m.coldes.business.Constants;
+			import es.uc3m.coldes.view.room.RoomView;
+			import mx.controls.Alert;
+			import es.uc3m.coldes.entities.UserRoom;
+			import es.uc3m.coldes.view.room.RoomDataFormRegister;
+			import es.uc3m.coldes.business.RoomService;
+			import es.uc3m.coldes.entities.Room;
+			import es.uc3m.coldes.utils.popup.UtilPopUp;
+			import mx.managers.PopUpManager;
+			import es.uc3m.coldes.view.user.UserDataFormUpdate;
+			import es.uc3m.coldes.business.UserService;
+			import es.uc3m.coldes.entities.User;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var usersRooms:ArrayCollection = new ArrayCollection();
+			
+			private var userLoged:User;
+			private function init():void {
+				userLoged = parentApplication.userLoged;
+				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
+			}
+
+			private function callbackUsersRooms(usersRoomsGet:ArrayCollection):void {
+				usersRooms=usersRoomsGet;
+				usersRooms.refresh();
+			}
+
+			/* Funcion de filtrado */
+			private function roomFilter(obj:Object):Boolean {
+				var result:Boolean = false;
+				var userRoom:UserRoom = obj as UserRoom;
+				if (searchText.text.length > 0 ) {
+					if ((userRoom.roomName != null && userRoom.roomName.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) ||
+						(userRoom.ownerUserName != null && userRoom.ownerUserName.toUpperCase().indexOf(searchText.text.toUpperCase()) != -1) 
+						)
+					{
+						result = true;
+					}
+				}
+				return result;
+			}
+
+			private function filter(event:Event=null):void {
+				usersRooms.filterFunction=roomFilter;
+				usersRooms.refresh();
+			}
+
+			public function restart():void {
+				init();
+				searchText.text="";
+			}
+			
+			private function refresh(event:Event=null):void{
+				new RoomService().getUserRooms(userLoged, callbackUsersRooms);
+				searchText.text = "";
+			}
+			
+			/*************************************/
+			/**       REGISTER FUNCTIONS        **/
+			/*************************************/
+			private function doRoomRegister():void {
+				var roomReg:RoomDataFormRegister = new RoomDataFormRegister();
+				
+				PopUpManager.addPopUp(roomReg, this, true);
+				PopUpManager.centerPopUp(roomReg);
+				roomReg.userLoged = userLoged;
+				roomReg.callBackFunction = submitRoomRegister;
+			}
+			
+			private var popUpSalirConditional:ConditionalPopUp;
+			private var auxRoom:Room;
+			public function submitRoomRegister(room:Room):void{
+				if(room.participationType == Constants.ALL_PAINTING){
+					auxRoom = room;
+					popUpSalirConditional = UtilPopUp.showConditionalPopUP("ADVERTENCIA",
+					"Crear una sala en la que la participación es todos a la vez puede conllevar problemas de sincronismo, ¿Está seguro?");
+					popUpSalirConditional.addEventListener(FlexEvent.REMOVE, createRoomResponse);	
+				}else{
+					this.doRoomRegisterSubmit(room);
+				}
+				
+			}
+			
+			private function createRoomResponse(event:Event):void{
+				if(popUpSalirConditional.answer){
+					this.doRoomRegisterSubmit(auxRoom);
+				}
+			}
+			
+			public function doRoomRegisterSubmit(room:Room):void{
+				(new RoomService()).addRoom(room, userRegisterCallback);
+			}
+			
+			private function userRegisterCallback(addRoomResult:Number):void{
+				if(addRoomResult == -2){
+					//Room exist
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTERROOM'),
+										       resourceManager.getString('myResources','ERROR.REGISTERROOM'));
+				}else if (addRoomResult == -1){
+					//Internal error
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.REGISTERROOM'),
+										       resourceManager.getString('myResources','MESSAGE.REGISTERROOM'));
+					refresh();
+				}
+				
+			}
+			
+			/*************************************/
+			/**           ENTER ROOM            **/
+			/*************************************/
+			[Embed('/assets/images/icos/room.png')]
+			public static const roomIcon:Class;
+			private function enter(obj:Object):void{
+				var userRoom:UserRoom = obj as UserRoom;
+				var roomNew:RoomView = searchTabsRoom(userRoom);
+				if (roomNew == null) {
+					roomNew = new RoomView();
+					roomNew.room = userRoom.room;
+					roomNew.user = userLoged;
+					roomNew.userfunction = userRoom.userfunction;
+					roomNew.label = userRoom.roomName;
+					roomNew.icon = roomIcon;
+					parentApplication.tabs.addChild(roomNew);
+				}
+				parentApplication.tabs.selectedChild=roomNew;
+			}
+			
+			private function searchTabsRoom(userRoom:UserRoom):RoomView{
+				for each (var obj:Object in  parentApplication.tabs.getChildren()){
+					if(obj is RoomView){
+						var roomViewAux:RoomView = obj as RoomView;
+						if(roomViewAux.room.name == userRoom.roomName && roomViewAux.room.owner == userRoom.ownerUserName){
+							return roomViewAux;
+						}
+					}
+				}
+				return null;
+			}
+			
+			/*************************************/
+			/**         ROOM MANAGEMENT         **/
+			/*************************************/
+			
+			public function editRoom(data:UserRoom):void{
+				var updateRoom:RoomDataFormUpdate=PopUpManager.createPopUp(DisplayObject(Application.application), RoomDataFormUpdate, true) as RoomDataFormUpdate;
+				updateRoom.room = data.room;
+				updateRoom.callBackFunction = doUpdateRoom;
+				PopUpManager.centerPopUp(updateRoom);
+			}
+			
+			public function doUpdateRoom(room:Room):void{
+				(new RoomService()).updateRoom(room, doUpdateRoomCallback);
+			}
+			
+			public function doUpdateRoomCallback(result:Boolean):void{
+				if(result){
+					//Internal error
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.UPDATERROOM'),
+										       resourceManager.getString('myResources','MESSAGE.UPDATERROOM'));
+					refresh();
+				}
+			}
+			
+			public var condDelete:ConditionalPopUp;
+			public var userRoomRelation:UserRoom;
+			public function deleteUserRoom(data:UserRoom):void{
+				userRoomRelation = data;
+				if(data.userfunction == Constants.OWNER_FUNCTION){
+					//The user is de owner of the room, delete room
+					condDelete = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEUSERRELATIONOWNER'), 
+					resourceManager.getString('myResources','MESSAGE.REMOVEUSERRELATIONOWNER'));
+				}else{
+					condDelete = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEUSERRELATION'), 
+					resourceManager.getString('myResources','MESSAGE.REMOVEUSERRELATION'));
+				}
+				condDelete.addEventListener(FlexEvent.REMOVE, removeRelation);
+					
+			}
+			
+			private function removeRelation(event:Event):void{
+				if(condDelete.answer){
+					(new RoomService()).deleteUserRoom(userRoomRelation, deleteUserRoomCallback);
+				}
+			}
+			public function deleteUserRoomCallback(result:Number):void{
+				refresh();
+			}
+			
+			public function manageUsersRoom(data:UserRoom):void{
+				var manageUsers:ManageUsersRoom=PopUpManager.createPopUp(DisplayObject(Application.application), ManageUsersRoom, true) as ManageUsersRoom;
+				manageUsers.room = data.room;
+				manageUsers.title = resourceManager.getString('myResources','MYROOMS.ROOM')+ " \"" + data.roomName +"\"";
+				PopUpManager.centerPopUp(manageUsers);
+				manageUsers.addEventListener(FlexEvent.REMOVE, refresh);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Canvas width="100%" height="100%">
+	<mx:VBox id="vbox" width="100%" height="100%" >
+		<mx:HBox width="100%">
+			<mx:FormItem label="{resourceManager.getString('myResources','MYROOMS.SEARCH')}:">
+				<mx:TextInput id="searchText" enter="filter()"/>
+			</mx:FormItem>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.SEARCHBTN')}" click="filter()"/>
+			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
+			<mx:Button click="refresh()">
+				<mx:icon>@Embed(source='../../../../assets/images/refresh.png')</mx:icon>
+			</mx:Button>
+		</mx:HBox>
+
+		<mx:DataGrid id="gridUserRoom" width="100%" height="100%" dataProvider="{usersRooms}" verticalScrollPolicy="auto"
+			doubleClick="enter(gridUserRoom.selectedItem)" doubleClickEnabled="true">
+			<mx:columns>
+				<mx:DataGridColumn width="70" resizable="false" itemRenderer="es.uc3m.coldes.view.room.RoomUserAcctions"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="ownerUserName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="userName"/>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERFUNCTION')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).userfunction == Constants.OWNER_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.OWNER'):
+										(data).userfunction == Constants.MODERATOR_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR'):
+										(data).userfunction == Constants.COLABORATOR_FUNCTION ?resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR'):
+										(data).userfunction == Constants.GUEST_FUNCTION?resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST'):
+										resourceManager.getString('myResources','USERFUNCTIONNAME.DEFAULT')}" >
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:HBox width="100%" horizontalAlign="center">
+			<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
+					   icon="@Embed(source='assets/images/addroom.png')" click="doRoomRegister()"
+					   label="{resourceManager.getString('myResources','MYROOMS.CREATEROOM')}"/>							
+		</mx:HBox>
+	</mx:VBox>
+	</mx:Canvas>
+</mx:Module>
