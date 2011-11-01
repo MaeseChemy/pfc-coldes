@@ -61,7 +61,14 @@ public interface InfoUserService {
 	 * va bien false en caso contrario.
 	 */
 	public Boolean updateUser(User user, boolean passChange);
-	
+	/**
+	 * Borra un usuario.
+	 * 
+	 * @param user User a borrar.
+	 * @return Boolean que indica el resultado del borrado, true si todo
+	 * va bien false en caso contrario.
+	 */
+	public Boolean deleteUser(User user);
 	/* METODOS DE BUSQUEDA DE USUARIOS */
 	/**
 	 * Función que obtiene todos los usuarios del sistema.
@@ -78,5 +85,5 @@ public interface InfoUserService {
 	 * a la sala.
 	 */
 	public List<String> getColDesUsers(Room room);
-	
+
 }

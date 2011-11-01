@@ -19,7 +19,7 @@
 	<mx:Image buttonMode="true" source="assets/images/icos/mydata.png"
 			  toolTip="{resourceManager.getString('myResources','MYROOMS.EDITROOM')}" click="edit()" includeInLayout="{data.userfunction == Constants.OWNER_FUNCTION}"/>
 	<mx:Image buttonMode="true" source="assets/images/icos/users.png"
-			  toolTip="{resourceManager.getString('myResources','MYROOMS.USERS')}" click="manageUsersRoom()"/>
+			  toolTip="{resourceManager.getString('myResources','MYROOMS.USERSROOM')}" click="manageUsersRoom()"/>
 
 </mx:HBox>
 

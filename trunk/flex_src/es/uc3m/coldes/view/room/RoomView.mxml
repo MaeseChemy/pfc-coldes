@@ -64,7 +64,7 @@
 				manageUserFunctionPermision(userfunction);
 				(new RoomService).enterInRoom(user, room, callbackEnterInRoom);
 				(new DesignService).getRoomSaveContent(room, callbackGetContent);
-				manageRoomParticipationType(room);
+				
 			}
 			
 			public function callbackEnterInRoom(usersRoomCallBack:ArrayCollection):void{
@@ -75,6 +75,7 @@
 					roomChat.addUser(userNew as String);
 				}
 				(new RoomService).notifyUserToRoom(user, room, "enter", new Function());
+				manageRoomParticipationType(room);
 			}
 			
 			public function callbackGetContent(content:ByteArray):void{
@@ -240,10 +241,12 @@
        				
        				//Cambiamos de propietario
        				if(body.nextPencilOwner != null){
+       					roomChat.changePencilOwner(body.nextPencilOwner);
        					roomChat.log += "<font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
        					logInfoRoomEvents += "<b>" +date+" </b><font color='#3ADF00'><b>" + body.nextPencilOwner + "</b> "+resourceManager.getString('myResources','ROOMVIEW.PENCILOWNER')+"</font>\n";
        					if(user.username == body.nextPencilOwner){
        						hasPencil = true;
+       						selectPencil();
        					}
        				}
        			}
@@ -510,27 +513,29 @@
 			}
 			
 			private function doSurvey(event:Event):void{
-				var userResponses:UserResponses=PopUpManager.createPopUp(DisplayObject(Application.application), UserResponses, true) as UserResponses;
-				var listUserResp:ArrayCollection = new ArrayCollection();
-				for each(var userAux:String in usersRooms){
-					var userRes:UserResponse = new UserResponse();
-					userRes.response = Constants.UNDEFINED;
-					userRes.username = userAux;
-					listUserResp.addItem(userRes);
+				if(popUpSurvey.answer >= 0){
+					var userResponses:UserResponses=PopUpManager.createPopUp(DisplayObject(Application.application), UserResponses, true) as UserResponses;
+					var listUserResp:ArrayCollection = new ArrayCollection();
+					for each(var userAux:String in usersRooms){
+						var userRes:UserResponse = new UserResponse();
+						userRes.response = Constants.UNDEFINED;
+						userRes.username = userAux;
+						listUserResp.addItem(userRes);
+					}
+					userResponses.users = listUserResp;
+					userResponses.title = resourceManager.getString('myResources','MESSAGETITLE.SURVEYRESPONSE');
+					userResponses.room = room;
+					PopUpManager.centerPopUp(userResponses);
+	
+					var message:IMessage = new AsyncMessage();
+	       			
+	       			message.body.action = "doSurvey"
+	       			message.body.room = room;
+	       			message.body.username = user.username;
+					message.body.surveyType = popUpSurvey.answer;		
+				
+					producer.send(message);
 				}
-				userResponses.users = listUserResp;
-				userResponses.title = resourceManager.getString('myResources','MESSAGETITLE.SURVEYRESPONSE');
-				userResponses.room = room;
-				PopUpManager.centerPopUp(userResponses);
-
-				var message:IMessage = new AsyncMessage();
-       			
-       			message.body.action = "doSurvey"
-       			message.body.room = room;
-       			message.body.username = user.username;
-				message.body.surveyType = popUpSurvey.answer;		
-			
-				producer.send(message);
 			}
 			
 			

@@ -71,6 +71,19 @@ package es.uc3m.coldes.business{
 			callback(result);	
 		}
 		
+		public function deleteUser(user:User, callback:Function):void {
+			var service:RemoteObject=new RemoteObject("ColDesService");
+			service.addEventListener(FaultEvent.FAULT, error);
+			service.addEventListener(ResultEvent.RESULT, resultDeleteUser);
+			this.callback = callback;
+			service.deleteUser(user);
+		}
+		
+		private function resultDeleteUser(event:ResultEvent):void {
+			var result:Boolean = event.result as Boolean;
+			callback(result);
+		}
+		
 		public function getAllUsers(callback:Function):void{
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);

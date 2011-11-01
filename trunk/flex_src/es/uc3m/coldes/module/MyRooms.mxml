@@ -222,12 +222,15 @@
 				<mx:TextInput id="searchText" enter="filter()"/>
 			</mx:FormItem>
 			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.SEARCHBTN')}" click="filter()"/>
-			<mx:Button label="{resourceManager.getString('myResources','MYROOMS.RESTART')}" click="restart()"/>
-			<mx:Button click="refresh()">
+			<mx:Button click="refresh()" toolTip="{resourceManager.getString('myResources','MYROOMS.TOOLREFRESH')}">
 				<mx:icon>@Embed(source='../../../../assets/images/refresh.png')</mx:icon>
 			</mx:Button>
+			
 		</mx:HBox>
-
+		<mx:Button click="doRoomRegister()" label="{resourceManager.getString('myResources','MYROOMS.CREATEROOM')}"
+				styleName="HomeButtonSec" height="30">
+				<mx:icon>@Embed(source='../../../../assets/images/add_room.png')</mx:icon>
+		</mx:Button>
 		<mx:DataGrid id="gridUserRoom" width="100%" height="100%" dataProvider="{usersRooms}" verticalScrollPolicy="auto"
 			doubleClick="enter(gridUserRoom.selectedItem)" doubleClickEnabled="true">
 			<mx:columns>
@@ -252,13 +255,31 @@
 						</mx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','SEARCHROOM.PARTICIPATION')}">
+					<mx:itemRenderer>
+						<mx:Component >
+						<mx:VBox>
+	                    <mx:Script>
+	                    	<![CDATA[
+	                    		import es.uc3m.coldes.business.Constants;
+	                    	]]>
+	                    </mx:Script>
+	                    <mx:Label text="{data.room.participationType == Constants.ALL_PAINTING?
+	                    resourceManager.getString('myResources','REGISTER.ALLPAITING'):
+	                    resourceManager.getString('myResources','REGISTER.ONEPAINTING')}"/>
+						</mx:VBox>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
 			</mx:columns>
 		</mx:DataGrid>
+		<!--
 		<mx:HBox width="100%" horizontalAlign="center">
 			<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
 					   icon="@Embed(source='assets/images/addroom.png')" click="doRoomRegister()"
 					   label="{resourceManager.getString('myResources','MYROOMS.CREATEROOM')}"/>							
 		</mx:HBox>
+		-->
 	</mx:VBox>
 	</mx:Canvas>
 </mx:Module>

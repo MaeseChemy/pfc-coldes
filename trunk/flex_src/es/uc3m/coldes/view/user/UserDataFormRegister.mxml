@@ -44,7 +44,7 @@
 				newUser.email = emailField.text;
 				newUser.username = usernameField.text;
 				newUser.password = passwordField.text;
-				newUser.active = false;
+				newUser.active = true;
 				newUser.admin = false;
 				newUser.designer = true;
 				return newUser;
@@ -54,25 +54,25 @@
 	
 	<!-- Form Registro -->
 	<mx:Form id="registerForm" defaultButton="{buttonRegister}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}*">
 			<mx:TextInput id="nameField"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.SURNAME1')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.SURNAME1')}*">
 			<mx:TextInput id="surname1Field"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.SURNAME2')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.SURNAME2')}*">
 			<mx:TextInput id="surname2Field"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.EMAIL')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.EMAIL')}*">
 			<mx:TextInput id="emailField"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.USERNAME')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.USERNAME')}*">
 			<mx:TextInput id="usernameField"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PASSWORD')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PASSWORD')}*">
 			<mx:TextInput id="passwordField" displayAsPassword="true" change="verifyValidators()"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PASSWORDCONFIRM')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PASSWORDCONFIRM')}*">
 			<mx:TextInput id="repasswordField" displayAsPassword="true" change="verifyValidators()"/>
 		</mx:FormItem>
 		<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.entities.Room;
+			import es.uc3m.coldes.business.Constants;
+			
+			public function addRoom():void {
+				parentDocument.addRoom(data as Room);
+			}
+
+			public function addEnterRoom():void {
+				parentDocument.addEnterRoom(data as Room);
+			}		
+
+		]]>
+	</mx:Script>
+
+	<mx:Image buttonMode="true" source="assets/images/icos/addroom.png"
+			  toolTip="{resourceManager.getString('myResources','SEARCHROOM.TOOLTIPADD')}" click="addRoom()"/>
+	<mx:Image buttonMode="true" source="assets/images/icos/addentryroom.png"
+			  toolTip="{resourceManager.getString('myResources','SEARCHROOM.TOOLTIPADDENTRY')}" click="addEnterRoom()"/>
+</mx:HBox>
+
