@@ -279,11 +279,13 @@ public class UserDAO extends BBDD{
 
 		List<String> usersResult = new ArrayList<String>();
 		String sqlSelectUsuario = "select username "
-			+ "from user where active=1 and username not in (select username from roomuser where id_room=?)";
+			+ "from user where active=1 and username not in (select username from roomuser where id_room=?)" +
+					" and username not in (select username from roomuserinvitation where id_room=?)";
 		try {
 			conn = getConnection();	
 			PreparedStatement st = conn.prepareStatement(sqlSelectUsuario);
 			st.setInt(1, room.getId());
+			st.setInt(2, room.getId());
 			
 			// Ejecutamos las query
 			ResultSet results = st.executeQuery();
@@ -317,7 +319,7 @@ public class UserDAO extends BBDD{
 	public boolean updateUser(User user, boolean passChange) {
 		boolean update = false;
 
-		logger.info("[UserDAO-addUser]: Updating user [" + user.getUsername() + "]...");
+		logger.info("[UserDAO-updateUser]: Updating user [" + user.getUsername() + "]...");
 		
 		String sqlUpdateUsuario = "update user set name=?, surname1=?, surname2=?, email=?, password=?, admin=?, designer=?, active=? "
 			+ "where username=?";
@@ -350,25 +352,63 @@ public class UserDAO extends BBDD{
 			}
 			
 		} catch (SQLException e) {
-			logger.error("[UserDAO-addUser]: Error in SQL sentence: " + e.getLocalizedMessage());
+			logger.error("[UserDAO-updateUser]: Error in SQL sentence: " + e.getLocalizedMessage());
 		} catch (NoSuchAlgorithmException e) {
-			logger.error("[UserDAO-addUser]: Error generating password hash: " + e.getLocalizedMessage());
+			logger.error("[UserDAO-updateUser]: Error generating password hash: " + e.getLocalizedMessage());
 		} catch (Exception e) {
-			logger.error("[UserDAO-addUser]: Error" + e.getLocalizedMessage());
+			logger.error("[UserDAO-updateUser]: Error" + e.getLocalizedMessage());
 		} finally {
 			if (conn != null) {
 				try {
-					logger.info("[UserDAO-addUser]: Closing DB connection...");
+					logger.info("[UserDAO-updateUser]: Closing DB connection...");
 					conn.close();
 				} catch (SQLException e) {
-					logger.error("[UserDAO-addUser]: Error closing DB connection: " + e.getLocalizedMessage());
+					logger.error("[UserDAO-updateUser]: Error closing DB connection: " + e.getLocalizedMessage());
 				}
 			}
 		}
 
 		return update;
 	}
+	
+	public boolean deleteUser(User user) {
+		boolean delete = false;
 
+		logger.info("[UserDAO-deleteUser]: Deleting user [" + user.getUsername() + "]...");
+		
+		String sqlDeleteUsuario = "delete from user where username=?";
+		
+		try {
+			
+			conn = getConnection();
+			PreparedStatement st = conn.prepareStatement(sqlDeleteUsuario);
+			st.setString(1, user.getUsername());
+			
+			int result = st.executeUpdate();
+
+			if(result == 1){
+				delete = true;
+			}
+			
+		} catch (SQLException e) {
+			logger.error("[UserDAO-deleteUser]: Error in SQL sentence: " + e.getLocalizedMessage());
+		} catch (Exception e) {
+			logger.error("[UserDAO-deleteUser]: Error" + e.getLocalizedMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					logger.info("[UserDAO-deleteUser]: Closing DB connection...");
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("[UserDAO-deleteUser]: Error closing DB connection: " + e.getLocalizedMessage());
+				}
+			}
+		}
+
+		return delete;
+	}
+	
+	
 	/**************************/
 	/**   SESSION FUNCTIONS  **/
 	/**************************/
@@ -553,5 +593,6 @@ public class UserDAO extends BBDD{
 
 		}
 	}
+	
 
 }

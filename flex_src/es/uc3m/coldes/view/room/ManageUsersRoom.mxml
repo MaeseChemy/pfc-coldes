@@ -78,6 +78,7 @@
 				}else{
 					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.SENDINVITATION'),
 					       resourceManager.getString('myResources','MESSAGE.SENDINVITATION'));
+					refresh();
 				}
 			}
 			

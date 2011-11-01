@@ -45,9 +45,12 @@
 	<mx:VBox width="100%">
 		<mx:HBox horizontalAlign="center" paddingTop="10" paddingRight="10" paddingBottom="10" 
 			width="100%" horizontalGap="10" >
-			<mx:Button id="btnInviteGuest" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST')}" click="invitationAsGuest()"/>
-			<mx:Button id="btnInviteColaborator" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR')}" click="invitationAsColaborator()"/>
-			<mx:Button id="btnInviteModerator" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR')}" click="invitationAsModerator()"/>
+			<mx:Button id="btnInviteGuest" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.GUEST')}" click="invitationAsGuest()"
+				toolTip="{resourceManager.getString('myResources','INVITATIONTOOLTIP.GUEST')}"/>
+			<mx:Button id="btnInviteColaborator" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.COLABORATOR')}" click="invitationAsColaborator()"
+				toolTip="{resourceManager.getString('myResources','INVITATIONTOOLTIP.COLABORATOR')}"/>
+			<mx:Button id="btnInviteModerator" label="{resourceManager.getString('myResources','USERFUNCTIONNAME.MODERATOR')}" click="invitationAsModerator()"
+				toolTip="{resourceManager.getString('myResources','INVITATIONTOOLTIP.MODERATOR')}"/>
 		</mx:HBox>
 		<mx:HBox horizontalAlign="center" paddingTop="10" paddingRight="10" paddingBottom="10" 
 			width="100%" horizontalGap="10" >

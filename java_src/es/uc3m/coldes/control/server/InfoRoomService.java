@@ -104,7 +104,7 @@ public interface InfoRoomService {
 	 * 
 	 * @return Lista que contiene las salas publicas de ColDes.
 	 */
-	public List<Room> getColDesPublicRooms();
+	public List<Room> getColDesPublicRooms(User user);
 	/**
 	 * Obtiene las distintas relaciones que tiene una sala con los usuarios del sistema.
 	 * 

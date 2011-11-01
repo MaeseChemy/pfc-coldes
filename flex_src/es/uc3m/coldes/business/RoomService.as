@@ -113,12 +113,12 @@ package es.uc3m.coldes.business
 			callback(colDesRooms);	
 		}
 		
-		public function getColDesPublicRooms(callback:Function):void {
+		public function getColDesPublicRooms(user:User, callback:Function):void {
 			var service:RemoteObject=new RemoteObject("ColDesService");
 			service.addEventListener(FaultEvent.FAULT, error);
 			service.addEventListener(ResultEvent.RESULT, resultGetColDesPublicRooms);
 			this.callback = callback;
-			service.getColDesPublicRooms();
+			service.getColDesPublicRooms(user);
 		}
 		
 		private function resultGetColDesPublicRooms(event:ResultEvent):void {

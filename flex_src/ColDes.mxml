@@ -134,6 +134,11 @@
 				(new RoomService()).getAllUserRoomInvitation(userLoged.username, calbackGetInvitations);
 			}
 			
+			private function cleanForm():void {
+				txtUser.text="";
+				txtPassword.text="";
+			}
+			
 			private function calbackGetInvitations(invitations:ArrayCollection):void{
 				userInvitationMessage = invitations;
 				userMessages = userInvitationMessage.length;
@@ -336,9 +341,10 @@
 			<mx:HBox horizontalAlign="right" width="100%" paddingRight="5" paddingTop="5">
 				<lang:LangConfig id="btnsLangConfigLogin" />
 			</mx:HBox>
+			
 			<mx:Canvas horizontalCenter="0" verticalCenter="0">
 				<mx:Image source="@Embed('/assets/images/fondologin.png')" horizontalCenter="0"/>
-				<mx:Form id="loginForm" defaultButton="{btnAccess}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
+				<mx:Form id="loginForm" defaultButton="{btnAccess}" horizontalCenter="0" verticalCenter="28" paddingTop="10">
 					<mx:FormItem label="{resourceManager.getString('myResources','LOGIN.USERNAME')}:" width="100%" labelStyleName="LabelLoginFormItem">
 						<mx:TextInput id="txtUser"/>
 					</mx:FormItem>
@@ -346,10 +352,15 @@
 						<mx:TextInput id="txtPassword" displayAsPassword="true"/>
 					</mx:FormItem>
 					<mx:HBox horizontalAlign="center" width="100%" paddingTop="10">
-						<mx:Button id="btnRegister" label="{resourceManager.getString('myResources','LOGIN.REGISTER')}" click="doRegister()" width="80" height="30"/>
 						<mx:Button id="btnAccess" label="{resourceManager.getString('myResources','LOGIN.ACCESS')}" click="doLogin()" width="80" height="30"/>
+						<mx:Button id="btnCancel" label="{resourceManager.getString('myResources','LOGIN.CANCEL')}" click="cleanForm()" width="80" height="30"/>
 					</mx:HBox>
 				</mx:Form>
+				<mx:HBox horizontalAlign="right" width="223" paddingRight="5" paddingTop="5" x="184" y="242">
+					<mx:Button id="btnRegister" click="doRegister()" toolTip="{resourceManager.getString('myResources','LOGIN.REGISTER')}">
+						<mx:icon>@Embed(source='assets/images/user_add.png')</mx:icon>
+					</mx:Button>
+				</mx:HBox>
 			</mx:Canvas>
 		</mx:Canvas>
 		 
@@ -385,7 +396,7 @@
 						<mx:Grid paddingTop="120" paddingBottom="20" horizontalGap="100" verticalGap="30" id="menu">
 							<mx:GridRow width="100%">
 								<mx:GridItem width="100%" horizontalAlign="center">
-									<mx:Button label="{resourceManager.getString('myResources','MAINWINDOW.USERS')}"
+									<mx:Button label="{resourceManager.getString('myResources','MAINWINDOW.USER')}"
 											   styleName="HomeButton" id="users" click="openSubmenu(event)"
 											   icon="@Embed(source='assets/images/user.png')"
 											   width="300" height="100"/>
@@ -416,6 +427,9 @@
 								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
 										   icon="@Embed(source='assets/images/mydata.png')" click="showPersonalData()"
 										   label="{resourceManager.getString('myResources','MAINWINDOW.MYDATA')}"/>
+								<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
+										   icon="@Embed(source='assets/images/mydesigns.png')" click="loadModule('MyDesigns')"
+										   label="{resourceManager.getString('myResources','MAINWINDOW.MYDESIGNS')}"/>
 							</mx:HBox>
 							
 							<mx:HBox width="100%" horizontalGap="20" horizontalAlign="center">

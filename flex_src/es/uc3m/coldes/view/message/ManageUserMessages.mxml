@@ -2,7 +2,7 @@
 <ResizableWindow xmlns="es.uc3m.coldes.utils.ui.resize.*" 
 	close="close()"
 	xmlns:mx="http://www.adobe.com/2006/mxml" resizable="false" movable="false" showCloseButton="true" xmlns:validator="es.uc3m.coldes.utils.validator.*" 
-	height="200" horizontalAlign="center" verticalAlign="middle">
+	horizontalAlign="center" verticalAlign="middle">
 	<mx:Script>
 		<![CDATA[
 			import es.uc3m.coldes.entities.UserRoom;
@@ -52,14 +52,23 @@
 			
 			private function calbackUpdateMessage(result:Number):void{
 				if(result >= 0){
-					(new RoomService()).getAllUserRoomInvitation(parentApplication.userLoged.username, calbackGetInvitations);
+					(new RoomService()).getAllUserRoomInvitation(parentApplication.userLoged.username, calbackGetInvitationsClose);
 				}
 			}
+			
 			private function calbackGetInvitations(invitations:ArrayCollection):void{
 				parentApplication.userInvitationMessage = invitations;
 				parentApplication.userMessages = parentApplication.userInvitationMessage.length;
 				messages = parentApplication.userInvitationMessage;
 				messages.refresh();
+			}
+			
+			private function calbackGetInvitationsClose(invitations:ArrayCollection):void{
+				parentApplication.userInvitationMessage = invitations;
+				parentApplication.userMessages = parentApplication.userInvitationMessage.length;
+				messages = parentApplication.userInvitationMessage;
+				messages.refresh();
+				close();
 			}
 		]]>
 	</mx:Script>
@@ -67,7 +76,7 @@
 	<mx:Canvas width="100%" height="100%">
 	<mx:VBox id="vbox" width="100%" height="100%" >
 
-		<mx:DataGrid id="gridUserMessages" width="460" height="100%" dataProvider="{messages}" verticalScrollPolicy="auto"
+		<mx:DataGrid id="gridUserMessages" width="460" height="200" dataProvider="{messages}" verticalScrollPolicy="auto"
 			wordWrap="true" variableRowHeight="true">
 			<mx:columns>
 				<mx:DataGridColumn width="60" resizable="false">
@@ -100,5 +109,8 @@
 		</mx:DataGrid>
 	</mx:VBox>
 	</mx:Canvas>
-		
+	<mx:VBox width="100%" horizontalAlign="left" visible="{gridUserMessages.selectedItem != null}" includeInLayout="{gridUserMessages.selectedItem != null}">
+		<mx:Label text="{resourceManager.getString('myResources','MESSAGESMANAGEMENT.DETAILS')}" fontStyle="italic" textDecoration="underline"/>
+		<mx:TextArea width="100%" height="100" id="roomDescription" text="{gridUserMessages.selectedItem!=null?gridUserMessages.selectedItem.room.description:''}"/>
+	</mx:VBox>
 </ResizableWindow>

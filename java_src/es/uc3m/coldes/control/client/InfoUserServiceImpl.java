@@ -92,6 +92,17 @@ public class InfoUserServiceImpl implements InfoUserService{
 		boolean updateResult = this.userDAO.updateUser(user, passChange);
 		return updateResult;
 	}
+	/**
+	 * Borra un usuario.
+	 * 
+	 * @param user User a borrar.
+	 * @return Boolean que indica el resultado del borrado, true si todo
+	 * va bien false en caso contrario.
+	 */
+	public Boolean deleteUser(User user) {
+		boolean deleteResult = this.userDAO.deleteUser(user);
+		return deleteResult;
+	}
 	
 	/* METODOS DE BUSQUEDA DE USUARIOS */
 	/**

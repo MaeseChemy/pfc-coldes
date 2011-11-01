@@ -433,15 +433,16 @@ public class RoomDAO extends BBDD{
 	 * 
 	 * @return Lista de salas del sistema que son publicas.
 	 */
-	public List<Room> getColDesPublicRooms() {
+	public List<Room> getColDesPublicRooms(User user) {
 		List<Room> results = new ArrayList<Room>();
 		logger.info("[RoomDAO-getColDesPublicRooms]: Searching rooms of ColDes...");
 		String sqlSelectUserSala = "select id, roomname, roomdescription, owner, private, participationtype, status, creationDate, modificationDate " +
-		"from room where private=0";
+		"from room where private=0 and id not in (select id_room from roomuser where username=?)";
 		try {
 			conn = getConnection();
-
+			
 			PreparedStatement stUserSala = conn.prepareStatement(sqlSelectUserSala);
+			stUserSala.setString(1, user.getUsername());
 			// Ejecutamos las query
 			ResultSet resultados = stUserSala.executeQuery();
 			while (resultados != null && resultados.next()) {

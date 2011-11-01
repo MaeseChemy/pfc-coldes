@@ -24,10 +24,10 @@
 			  toolTip="{resourceManager.getString('myResources','MYROOMS.EDITROOM')}" click="edit()" 
 			  includeInLayout="{data.userfunction == Constants.OWNER_FUNCTION}" visible="{data.userfunction == Constants.OWNER_FUNCTION}"/>
 	<mx:Image buttonMode="true" source="assets/images/icos/users.png"
-			  toolTip="{resourceManager.getString('myResources','MYROOMS.USERS')}" click="manageUsersRoom()" 
+			  toolTip="{resourceManager.getString('myResources','MYROOMS.USERSROOM')}" click="manageUsersRoom()" 
 			  includeInLayout="{data.userfunction == Constants.OWNER_FUNCTION || data.userfunction == Constants.MODERATOR_FUNCTION}"
 			  visible="{data.userfunction == Constants.OWNER_FUNCTION || data.userfunction == Constants.MODERATOR_FUNCTION}"/>
-	<mx:Image buttonMode="true" source="assets/images/icos/btnlogout.png"
+	<mx:Image buttonMode="true" source="assets/images/icos/broken_link.png"
 			  toolTip="{resourceManager.getString('myResources','MYROOMS.REMOVE')}" click="checkDelete()"/>
 </mx:HBox>
 

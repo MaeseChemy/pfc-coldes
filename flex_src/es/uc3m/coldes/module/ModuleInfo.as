@@ -12,14 +12,14 @@ package es.uc3m.coldes.module
 			switch(moduleName){
 				case 'UserManagement': 
 					if(lang == "es_ES"){
-						result = "Gestión de usuarios";
+						result = "Administrar usuarios";
 					}else{
 						result = "User Management"
 					}
 					break;
 				case 'RoomManagement': 
 					if(lang == "es_ES"){
-						result = "Gestión de salas";
+						result = "Administrar salas";
 					}else{
 						result = "Room Management"
 					}
@@ -38,6 +38,13 @@ package es.uc3m.coldes.module
 						result = "Search Rooms"
 					}
 					break;
+				case 'MyDesigns':
+					if(lang == "es_ES"){
+						result = "Mi Diseños";
+					}else{
+						result = "My Designs"
+					}
+					break;
 			}
 			return result;
 		}
@@ -51,6 +58,8 @@ package es.uc3m.coldes.module
 		public static const myRooms:Class;
 		[Embed('/assets/images/icos/searchrooms.png')]
 		public static const searchRooms:Class;
+		[Embed('/assets/images/icos/mydesigns.png')]
+		public static const myDesigns:Class;
 		
 		public static function getModuleIcon(moduleName:String):Class {
 			var result:Class;
@@ -59,6 +68,7 @@ package es.uc3m.coldes.module
 				case 'RoomManagement': result = roomconfig;break;
 				case 'MyRooms': result = myRooms;break;
 				case 'SearchRooms': result = searchRooms;break;
+				case 'MyDesigns': result = myDesigns;break;
 				
 			}
 			return result;

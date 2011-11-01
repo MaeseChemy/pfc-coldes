@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import es.uc3m.coldes.entities.User;
+			import es.uc3m.coldes.business.Constants;
+			
+			public function edit():void {
+				parentDocument.edit(data as User);
+			}
+			
+			public function deleteUser():void{
+				parentDocument.deleteUser(data as User);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Image buttonMode="true" source="assets/images/icos/user_remove.png" includeInLayout="{!data.admin}" visible="{!data.admin}"
+			  toolTip="{resourceManager.getString('myResources','USERMANAGEMENT.TOOLDELUSER')}" click="deleteUser()"/>
+	<mx:Image buttonMode="true" source="assets/images/icos/mydata.png"
+			  toolTip="{resourceManager.getString('myResources','USERMANAGEMENT.TOOLDATA')}" click="edit()"/>
+</mx:HBox>
+

@@ -4,6 +4,9 @@
 		   creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import es.uc3m.coldes.utils.popup.ConditionalPopUp;
+			import es.uc3m.coldes.view.user.UserDataFormRegister;
 			import es.uc3m.coldes.business.Constants;
 			import es.uc3m.coldes.utils.popup.UtilPopUp;
 			import mx.managers.PopUpManager;
@@ -51,7 +54,7 @@
 				searchText.text="";
 			}
 			
-			private function edit(user:User):void{
+			public function edit(user:User):void{
 				var userUpd:UserDataFormUpdate = new UserDataFormUpdate();
 			
 				PopUpManager.addPopUp(userUpd, this, true);
@@ -80,6 +83,61 @@
 				new UserService().getAllUsers(callbackUsers);
 				searchText.text = "";
 			}
+			
+			/*************************************/
+			/**       REGISTER FUNCTIONS        **/
+			/*************************************/
+			private function doRegister():void {
+				var userReg:UserDataFormRegister = new UserDataFormRegister();
+				
+				PopUpManager.addPopUp(userReg, this, true);
+				PopUpManager.centerPopUp(userReg);
+				userReg.callBackFunction = submitUserRegister;
+			}
+			
+			public function submitUserRegister(user:User):void{
+				(new UserService()).addUser(user, userRegisterCallback);
+			}
+			
+			private function userRegisterCallback(newUser:String):void{
+				if(newUser == ""){
+					//User exist
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.REGISTER'),
+										       resourceManager.getString('myResources','ERROR.REGISTER'));
+				}else if (newUser == null){
+					//Internal error
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.SERVER'),
+										       resourceManager.getString('myResources','ERROR.SERVER'));
+				}else{
+					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','MESSAGETITLE.REGISTER'),
+										       resourceManager.getString('myResources','MESSAGE.REGISTER'));
+					refresh();
+				}
+			}
+			
+			
+			private var popUpSalirConditional:ConditionalPopUp;
+			private var userRemove:User;
+			public function deleteUser(user:User):void {
+				popUpSalirConditional = UtilPopUp.showConditionalPopUP(resourceManager.getString('myResources','MESSAGETITLE.REMOVEUSER'),
+				resourceManager.getString('myResources','MESSAGE.REMOVEUSER'));
+				userRemove = user;
+				popUpSalirConditional.addEventListener(FlexEvent.REMOVE, doDeleteUser);
+			}
+			
+			private function doDeleteUser(event:Event):void{
+				if(popUpSalirConditional.answer){
+					(new UserService()).deleteUser(userRemove,doDeleteUserCallback);
+				}else{
+					userRemove = null;
+				}
+			}
+
+			private function doDeleteUserCallback(result:Boolean):void {
+				refresh();
+			}
+			
+			
 		]]>
 	</mx:Script>
 	<mx:Canvas width="100%" height="100%">
@@ -89,27 +147,22 @@
 				<mx:TextInput id="searchText" enter="filter()"/>
 			</mx:FormItem>
 			<mx:Button label="{resourceManager.getString('myResources','USERMANAGEMENT.SEARCHBTN')}" click="filter()"/>
-			<mx:Button label="{resourceManager.getString('myResources','USERMANAGEMENT.RESTART')}" click="restart()"/>
-			<mx:Button click="refresh()">
+			<mx:Button click="refresh()" toolTip="{resourceManager.getString('myResources','USERMANAGEMENT.TOOLREFRESH')}">
 				<mx:icon>@Embed(source='../../../../assets/images/refresh.png')</mx:icon>
 			</mx:Button>
 		</mx:HBox>
-
-		<mx:DataGrid id="gridUserMan" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto"
-			doubleClick="edit(gridUserMan.selectedItem as User)" doubleClickEnabled="true">
+		<mx:Button click="doRegister()" label="{resourceManager.getString('myResources','USERMANAGEMENT.TOOLADDUSER')}"
+				styleName="HomeButtonSec" height="30">
+			<mx:icon>@Embed(source='../../../../assets/images/user_add.png')</mx:icon>
+		</mx:Button>
+		<mx:DataGrid id="gridUserMan" width="100%" height="100%" dataProvider="{users}" verticalScrollPolicy="auto" selectable="false">
 			<mx:columns>
-				<!--
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.USER')}" dataField="username"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.NAME')}" dataField="name"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME1')}" dataField="surname1"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.SURNAME2')}" dataField="surname2"/>
-				-->
+				<mx:DataGridColumn width="70" resizable="false" itemRenderer="es.uc3m.coldes.view.user.UserManagementAcctions"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','USERMANAGEMENT.USER')}">
 					<mx:itemRenderer>
 						<mx:Component >
 							<mx:Text text="{(data).username}" 
-									color="{(data).active == Constants.DEACTIVE?0xff0000:0x008000}"
-									fontSize="15" fontWeight="bold">
+									color="{(data).active == Constants.DEACTIVE?0xff0000:0x008000}">
 								<mx:Script>
 									<![CDATA[
 										import es.uc3m.coldes.business.Constants;

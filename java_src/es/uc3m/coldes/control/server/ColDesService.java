@@ -177,6 +177,20 @@ public class ColDesService implements Serializable{
 	}
 	
 	/**
+	 * Borra un usuario mediante el Service de usuarios.
+	 * 
+	 * @param user User a borrar.
+	 * @return Boolean que indica el resultado del borrado, true si todo
+	 * va bien false en caso contrario.
+	 * 
+	 * @throws SessionTimeoutException
+	 */
+	public Boolean deleteUser(User user) throws SessionTimeoutException{
+		checkIsLogIn();
+		return this.userService.deleteUser(user);
+	}
+	
+	/**
 	 * Función que obtiene todos los usuarios del sistema mediante el Service
 	 * de usuarios.
 	 * 
@@ -281,9 +295,9 @@ public class ColDesService implements Serializable{
 	 * @return Lista que contiene las salas publicas de ColDes.
 	 * @throws SessionTimeoutException
 	 */
-	public List<Room> getColDesPublicRooms() throws SessionTimeoutException{
+	public List<Room> getColDesPublicRooms(User user) throws SessionTimeoutException{
 		checkIsLogIn();
-		return this.roomService.getColDesPublicRooms();
+		return this.roomService.getColDesPublicRooms(user);
 	}
 	
 	/**

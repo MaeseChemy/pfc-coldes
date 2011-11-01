@@ -177,8 +177,8 @@ public class InfoRoomServiceImpl implements InfoRoomService {
 	 * 
 	 * @return Lista que contiene las salas publicas de ColDes.
 	 */
-	public List<Room> getColDesPublicRooms() {
-		List<Room> resultRooms = this.roomDAO.getColDesPublicRooms();
+	public List<Room> getColDesPublicRooms(User user) {
+		List<Room> resultRooms = this.roomDAO.getColDesPublicRooms(user);
 		return resultRooms;
 	}
 	/**

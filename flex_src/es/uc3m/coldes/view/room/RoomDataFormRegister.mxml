@@ -69,7 +69,7 @@
 	
 	<!-- Form Registro -->
 	<mx:Form id="registerForm" defaultButton="{buttonRegister}" horizontalCenter="0" verticalCenter="16" paddingTop="10">
-		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}">
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.NAME')}*">
 			<mx:TextInput id="nameField"/>
 		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PRIVATE')}">
