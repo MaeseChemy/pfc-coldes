@@ -552,49 +552,105 @@
 	<mx:HBox width="100%" height="100%" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5" backgroundColor="#00CFE8" backgroundAlpha="0.9">
 		<mx:VBox height="100%">
 			<chat:ChatForm id="roomChat" />
-			
-			<mx:ApplicationControlBar id="paintingButtons" width="100%" enabled="{hasPencil}" paddingBottom="0" paddingTop="0">
-				<mx:VBox width="100%" height="100%">
-					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
-						<mx:Button width="30" height="30" id="btnSquare" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SQUARE')}" click="selectSquare()" top="10">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-rectangle.png')</mx:icon>
-						</mx:Button>
-						<mx:Button width="30" height="30" id="btnCircle" toolTip="{resourceManager.getString('myResources','ROOMVIEW.CIRCLE')}" click="selectCircle()" top="10">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-ellipse.png')</mx:icon>
-						</mx:Button>
-						<mx:Button width="30" height="30" id="btnRect" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STRAIGHT')}" click="selectRect()" top="10">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-path.png')</mx:icon>
-						</mx:Button>
-						<mx:Button width="30" height="30" id="btnPencil" toolTip="{resourceManager.getString('myResources','ROOMVIEW.FREEHAND')}" click="selectPencil()" top="10">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/draw-freehand.png')</mx:icon>
-						</mx:Button>
-					</mx:HBox>
-					<mx:HBox width="100%" horizontalAlign="center">
-						<mx:HRule width="99%"/>
-					</mx:HBox>
-					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="0" paddingBottom="0">
-						<mx:ColorPicker id="pickerLine" change="modifyLineColor()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.COLOR')}"/>
-						<mx:HSlider width="90" id="lineBulk" minimum="1" maximum="50" change="modifyBulk()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.BULK')}"/>
-						<mx:ColorPicker id="pickerFill" change="modifyFillColor()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.FILLCOLOR')}"/>
-						<mx:CheckBox id="fillAv" click="modifyFillAv()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.ACTFILL')}"/>
-					</mx:HBox>
-					<mx:HBox width="100%" horizontalAlign="center">
-						<mx:HRule width="99%"/>
-					</mx:HBox>
-					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="0" paddingBottom="5">
-						<mx:Button id="btnClean" width="35" height="35" click="cleanCanvas()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.CLEAN')}">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/edit-clear.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="btnLoad" width="35" height="35" click="uploadFile()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.UPLOADFROMPC')}">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/document-open.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="btnLoadFromDB" width="35" height="35" click="uploadFromDB()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.UPLOADFROMDB')}">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/loadbd.png')</mx:icon>
-						</mx:Button>
-					</mx:HBox>
-				</mx:VBox>
-			</mx:ApplicationControlBar>
-			
+			<mx:HBox width="100%">
+				<mx:ApplicationControlBar id="paintingButtons" width="100%" enabled="{hasPencil}" paddingBottom="0" paddingTop="0" height="130">
+					<mx:VBox width="100%" height="100%">
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+							<mx:Button width="30" height="30" id="btnSquare" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SQUARE')}" click="selectSquare()" top="10">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/draw-rectangle.png')</mx:icon>
+							</mx:Button>
+							<mx:Button width="30" height="30" id="btnCircle" toolTip="{resourceManager.getString('myResources','ROOMVIEW.CIRCLE')}" click="selectCircle()" top="10">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/draw-ellipse.png')</mx:icon>
+							</mx:Button>
+							<mx:Button width="30" height="30" id="btnRect" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STRAIGHT')}" click="selectRect()" top="10">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/draw-path.png')</mx:icon>
+							</mx:Button>
+							<mx:Button width="30" height="30" id="btnPencil" toolTip="{resourceManager.getString('myResources','ROOMVIEW.FREEHAND')}" click="selectPencil()" top="10">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/draw-freehand.png')</mx:icon>
+							</mx:Button>
+						</mx:HBox>
+						<mx:HBox width="100%" horizontalAlign="center">
+							<mx:HRule width="99%"/>
+						</mx:HBox>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="0" paddingBottom="0">
+							<mx:ColorPicker id="pickerLine" change="modifyLineColor()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.COLOR')}"/>
+							<mx:HSlider width="90" id="lineBulk" minimum="1" maximum="50" change="modifyBulk()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.BULK')}"/>
+							<mx:ColorPicker id="pickerFill" change="modifyFillColor()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.FILLCOLOR')}"/>
+							<mx:CheckBox id="fillAv" click="modifyFillAv()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.ACTFILL')}"/>
+						</mx:HBox>
+						<mx:HBox width="100%" horizontalAlign="center">
+							<mx:HRule width="99%"/>
+						</mx:HBox>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="0" paddingBottom="5">
+							<mx:Button id="btnClean" width="35" height="35" click="cleanCanvas()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.CLEAN')}">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/edit-clear.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="btnLoad" width="35" height="35" click="uploadFile()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.UPLOADFROMPC')}">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/document-open.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="btnLoadFromDB" width="35" height="35" click="uploadFromDB()" toolTip="{resourceManager.getString('myResources','ROOMVIEW.UPLOADFROMDB')}">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/loadbd.png')</mx:icon>
+							</mx:Button>
+						</mx:HBox>
+					</mx:VBox>
+				</mx:ApplicationControlBar>
+				<mx:ApplicationControlBar id="paintingPencilOptions" height="130" paddingBottom="0" paddingTop="0">
+					<mx:VBox height="100%" verticalAlign="middle" verticalGap="0" horizontalAlign="center">
+						<mx:VBox horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5" verticalGap="10">
+							<mx:Button id="requestPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REQUESTPENCIL')}"
+								enabled="{!hasPencil}" click="doRequestPencil()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/pencilrequest.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="leftPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.LEFTPENCIL')}"
+								enabled="{hasPencil}" click="doLeftPencil()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/pencilremove.png')</mx:icon>
+							</mx:Button>
+						</mx:VBox>
+					</mx:VBox>	
+				</mx:ApplicationControlBar>
+			</mx:HBox>
+			<mx:HBox width="100%">
+				<mx:ApplicationControlBar id="paintingSaveOptions" width="100%" paddingBottom="0" paddingTop="0">
+					<mx:VBox width="100%" height="100%">
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+							<mx:Button id="btnSave" click="saveToPc()"  width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVETOPC')}">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/savepc.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="btnSaveToDB" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVETODB')}"
+								click="saveToUserDB()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/savebd.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="stopSyncronize" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STOPSYNCRONIZE')}"
+								click="disconect()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/pause.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="startSyncronize" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STARTSYNCRONIZE')}" 
+								includeInLayout="false" visible="false"
+								click="conect()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/play.png')</mx:icon>
+							</mx:Button>
+						</mx:HBox>
+					</mx:VBox>	
+				</mx:ApplicationControlBar>
+				<mx:ApplicationControlBar id="paintingAdministrationTools" width="100%" paddingBottom="0" paddingTop="0">
+					<mx:VBox width="100%" height="100%">
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
+							<mx:Button id="saveDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVECANVASTOROOM')}"
+								click="saveToCanvasDB()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/savetoroom.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="removeDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REMOVECANVASFROMROOM')}"
+								click="removeFromCanvasDB()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/removefromroom.png')</mx:icon>
+							</mx:Button>
+							<mx:Button id="askButton" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.ASK')}"
+								click="launchSurvey()">
+								<mx:icon>@Embed(source='../../../../../assets/canvas/ask.png')</mx:icon>
+							</mx:Button>
+						</mx:HBox>
+					</mx:VBox>	
+				</mx:ApplicationControlBar>
+			</mx:HBox>
 			<mx:ApplicationControlBar id="paintingActionsOptions" width="100%" paddingBottom="0" paddingTop="0">
 				<mx:VBox width="100%" height="100%">
 					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="0">
@@ -612,64 +668,6 @@
 						<mx:HSlider width="76" id="playSpeed" minimum="0.1" maximum="5" snapInterval="0.1" change="modifyPlaySpeed()"/>
 					</mx:HBox>
 				</mx:VBox>
-			</mx:ApplicationControlBar>
-			
-			<mx:ApplicationControlBar id="paintingSaveOptions" width="100%" paddingBottom="0" paddingTop="0">
-				<mx:VBox width="100%" height="100%">
-					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
-						<mx:Button id="btnSave" click="saveToPc()"  width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVETOPC')}">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/savepc.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="btnSaveToDB" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVETODB')}"
-							click="saveToUserDB()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/savebd.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="stopSyncronize" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STOPSYNCRONIZE')}"
-							click="disconect()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/pause.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="startSyncronize" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.STARTSYNCRONIZE')}" 
-							includeInLayout="false" visible="false"
-							click="conect()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/play.png')</mx:icon>
-						</mx:Button>
-					</mx:HBox>
-				</mx:VBox>	
-			
-			</mx:ApplicationControlBar>
-			
-			<mx:ApplicationControlBar id="paintingPencilOptions" width="100%" paddingBottom="0" paddingTop="0">
-				<mx:VBox width="100%" height="100%">
-					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
-						<mx:Button id="requestPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REQUESTPENCIL')}"
-							enabled="{!hasPencil}" click="doRequestPencil()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/pencilrequest.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="leftPencil" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.LEFTPENCIL')}"
-							enabled="{hasPencil}" click="doLeftPencil()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/pencilremove.png')</mx:icon>
-						</mx:Button>
-					</mx:HBox>
-				</mx:VBox>	
-			</mx:ApplicationControlBar>
-			
-			<mx:ApplicationControlBar id="paintingAdministrationTools" width="100%" paddingBottom="0" paddingTop="0">
-				<mx:VBox width="100%" height="100%">
-					<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle" paddingTop="5" paddingBottom="5">
-						<mx:Button id="saveDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.SAVECANVASTOROOM')}"
-							click="saveToCanvasDB()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/savetoroom.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="removeDesignCanvas" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.REMOVECANVASFROMROOM')}"
-							click="removeFromCanvasDB()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/removefromroom.png')</mx:icon>
-						</mx:Button>
-						<mx:Button id="askButton" width="35" height="35" toolTip="{resourceManager.getString('myResources','ROOMVIEW.ASK')}"
-							click="launchSurvey()">
-							<mx:icon>@Embed(source='../../../../../assets/canvas/ask.png')</mx:icon>
-						</mx:Button>
-					</mx:HBox>
-				</mx:VBox>	
 			</mx:ApplicationControlBar>
 			
 			<mx:TextArea id="infoRoomEvents" htmlText="{logInfoRoomEvents}" editable="false" width="100%" height="100%" cornerRadius="5" borderStyle="outset"

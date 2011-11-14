@@ -87,7 +87,7 @@
 				width="85" height="30"
 				click="cancelRegister()"/>
 			<mx:Button id="buttonRegister" x="165" y="5" 
-				label="{resourceManager.getString('myResources','REGISTER.SUBMIT')}" 
+				label="{resourceManager.getString('myResources','REGISTER.CREATE')}" 
 				width="85" height="30"
 				click="submitRegister()"/>
 		</mx:HBox>

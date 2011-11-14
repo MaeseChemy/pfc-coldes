@@ -69,6 +69,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.ALLPAITING']="Todos a la Vez";
 			myResources.content['REGISTER.USERFUNCTION']="Función en Sala";
 			myResources.content['REGISTER.SAVE']="Guardar";
+			myResources.content['REGISTER.CREATE']="Crear";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Salir";
@@ -333,6 +334,7 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.ALLPAITING']="All at Once";
 			myResources.content['REGISTER.USERFUNCTION']="User Function";
 			myResources.content['REGISTER.SAVE']="Save";
+			myResources.content['REGISTER.CREATE']="Create";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Logout";
