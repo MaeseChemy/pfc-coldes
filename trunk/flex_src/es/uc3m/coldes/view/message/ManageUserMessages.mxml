@@ -111,6 +111,7 @@
 	</mx:Canvas>
 	<mx:VBox width="100%" horizontalAlign="left" visible="{gridUserMessages.selectedItem != null}" includeInLayout="{gridUserMessages.selectedItem != null}">
 		<mx:Label text="{resourceManager.getString('myResources','MESSAGESMANAGEMENT.DETAILS')}" fontStyle="italic" textDecoration="underline"/>
-		<mx:TextArea width="100%" height="100" id="roomDescription" text="{gridUserMessages.selectedItem!=null?gridUserMessages.selectedItem.room.description:''}"/>
+		<mx:TextArea width="100%" height="100" id="roomDescription" text="{gridUserMessages.selectedItem!=null?gridUserMessages.selectedItem.room.description:''}"
+			editable="false"/>
 	</mx:VBox>
 </ResizableWindow>
