@@ -163,7 +163,21 @@
 		<mx:DataGrid id="gridSearchRoom" width="100%" height="100%" dataProvider="{colDesRooms}" verticalScrollPolicy="auto" selectable="false">
 			<mx:columns>
 				<mx:DataGridColumn width="70" resizable="false" itemRenderer="es.uc3m.coldes.view.room.SearchRoomAcctions"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="name"/>
+				<!--<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="name"/>-->
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).name}" 
+									color="{(data).status == Constants.ROOM_CLOSE?0xff0000:0x008000}">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="owner"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','SEARCHROOM.DESCRIPTION')}" dataField="description"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','SEARCHROOM.PARTICIPATION')}">

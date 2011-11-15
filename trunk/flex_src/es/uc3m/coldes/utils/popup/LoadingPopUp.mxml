@@ -13,7 +13,7 @@
 			}
 
 			private function init():void {
-				stage.focus=null;
+				//stage.focus=null;
 			}
 		]]>
 	</mx:Script>

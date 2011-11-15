@@ -20,6 +20,9 @@ package es.uc3m.coldes.business
 		
 		public static const ONE_PAINTING:int = 0;
 		public static const ALL_PAINTING:int = 1;
+		
+		public static const ROOM_CLOSE:int = 0;
+		public static const ROOM_OPEN:int = 1;
 
 	}
 }

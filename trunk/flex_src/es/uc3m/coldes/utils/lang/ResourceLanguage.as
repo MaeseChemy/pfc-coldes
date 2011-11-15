@@ -70,6 +70,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.USERFUNCTION']="Función en Sala";
 			myResources.content['REGISTER.SAVE']="Guardar";
 			myResources.content['REGISTER.CREATE']="Crear";
+			myResources.content['REGISTER.STATUS']="Estado de la sala";
+			myResources.content['REGISTER.STATUSOPEN']="Abrir Sala";
+			myResources.content['REGISTER.STATUSCLOSE']="Cerrar Sala";
+			myResources.content['REGISTER.ROOMOPEN']="Abierta";
+			myResources.content['REGISTER.ROOMCLOSE']="Cerrada";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Salir";
@@ -254,6 +259,10 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.REMOVEDESIGN']="¿Está seguro de que desea borrar el diseño?";
 			myResources.content['MESSAGETITLE.SEARCHROOMADD']="SALA AÑADIDA";
 			myResources.content['MESSAGE.SEARCHROOMADD']="Se añadio la sala a las salas personales del usuario";
+			myResources.content['MESSAGETITLE.ACCESSCOLDES']="ACCESO A COLDES";
+			myResources.content['MESSAGE.ACCESSCOLDES']="Accediendo al sistema...";
+			myResources.content['MESSAGETITLE.ROOMCLOSE']="SALA CERRADA";
+			myResources.content['MESSAGE.ROOMCLOSE']="La sala esta cerrada en este momento";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="USUARIO INEXISTENTE";
@@ -335,6 +344,11 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['REGISTER.USERFUNCTION']="User Function";
 			myResources.content['REGISTER.SAVE']="Save";
 			myResources.content['REGISTER.CREATE']="Create";
+			myResources.content['REGISTER.STATUS']="Room status";
+			myResources.content['REGISTER.STATUSOPEN']="Open Room";
+			myResources.content['REGISTER.STATUSCLOSE']="Close Room";
+			myResources.content['REGISTER.ROOMOPEN']="Open";
+			myResources.content['REGISTER.ROOMCLOSE']="Close";
 			
 			//MAIN WINDOW
 			myResources.content['MAINWINDOW.LOGOUT']="Logout";
@@ -510,6 +524,10 @@ package es.uc3m.coldes.utils.lang
 			myResources.content['MESSAGE.REMOVEDESIGN']="Are you sure that you want to delete the design?"
 			myResources.content['MESSAGETITLE.SEARCHROOMADD']="ROOM ADDED";
 			myResources.content['MESSAGE.SEARCHROOMADD']="The room was added to the user's personal rooms";
+			myResources.content['MESSAGETITLE.ACCESSCOLDES']="ACCESS TO COLDES";
+			myResources.content['MESSAGE.ACCESSCOLDES']="Login in system ...";
+			myResources.content['MESSAGETITLE.ROOMCLOSE']="CLOSED ROOM";
+			myResources.content['MESSAGE.ROOMCLOSE']="The room is closed";
 			
 			//ERROR MESSAGE's
 			myResources.content['ERRORTITLE.LOGIN']="WRONG USER";
