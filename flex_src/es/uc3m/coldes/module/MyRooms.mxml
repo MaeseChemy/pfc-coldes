@@ -235,7 +235,21 @@
 			doubleClick="enter(gridUserRoom.selectedItem)" doubleClickEnabled="true">
 			<mx:columns>
 				<mx:DataGridColumn width="70" resizable="false" itemRenderer="es.uc3m.coldes.view.room.RoomUserAcctions"/>
-				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>
+				<!--<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}" dataField="roomName"/>-->
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.ROOMNAME')}">
+					<mx:itemRenderer>
+						<mx:Component >
+							<mx:Text text="{(data).roomName}" 
+									color="{(data).room.status == Constants.ROOM_CLOSE?0xff0000:0x008000}">
+								<mx:Script>
+									<![CDATA[
+										import es.uc3m.coldes.business.Constants;
+									]]>
+								</mx:Script>
+							</mx:Text>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.OWNERUSERNAME')}" dataField="ownerUserName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MYROOMS.USER')}" dataField="userName"/>
 				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','MANAGEUSERROOMS.USERFUNCTION')}">
@@ -271,15 +285,29 @@
 						</mx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','SEARCHROOM.CREATIONDATE')}">
+					<mx:itemRenderer>
+						<mx:Component >
+						<mx:VBox>
+	                    <mx:DateFormatter id="formatDateTime" formatString="DD/MM/YYY J:NN:SS" />
+	                    <mx:Label text="{formatDateTime.format(data.room.creationDate)}"/>
+						</mx:VBox>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="{resourceManager.getString('myResources','SEARCHROOM.MODIFICATIONDATE')}">
+					<mx:itemRenderer>
+						<mx:Component >
+						<mx:VBox>
+	                    <mx:DateFormatter id="formatDateTime" formatString="DD/MM/YYY J:NN:SS" />
+	                    <mx:Label text="{formatDateTime.format(data.room.modificationDate)}"/>
+						</mx:VBox>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
 			</mx:columns>
 		</mx:DataGrid>
-		<!--
-		<mx:HBox width="100%" horizontalAlign="center">
-			<mx:Button styleName="HomeButtonSec" textAlign="center" width="250" height="60"
-					   icon="@Embed(source='assets/images/addroom.png')" click="doRoomRegister()"
-					   label="{resourceManager.getString('myResources','MYROOMS.CREATEROOM')}"/>							
-		</mx:HBox>
-		-->
+
 	</mx:VBox>
 	</mx:Canvas>
 </mx:Module>

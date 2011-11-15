@@ -3,7 +3,7 @@
 	applicationComplete="init()" themeColor="#009DFF" 
 	xmlns:flexlib="http://code.google.com/p/flexlib/"
 	xmlns:lang="es.uc3m.coldes.utils.lang.*"
-	pageTitle="UC3M ColDes PFC">
+	pageTitle="UC3M ColDes PFC" xmlns:popup="es.uc3m.coldes.utils.popup.*">
 
 	<mx:Script>
 		<![CDATA[
@@ -104,6 +104,7 @@
 			private function doLogin():void {
 				var errors:Array=Validator.validateAll(validators);
 				if (errors.length==0) {
+					domask();
 					(new UserService()).doLogin(txtUser.text, txtPassword.text, loginCallback);
 				}
 			}
@@ -114,6 +115,7 @@
 					UtilPopUp.showMessagePopUP(resourceManager.getString('myResources','ERRORTITLE.LOGIN'),
 											   resourceManager.getString('myResources','ERROR.LOGIN'));
 				}
+				unmask();
 			}
 			private function signedIn(user:User):void {
 				txtUser.text="";
@@ -330,10 +332,26 @@
 				imgNewMessage.visible = false;
 			}
 			
+			
+			/**************************************/
+			/**        MASK FUNCTIONS            **/
+			/**************************************/
+			private function domask():void {
+				primaryVS.enabled=false;
+				loadingAccess.includeInLayout=true;
+				loadingAccess.visible=true;
+			}
+			
+			private function unmask():void {
+				primaryVS.enabled=true;
+				loadingAccess.includeInLayout=false;
+				loadingAccess.visible=false;
+			}
 		]]>
 	</mx:Script>
 	<mx:Style source="ColDes.css"/>
 	<mx:Consumer id="consumer" destination="message" message="messageHandler(event.message)"/>
+	<mx:Canvas height="100%" width="100%"/>	
 	<mx:ViewStack height="100%" id="primaryVS" width="100%" creationPolicy="all">
 		<mx:Canvas height="100%" width="100%"/>	
 		<mx:Canvas id="loginFacade" width="100%" height="100%">
@@ -454,6 +472,9 @@
 			</mx:VBox>
 		</mx:Canvas>
 	</mx:ViewStack>
+	<popup:LoadingPopUp enabled="{!primaryVS.enabled}" id="loadingAccess" title="{resourceManager.getString('myResources','MESSAGETITLE.ACCESSCOLDES')}" verticalCenter="0" horizontalCenter="0" 
+								includeInLayout="false" visible="false" data="{resourceManager.getString('myResources','MESSAGE.ACCESSCOLDES')}"  />
+	<mx:Canvas height="100%" width="100%"/>	
 	<mx:Array id="validators">
 		<mx:StringValidator source="{txtUser}" property="text" trigger="{txtUser}" triggerEvent="focusOut"
 							required="true" invalid="glowEffect.play([txtUser])"/>

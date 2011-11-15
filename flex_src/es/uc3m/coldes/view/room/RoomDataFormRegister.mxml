@@ -52,6 +52,7 @@
 				newRoom.description = descriptionField.text;
 				newRoom.owner = userLoged.username;
 				newRoom.privateRoom = privateRoomCheck.selected;
+				newRoom.status = Constants.ROOM_OPEN;
 				switch(comboParticipationType.selectedItem as String){
  		 			case resourceManager.getString('myResources','REGISTER.ONEPAINTING'):{
  		 				newRoom.participationType = Constants.ONE_PAINTING;

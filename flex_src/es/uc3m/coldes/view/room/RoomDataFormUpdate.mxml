@@ -23,6 +23,8 @@
 			
 			[Bindable]
 			private var paticipationTypes:Array;
+			[Bindable]
+			private var roomOpen:Boolean;
 			
 			public function init():void{
 				this.paticipationTypes = new Array(
@@ -52,6 +54,11 @@
 				nameField.text = room.name;
 				descriptionField.text = room.description;
 				privateRoomCheck.selected = room.privateRoom;
+				if(room.status == Constants.ROOM_OPEN){
+					roomOpen = true;
+				}else{
+					roomOpen = false;
+				}
 				switch(room.participationType){
  		 			case Constants.ONE_PAINTING:{
  		 				comboParticipationType.selectedItem = resourceManager.getString('myResources','REGISTER.ONEPAINTING');
@@ -71,6 +78,11 @@
 				newRoom.description = descriptionField.text;
 				newRoom.owner = room.owner;
 				newRoom.privateRoom = privateRoomCheck.selected;
+				if(roomOpen){
+					newRoom.status = Constants.ROOM_OPEN;
+				}else{
+					newRoom.status = Constants.ROOM_CLOSE;
+				}
 				switch(comboParticipationType.selectedItem as String){
  		 			case resourceManager.getString('myResources','REGISTER.ONEPAINTING'):{
  		 				newRoom.participationType = Constants.ONE_PAINTING;
@@ -83,6 +95,14 @@
    				}
 				return newRoom;
 			}
+			
+			private function openRoom():void{
+				roomOpen = true;
+			}
+			
+			private function closeRoom():void{
+				roomOpen = false;
+			}
 		]]>
 	</mx:Script>
 	
@@ -93,6 +113,23 @@
 		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PRIVATE')}">
 			<mx:CheckBox id="privateRoomCheck" />
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.STATUS')}">
+			
+			<mx:HBox>
+				<mx:Text text="{roomOpen?
+					resourceManager.getString('myResources','REGISTER.ROOMOPEN'):
+					resourceManager.getString('myResources','REGISTER.ROOMCLOSE')}" 
+					color="{roomOpen?0x008000:0xff0000}"/>
+				<mx:Button id="buttonActive"
+					enabled="{!roomOpen}" visible="{!roomOpen}"	includeInLayout="{!roomOpen}"
+					label="{resourceManager.getString('myResources','REGISTER.STATUSOPEN')}" 
+					click="openRoom()"/>
+				<mx:Button id="buttonDeActive"
+					enabled="{roomOpen}" visible="{roomOpen}" includeInLayout="{roomOpen}"
+					label="{resourceManager.getString('myResources','REGISTER.STATUSCLOSE')}" 
+					click="closeRoom()"/>
+			</mx:HBox>
 		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString('myResources','REGISTER.PARTICIPATIONTYPE')}">
 			<mx:ComboBox id="comboParticipationType" dataProvider="{paticipationTypes}"/>

@@ -345,7 +345,7 @@ public class RoomDAO extends BBDD{
 	private Room findRoomById(int id){
 		Room room = null;
 		logger.info("[RoomDAO-findRoomById]: Searching room by id...");
-		String sqlSelectRoom = "select id, roomname, roomdescription, owner, private, participationtype "
+		String sqlSelectRoom = "select id, roomname, roomdescription, owner, private, participationtype, status, creationDate, modificationDate "
 				+ "from room where id=?";
 		try {
 			conn = getConnection();
@@ -363,6 +363,9 @@ public class RoomDAO extends BBDD{
 				room.setOwner(resultados.getString("owner"));
 				room.setPrivateRoom(resultados.getBoolean("private"));
 				room.setParticipationType(resultados.getInt("participationtype"));
+				room.setStatus(resultados.getInt("status"));
+				room.setCreationDate(resultados.getTimestamp("creationDate"));
+				room.setModificationDate(resultados.getTimestamp("modificationDate"));
 			}
 		} catch (SQLException e) {
 			logger.error("[RoomDAO-findRoomById]: Error in SQL sentence: " + e.getLocalizedMessage());		
@@ -875,7 +878,7 @@ public class RoomDAO extends BBDD{
 	 */
 	public boolean updateRoom(Room room) {
 		logger.info("[RoomDAO-updateRoom]: Update room ...");
-		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, participationtype=?, modificationDate=? where id=?";
+		String sqlDeleteUserRoom = "update room set roomname=?, roomdescription=?, owner=?, private=?, status=?, participationtype=?, modificationDate=? where id=?";
 		try {
 			conn = getConnection();
 			PreparedStatement st = conn.prepareStatement(sqlDeleteUserRoom);
@@ -883,9 +886,10 @@ public class RoomDAO extends BBDD{
 			st.setString(2, room.getDescription());
 			st.setString(3, room.getOwner());
 			st.setBoolean(4, room.getPrivateRoom());
-			st.setInt(5, room.getParticipationType());
-			st.setTimestamp(6, new Timestamp(new Date().getTime()));
-			st.setInt(7, room.getId());
+			st.setInt(5, room.getStatus());
+			st.setInt(6, room.getParticipationType());
+			st.setTimestamp(7, new Timestamp(new Date().getTime()));
+			st.setInt(8, room.getId());
 			
 			int i = st.executeUpdate();
 			if (i != 1){

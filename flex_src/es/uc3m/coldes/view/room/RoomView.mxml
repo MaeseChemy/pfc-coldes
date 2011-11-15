@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
 	creationComplete="init()" xmlns:paint="es.uc3m.coldes.view.paint.*" xmlns:chat="es.uc3m.coldes.view.chat.*"
-	icon="{hasPencil?roomPencilOwnerIcon:roomIcon}">
+	icon="{hasPencil?roomPencilOwnerIcon:room.status == Constants.ROOM_OPEN?roomIcon:roomIconClose}" xmlns:popup="es.uc3m.coldes.utils.popup.*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -34,6 +34,8 @@
 			public const roomIcon:Class;
 			[Embed('/assets/images/icos/roomPencilOwner.png')]
 			public const roomPencilOwnerIcon:Class;
+			[Embed('/assets/images/icos/roomClose.png')]
+			public static const roomIconClose:Class;
 			
 			[Bindable]
 			private var _room:Room;
@@ -57,12 +59,17 @@
 			private var hasPencil:Boolean;
 			public var userfunction:Number;
 			public function init():void{
-				//Inicializamos el chat
-				generateChatDestination(user,room);
-				generateLienzoDestination(user,room);
-				consumer.subscribe(); 
-				manageUserFunctionPermision(userfunction);
-				(new RoomService).enterInRoom(user, room, callbackEnterInRoom);
+				if(room.status == Constants.ROOM_CLOSE){
+					roomContent.enabled=false;
+				}else{
+					//Inicializamos el chat
+					generateChatDestination(user,room);
+					generateLienzoDestination(user,room);
+					consumer.subscribe(); 
+					manageUserFunctionPermision(userfunction);
+					(new RoomService).enterInRoom(user, room, callbackEnterInRoom);
+				}
+				
 				(new DesignService).getRoomSaveContent(room, callbackGetContent);
 				
 			}
@@ -538,7 +545,11 @@
 				}
 			}
 			
-			
+			private function closeWarning():void{
+				closeRoomMessageWarning.enabled = false;
+				closeRoomMessageWarning.visible = false;
+				closeRoomMessageWarning.includeInLayout = false;
+			}
 		]]>
 	</mx:Script>
 	<mx:Consumer id="consumer"
@@ -548,8 +559,9 @@
 	
 	<mx:Producer id="producer"
 		destination="updateUsersRooms"/>
-		
-	<mx:HBox width="100%" height="100%" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5" backgroundColor="#00CFE8" backgroundAlpha="0.9">
+							
+	<mx:HBox width="100%" height="100%" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5" backgroundColor="#00CFE8" backgroundAlpha="0.9"
+		id="roomContent">
 		<mx:VBox height="100%">
 			<chat:ChatForm id="roomChat" />
 			<mx:HBox width="100%">
@@ -675,5 +687,11 @@
 		</mx:VBox>
 		<paint:PaintCanvasComponent id="roomCanvas" width="100%" height="100%" movable="false"/>
 	</mx:HBox>
-	
+	<mx:TitleWindow id="closeRoomMessageWarning" width="350" height="100" showCloseButton="true"
+		title="{resourceManager.getString('myResources','MESSAGETITLE.ROOMCLOSE')}" verticalCenter="0" horizontalCenter="0"
+		enabled="{!roomContent.enabled}" includeInLayout="{!roomContent.enabled}" visible="{!roomContent.enabled}" close="closeWarning()">
+		<mx:Canvas width="100%" height="100%">
+			<mx:Text text="{resourceManager.getString('myResources','MESSAGE.ROOMCLOSE')}" width="100%" textAlign="center" verticalCenter="0" styleName="message"/>
+		</mx:Canvas>
+	</mx:TitleWindow>
 </mx:Canvas>
