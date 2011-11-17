@@ -92,10 +92,11 @@
 				lang = locale;
 			}
 			
-			public function closingApp():void{
+			public function closingApp():Boolean{
                 if(userLoged != null){
-                	//doLogoutClosed();
+                	return true;
                 }
+                return false;
             }
  
 			/*************************************/
@@ -189,6 +190,9 @@
 				//Disable warning of new message
 				imgNewMessage.includeInLayout = false;
 				imgNewMessage.visible = false;
+				
+				//Setting null userLoged
+				userLoged = null;
 			}
 			
 			/*************************************/
