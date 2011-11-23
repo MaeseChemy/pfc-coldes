@@ -393,7 +393,7 @@
 						<mx:Button id="btnLogOut" height="20" icon="@Embed(source='assets/images/btnlogout.png')" label="{resourceManager.getString('myResources','MAINWINDOW.LOGOUT')}"
 							click="initDoLogout()"/>
 							
-						<mx:HBox horizontalAlign="center" verticalAlign="middle" horizontalGap="0">
+						<mx:HBox horizontalAlign="center" verticalAlign="middle" horizontalGap="0" includeInLayout="{userLoged.designer}" visible="{userLoged.designer}">
 							<mx:Button id="btnMessage" height="20" icon="@Embed(source='assets/images/buzoncorreo.png')" label="({userMessages})" click="openMessageManager()"/>
 							<mx:Image id="imgNewMessage" height="20" source="assets/images/newmessage.png"
 								includeInLayout="false" visible="false"/>
@@ -415,7 +415,7 @@
 			
 					<mx:VBox id="tabInit" height="100%" width="100%" label="{resourceManager.getString('myResources','MAINWINDOW.TITLE')}" horizontalAlign="center" verticalGap="30"
 						 icon="@Embed('/assets/images/icos/home.png')">
-						<mx:Grid paddingTop="120" paddingBottom="20" horizontalGap="100" verticalGap="30" id="menu">
+						<mx:Grid paddingTop="120" paddingBottom="20" horizontalGap="100" verticalGap="30" id="menu" includeInLayout="{userLoged.designer}" visible="{userLoged.designer}">
 							<mx:GridRow width="100%">
 								<mx:GridItem width="100%" horizontalAlign="center">
 									<mx:Button label="{resourceManager.getString('myResources','MAINWINDOW.USER')}"
@@ -430,7 +430,7 @@
 								</mx:GridItem>
 							</mx:GridRow>
 						</mx:Grid>	
-						<mx:Grid paddingBottom="20" horizontalGap="100" verticalGap="30" id="menuAdmin" includeInLayout="{userLoged.admin}" visible="{userLoged.admin}">
+						<mx:Grid paddingTop="{userLoged.designer?0:120}" paddingBottom="20" horizontalGap="100" verticalGap="30" id="menuAdmin" includeInLayout="{userLoged.admin}" visible="{userLoged.admin}">
 							<mx:GridRow width="100%" horizontalAlign="center">
 								<mx:GridItem width="100%" horizontalAlign="center">
 									<mx:Button label="{resourceManager.getString('myResources','MAINWINDOW.ADMINISTRATOR')}"
